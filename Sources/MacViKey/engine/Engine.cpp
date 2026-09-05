@@ -69,7 +69,7 @@ vKeyHookState HookState;
 
 //private data
 /**
- * data structure of each element in TypingWord (Uint64)
+ * data structure of each element in TypingWord (Uint32)
  * first 2 byte is character code or key code.
  * bit 16: has caps or not
  * bit 17: has tone ^ or not

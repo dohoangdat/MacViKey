@@ -46,11 +46,6 @@ void MacViKeyAXOnAppChanged(NSString* bundleId);
 /// Trả về YES nếu thành công (lớp gọi KHÔNG cần giả lập phím nữa).
 BOOL MacViKeyAXReplaceText(int backspaceCount, NSString* newText);
 
-/// Thống kê để hiển thị và chẩn đoán.
-int MacViKeyAXSuccessCount(void);
-int MacViKeyAXFallbackCount(void);
-NSString* MacViKeyAXCurrentAppSupport(void);
-
 #ifdef __cplusplus
 }
 #endif

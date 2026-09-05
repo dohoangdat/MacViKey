@@ -40,7 +40,6 @@ typedef signed char Int8;
 typedef unsigned char Uint8;
 typedef unsigned short Uint16;
 typedef unsigned int Uint32;
-typedef unsigned long int Uint64;
 
 enum HoolCodeState {
     vDoNothing = 0, //do not do anything
@@ -140,7 +139,6 @@ struct vKeyHookState {
 
 //is VNI or Unicode compound...
 #define IS_DOUBLE_CODE(code) (code == 2 || code == 3)
-#define IS_VNI_CODE(code) (code == 2)
 #define IS_QUICK_TELEX_KEY(code) (_index > 0 && (code == KEY_C || code == KEY_G || code == KEY_K || code == KEY_N || code == KEY_Q || code == KEY_P || code == KEY_T) && \
                                     (Uint16)TypingWord[_index-1] == code)
 

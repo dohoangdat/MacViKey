@@ -19,7 +19,6 @@
 #define KEY_DOWN                                125
 #define KEY_UP                                  126
 
-#define KEY_EMPTY                               256
 #define KEY_A                                   0
 #define KEY_B                                   11
 #define KEY_C                                   8
@@ -61,8 +60,6 @@
 #define KEY_LEFT_BRACKET                        33
 #define KEY_RIGHT_BRACKET                       30
 
-#define KEY_LEFT_SHIFT                          57
-#define KEY_RIGHT_SHIFT                         60
 #define KEY_DOT                                 47
 
 #define KEY_BACKQUOTE                           50

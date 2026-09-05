@@ -73,7 +73,6 @@
 @property (weak) IBOutlet NSTextField *CopyrightInfo;
 @property (weak) IBOutlet NSTextField *AboutText;
 
-@property (weak) IBOutlet NSImageView *cursorImage;
 
 -(void)fillData;
 @end
