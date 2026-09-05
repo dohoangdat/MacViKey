@@ -3,7 +3,7 @@ CXX      ?= clang++
 CXXFLAGS ?= -std=c++14 -O1 -Wall -Wno-unused-variable -Wno-deprecated-declarations
 ENGINE   := ../engine
 SRC      := $(ENGINE)/Engine.cpp $(ENGINE)/Vietnamese.cpp $(ENGINE)/Macro.cpp \
-            $(ENGINE)/SmartSwitchKey.cpp $(ENGINE)/ConvertTool.cpp
+            $(ENGINE)/SmartSwitchKey.cpp
 
 test: build
 	@./test_engine

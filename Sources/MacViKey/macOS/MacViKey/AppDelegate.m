@@ -74,8 +74,6 @@ int vPerformLayoutCompat = 0;
 // beta feature
 int vFixChromiumBrowser = 0; // new on version 2.0
 
-extern int convertToolHotKey;
-extern bool convertToolDontAlertWhenCompleted;
 
 // Khoa tuy chon <-> (ten trong prefs, bien engine). Bien NULL = chi luu prefs.
 typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
@@ -104,7 +102,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 @implementation AppDelegate {
   NSWindowController *_mainWC;
   NSWindowController *_macroWC;
-  NSWindowController *_convertWC;
   NSWindowController *_aboutWC;
 
   NSStatusItem *statusItem;
@@ -125,7 +122,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   NSMenuItem *mnuUnicodeComposite;
   NSMenuItem *mnuVietnameseLocaleCP1258;
 
-  NSMenuItem *mnuQuickConvert;
 
   // MacViKey
   NSTimer *_permissionPoll;
@@ -180,8 +176,7 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
            subMsg:@"Bộ gõ đã được kích hoạt, bạn có thể gõ tiếng Việt ngay."];
 }
 
-#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE || MACVIKEY_HIDE_CONVERT_TOOL ||         \
-    MACVIKEY_HIDE_ENGINE_OPTIONS || MACVIKEY_MENUBAR_OPTIONS ||                \
+#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE ||    MACVIKEY_HIDE_ENGINE_OPTIONS || MACVIKEY_MENUBAR_OPTIONS ||                \
     MACVIKEY_HIDE_MACRO
 // MacViKey: ghi đè config bị khoá, chạy trước mọi thứ khác để prefs cũ không
 // lọt vào.
@@ -195,10 +190,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   // Nhớ bảng mã theo ứng dụng chỉ có nghĩa khi có nhiều bảng mã.
   vRememberCode = 0;
   [prefs setInteger:vRememberCode forKey:@"vRememberCode"];
-#endif
-#if MACVIKEY_HIDE_CONVERT_TOOL
-  // Vô hiệu hoá luôn phím tắt chuyển mã nhanh.
-  [prefs setInteger:0 forKey:@"convertToolHotKey"];
 #endif
 #if MACVIKEY_HIDE_ENGINE_OPTIONS
   // Các tuỳ chọn bị ẩn khỏi GUI đều khoá về TẮT.
@@ -247,8 +238,7 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
   appDelegate = self;
 
-#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE || MACVIKEY_HIDE_CONVERT_TOOL ||         \
-    MACVIKEY_HIDE_ENGINE_OPTIONS || MACVIKEY_MENUBAR_OPTIONS ||                \
+#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE ||    MACVIKEY_HIDE_ENGINE_OPTIONS || MACVIKEY_MENUBAR_OPTIONS ||                \
     MACVIKEY_HIDE_MACRO
   [self applyMacViKeyFixedConfig];
 #endif
@@ -316,7 +306,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
       }
     }
     [self startTapWatchdog];
-    [self setQuickConvertString];
   });
 
   // load default config if is first launch
@@ -428,9 +417,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     ]];
 #else
     [set addObjectsFromArray:@[ @"fixedInputType", @"fixedCodeTable" ]];
-#endif
-#if MACVIKEY_HIDE_CONVERT_TOOL
-    [set addObjectsFromArray:@[ @"convertTool", @"quickConvert" ]];
 #endif
 #if MACVIKEY_HIDE_CONTROL_PANEL
     [set addObject:@"controlPanel"];
@@ -593,17 +579,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     return item;
   }
 
-  if ([nodeId isEqualToString:@"convertTool"]) {
-    return [menu addItemWithTitle:title
-                           action:@selector(onConvertTool)
-                    keyEquivalent:@""];
-  }
-  if ([nodeId isEqualToString:@"quickConvert"]) {
-    mnuQuickConvert = [menu addItemWithTitle:title
-                                      action:@selector(onQuickConvert)
-                               keyEquivalent:@""];
-    return mnuQuickConvert;
-  }
   if ([nodeId isEqualToString:@"controlPanel"]) {
     return [menu addItemWithTitle:title
                            action:@selector(onControlPanelSelected)
@@ -779,58 +754,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   }
 }
 
-- (void)setQuickConvertString {
-#if MACVIKEY_HIDE_CONVERT_TOOL
-  return;
-#else
-  NSMutableString *hotKey = [NSMutableString stringWithString:@""];
-  bool hasAdd = false;
-  if (convertToolHotKey & 0x100) {
-    [hotKey appendString:@"⌃"];
-    hasAdd = true;
-  }
-  if (convertToolHotKey & 0x200) {
-    if (hasAdd)
-      [hotKey appendString:@" + "];
-    [hotKey appendString:@"⌥"];
-    hasAdd = true;
-  }
-  if (convertToolHotKey & 0x400) {
-    if (hasAdd)
-      [hotKey appendString:@" + "];
-    [hotKey appendString:@"⌘"];
-    hasAdd = true;
-  }
-  if (convertToolHotKey & 0x800) {
-    if (hasAdd)
-      [hotKey appendString:@" + "];
-    [hotKey appendString:@"⇧"];
-    hasAdd = true;
-  }
-
-  unsigned short k = ((convertToolHotKey >> 24) & 0xFF);
-  if (k != 0xFE) {
-    if (hasAdd)
-      [hotKey appendString:@" + "];
-    if (k == kVK_Space)
-      [hotKey appendFormat:@"%@", @"␣ "];
-    else
-      [hotKey appendFormat:@"%c", k];
-  }
-  [self
-      macViKeySetTitle:
-          hasAdd
-              ? [NSString
-                    stringWithFormat:[MacViKeyMenuLayout
-                                           string:@"quickConvert.hotKey.format"
-                                         fallback:@"Chuyển mã nhanh - [%@]"],
-                                     [hotKey uppercaseString]]
-              : [MacViKeyMenuLayout string:@"quickConvert.plain"
-                                  fallback:@"Chuyển mã nhanh"]
-               forItem:mnuQuickConvert];
-#endif
-}
-
 - (void)loadDefaultConfig {
   vLanguage = 1;
   [[NSUserDefaults standardUserDefaults] setInteger:vLanguage
@@ -918,8 +841,7 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   [[NSUserDefaults standardUserDefaults] setInteger:vPerformLayoutCompat
                                              forKey:@"vPerformLayoutCompat"];
 
-#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE || MACVIKEY_HIDE_CONVERT_TOOL ||         \
-    MACVIKEY_HIDE_ENGINE_OPTIONS || MACVIKEY_MENUBAR_OPTIONS ||                \
+#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE ||    MACVIKEY_HIDE_ENGINE_OPTIONS || MACVIKEY_MENUBAR_OPTIONS ||                \
     MACVIKEY_HIDE_MACRO
   // Khôi phục mặc định không được làm sống lại các tuỳ chọn đã bị khoá.
   [self applyMacViKeyFixedConfig];
@@ -1411,40 +1333,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 - (void)onCodeSelected:(id)sender {
   NSMenuItem *menuItem = (NSMenuItem *)sender;
   [self onCodeTableChanged:(int)menuItem.tag];
-}
-
-- (void)onConvertTool {
-#if MACVIKEY_HIDE_CONVERT_TOOL
-  return;
-#else
-  if (_convertWC == nil) {
-    _convertWC = [[NSStoryboard storyboardWithName:@"Main" bundle:nil]
-        instantiateControllerWithIdentifier:@"ConvertWindow"];
-  }
-  //[MacViKeyManager showDockIcon:YES];
-  if ([_convertWC.window isVisible])
-    return;
-  [_convertWC.window makeKeyAndOrderFront:nil];
-  [_convertWC.window setLevel:NSFloatingWindowLevel];
-#endif
-}
-
-- (void)onQuickConvert {
-#if MACVIKEY_HIDE_CONVERT_TOOL
-  return;
-#else
-  if ([MacViKeyManager quickConvert]) {
-    if (!convertToolDontAlertWhenCompleted) {
-      [MacViKeyManager showMessage:nil
-                           message:@"Chuyển mã thành công!"
-                            subMsg:@"Kết quả đã được lưu trong clipboard."];
-    }
-  } else {
-    [MacViKeyManager showMessage:nil
-                         message:@"Không có dữ liệu trong clipboard!"
-                          subMsg:@"Hãy sao chép một đoạn text để chuyển đổi!"];
-  }
-#endif
 }
 
 - (void)onControlPanelSelected {

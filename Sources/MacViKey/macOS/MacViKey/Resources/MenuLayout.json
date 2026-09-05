@@ -150,21 +150,6 @@
       "separator": true
     },
     {
-      "id": "convertTool",
-      "title": "Công cụ chuyển mã...",
-      "enabled": true,
-      "hint": "Mở cửa sổ chuyển văn bản từ bảng mã này sang bảng mã khác."
-    },
-    {
-      "id": "quickConvert",
-      "title": "Chuyển mã nhanh",
-      "enabled": true,
-      "hint": "Chuyển bảng mã cho đoạn văn bản vừa chép, bằng phím tắt."
-    },
-    {
-      "separator": true
-    },
-    {
       "id": "typingOptionsMenu",
       "title": "Tuỳ chọn gõ",
       "enabled": true,
@@ -284,8 +269,6 @@
     "engineStatus.format": "Bộ gõ %@ v%@: %@",
     "engineStatus.running": "Đang hoạt động",
     "engineStatus.running.recovered.format": "Đang hoạt động (đã tự khôi phục %d lần)",
-    "quickConvert.plain": "Chuyển mã nhanh",
-    "quickConvert.hotKey.format": "Chuyển mã nhanh - [%@]",
     "statusLine.noPermission": "⚠️ Chưa có quyền Trợ năng — bấm để cấp quyền",
     "statusLine.stopped": "⚠️ Bộ gõ đã dừng — bấm để khởi động lại",
     "statusLine.hint.format": "%@ v%@ — %@",

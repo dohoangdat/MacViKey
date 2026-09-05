@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		23136D92231FBD49000764E6 /* ConvertToolViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 23136D91231FBD49000764E6 /* ConvertToolViewController.mm */; };
 		232EDA5921F1B33E0085D362 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 232EDA5821F1B33E0085D362 /* AppDelegate.m */; };
 		232EDA5C21F1B33E0085D362 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 232EDA5B21F1B33E0085D362 /* ViewController.m */; };
 		MVK000000000000000ML01 /* MenuLayout.json in Resources */ = {isa = PBXBuildFile; fileRef = MVK000000000000000ML04 /* MenuLayout.json */; };
@@ -18,7 +17,6 @@
 		232EDA6121F1B33F0085D362 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 232EDA5F21F1B33F0085D362 /* Main.storyboard */; };
 		232EDA6421F1B33F0085D362 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 232EDA6321F1B33F0085D362 /* main.m */; };
 		233C4A6E231F923D00DD7052 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 233C4A6D231F923D00DD7052 /* AppKit.framework */; };
-		233C4A70231F937900DD7052 /* ConvertTool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 233C4A6F231F937900DD7052 /* ConvertTool.cpp */; };
 		2345899A22F720D7003E0923 /* MacroViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2345899922F720D7003E0923 /* MacroViewController.mm */; };
 		2371AAEF22FA85B200CA1B57 /* MacViKeyHook.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2371AAEE22FA85B200CA1B57 /* MacViKeyHook.mm */; };
 		2374A1302216720E005B0375 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2374A12F2216720E005B0375 /* AboutViewController.m */; };
@@ -52,8 +50,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		23136D90231FBD49000764E6 /* ConvertToolViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConvertToolViewController.h; sourceTree = "<group>"; };
-		23136D91231FBD49000764E6 /* ConvertToolViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ConvertToolViewController.mm; sourceTree = "<group>"; };
 		232EDA5421F1B33E0085D362 /* MacViKey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacViKey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		232EDA5721F1B33E0085D362 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		232EDA5821F1B33E0085D362 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -70,8 +66,6 @@
 		232EDA6321F1B33F0085D362 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		232EDA6521F1B33F0085D362 /* MacViKeyApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacViKeyApp.entitlements; sourceTree = "<group>"; };
 		233C4A6D231F923D00DD7052 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
-		233C4A6F231F937900DD7052 /* ConvertTool.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ConvertTool.cpp; sourceTree = "<group>"; };
-		233C4A71231F938800DD7052 /* ConvertTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConvertTool.h; sourceTree = "<group>"; };
 		233D800222F7D1F000E02DC6 /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		2344220522F42F70009E47D4 /* MacViKey.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacViKey.entitlements; sourceTree = "<group>"; };
 		2345899822F720D7003E0923 /* MacroViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MacroViewController.h; sourceTree = "<group>"; };
@@ -202,8 +196,6 @@
 				23CA6D1622F0439100804D6E /* MyTextField.m */,
 				2345899822F720D7003E0923 /* MacroViewController.h */,
 				2345899922F720D7003E0923 /* MacroViewController.mm */,
-				23136D90231FBD49000764E6 /* ConvertToolViewController.h */,
-				23136D91231FBD49000764E6 /* ConvertToolViewController.mm */,
 				2371AAEE22FA85B200CA1B57 /* MacViKeyHook.mm */,
 			);
 			path = MacViKey;
@@ -268,8 +260,6 @@
 				23E2E49B2314FD3A006CCC3E /* Vietnamese.cpp */,
 				23E2E4942314FD3A006CCC3E /* Engine.h */,
 				23E2E49A2314FD3A006CCC3E /* Engine.cpp */,
-				233C4A6F231F937900DD7052 /* ConvertTool.cpp */,
-				233C4A71231F938800DD7052 /* ConvertTool.h */,
 			);
 			name = engine;
 			path = ../engine;
@@ -368,8 +358,6 @@
 				2345899A22F720D7003E0923 /* MacroViewController.mm in Sources */,
 				2371AAEF22FA85B200CA1B57 /* MacViKeyHook.mm in Sources */,
 				23E2E49D2314FD3A006CCC3E /* Macro.cpp in Sources */,
-				233C4A70231F937900DD7052 /* ConvertTool.cpp in Sources */,
-				23136D92231FBD49000764E6 /* ConvertToolViewController.mm in Sources */,
 				232EDA5921F1B33E0085D362 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

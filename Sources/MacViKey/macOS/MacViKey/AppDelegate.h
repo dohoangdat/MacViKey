@@ -27,8 +27,6 @@
 -(void)setGrayIcon:(BOOL)val;
 
 -(void)onMacroSelected;
--(void)onQuickConvert;
--(void)setQuickConvertString;
 
 -(void)showIconOnDock:(BOOL)val;
 @end

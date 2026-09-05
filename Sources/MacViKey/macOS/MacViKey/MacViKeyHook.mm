@@ -190,23 +190,6 @@ extern "C" {
         data = [prefs objectForKey:@"smartSwitchKey"];
         initSmartSwitchKey((Byte*)data.bytes, (int)data.length);
         
-        //init convert tool
-        convertToolDontAlertWhenCompleted = ![prefs boolForKey:@"convertToolDontAlertWhenCompleted"];
-        convertToolToAllCaps = [prefs boolForKey:@"convertToolToAllCaps"];
-        convertToolToAllNonCaps = [prefs boolForKey:@"convertToolToAllNonCaps"];
-        convertToolToCapsFirstLetter = [prefs boolForKey:@"convertToolToCapsFirstLetter"];
-        convertToolToCapsEachWord = [prefs boolForKey:@"convertToolToCapsEachWord"];
-        convertToolRemoveMark = [prefs boolForKey:@"convertToolRemoveMark"];
-        convertToolFromCode = [prefs integerForKey:@"convertToolFromCode"];
-        convertToolToCode = [prefs integerForKey:@"convertToolToCode"];
-        convertToolHotKey = (int)[prefs integerForKey:@"convertToolHotKey"];
-        if (convertToolHotKey == 0) {
-            convertToolHotKey = EMPTY_HOTKEY;
-        }
-#if MACVIKEY_HIDE_CONVERT_TOOL
-        //MacViKey: không có công cụ chuyển mã thì cũng không giữ phím tắt cho nó.
-        convertToolHotKey = EMPTY_HOTKEY;
-#endif
     }
     
     void RequestNewSession() {
@@ -225,10 +208,6 @@ extern "C" {
                 _frontMostApp = [[NSWorkspace sharedWorkspace] frontmostApplication].localizedName != nil ?
                 [[NSWorkspace sharedWorkspace] frontmostApplication].localizedName : @"UnknownApp";
         }
-    }
-    
-    NSString* ConvertUtil(NSString* str) {
-        return [NSString stringWithUTF8String:convertUtil([str UTF8String]).c_str()];
     }
     
     BOOL containUnicodeCompoundApp(NSString* topApp) {
@@ -774,19 +753,13 @@ extern "C" {
            _keycode = ConvertEventToKeyboadLayoutCompatKeyCode(event, _keycode);
         }
         
-        //switch language shortcut; convert hotkey
+        //switch language shortcut
         if (type == kCGEventKeyDown) {
-            if (GET_SWITCH_KEY(vSwitchKeyStatus) != _keycode && GET_SWITCH_KEY(convertToolHotKey) != _keycode) {
+            if (GET_SWITCH_KEY(vSwitchKeyStatus) != _keycode) {
                 _lastFlag = 0;
             } else {
-                if (GET_SWITCH_KEY(vSwitchKeyStatus) == _keycode && checkHotKey(vSwitchKeyStatus, GET_SWITCH_KEY(vSwitchKeyStatus) != 0xFE)){
+                if (checkHotKey(vSwitchKeyStatus, GET_SWITCH_KEY(vSwitchKeyStatus) != 0xFE)){
                     switchLanguage();
-                    _lastFlag = 0;
-                    _hasJustUsedHotKey = true;
-                    return NULL;
-                }
-                if (GET_SWITCH_KEY(convertToolHotKey) == _keycode && checkHotKey(convertToolHotKey, GET_SWITCH_KEY(convertToolHotKey) != 0xFE)){
-                    [appDelegate onQuickConvert];
                     _lastFlag = 0;
                     _hasJustUsedHotKey = true;
                     return NULL;
@@ -801,12 +774,6 @@ extern "C" {
                 if (checkHotKey(vSwitchKeyStatus, GET_SWITCH_KEY(vSwitchKeyStatus) != 0xFE)) {
                     _lastFlag = 0;
                     switchLanguage();
-                    _hasJustUsedHotKey = true;
-                    return NULL;
-                }
-                if (checkHotKey(convertToolHotKey, GET_SWITCH_KEY(convertToolHotKey) != 0xFE)) {
-                    _lastFlag = 0;
-                    [appDelegate onQuickConvert];
                     _hasJustUsedHotKey = true;
                     return NULL;
                 }

@@ -14,7 +14,6 @@
 #include "Vietnamese.h"
 #include "Macro.h"
 #include "SmartSwitchKey.h"
-#include "ConvertTool.h"
 
 #ifndef LOBYTE
 #define LOBYTE(data) (data & 0xFF)

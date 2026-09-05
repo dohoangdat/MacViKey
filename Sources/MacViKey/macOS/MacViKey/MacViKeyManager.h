@@ -21,7 +21,6 @@ typedef void (^CheckNewVersionCallback)(void);
 +(NSString*)getBuildDate;
 +(void)showMessage:(NSWindow*)window message:(NSString*)msg subMsg:(NSString*)subMsg;
 
-+(BOOL)quickConvert;
 
 +(void)checkNewVersion:(NSWindow*)parent callbackFunc:(CheckNewVersionCallback) callback;
 @end

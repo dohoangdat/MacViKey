@@ -16,7 +16,6 @@ extern CGEventRef MacViKeyCallback(CGEventTapProxy proxy,
                                   CGEventRef event,
                                   void *refcon);
 
-extern NSString* ConvertUtil(NSString* str);
 
 @interface MacViKeyManager ()
 
@@ -120,45 +119,6 @@ BOOL MacViKeyIsEventTapAlive(void) {
 
 +(NSString*)getBuildDate {
     return [NSString stringWithUTF8String:__DATE__];
-}
-
-#pragma mark -Convert feature
-+(BOOL)quickConvert {
-    NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-    NSString *htmlString = [pasteboard stringForType:NSPasteboardTypeHTML];
-    NSString *rawString = [pasteboard stringForType:NSPasteboardTypeString];
-    bool converted = false;
-    if (htmlString != nil) {
-        htmlString = ConvertUtil(htmlString);
-        converted = true;
-    }
-    if (rawString != nil) {
-        rawString = ConvertUtil(rawString);
-        converted = true;
-    }
-    if (converted) {
-        [pasteboard clearContents];
-        if (htmlString != nil)
-            [pasteboard setString:htmlString forType:NSPasteboardTypeHTML];
-        if (rawString != nil)
-            [pasteboard setString:rawString forType:NSPasteboardTypeString];
-        
-        return YES;
-    }
-    return NO;
-}
-
-+(void)showMessage:(NSWindow*)window message:(NSString*)msg subMsg:(NSString*)subMsg {
-    NSAlert *alert = [[NSAlert alloc] init];
-    [alert setMessageText:msg];
-    [alert setInformativeText:subMsg];
-    [alert addButtonWithTitle:@"OK"];
-    if (window) {
-        [alert beginSheetModalForWindow:window completionHandler:^(NSModalResponse returnCode) {
-        }];
-    } else {
-        [alert runModal];
-    }
 }
 
 #pragma mark -AutoUpdate feature
