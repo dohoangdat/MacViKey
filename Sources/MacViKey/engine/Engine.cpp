@@ -24,7 +24,7 @@ static vector<Uint8> _breakCode = {
 #endif
 };
 
-static vector<Uint8> _wordBreakCode = {
+static vector<Uint8> _punctuationBreakCode = {
     KEY_RETURN, KEY_COMMA, KEY_DOT, KEY_SLASH, KEY_SEMICOLON, KEY_QUOTE, KEY_BACK_SLASH, KEY_MINUS, KEY_EQUALS
 };
 
@@ -138,9 +138,9 @@ bool isWordBreak(const vKeyEvent& event, const vKeyEventState& state, const Uint
     return false;
 }
 
-bool isWordBreakCode(const int& data) {
-    for (i = 0; i < _wordBreakCode.size(); i++) {
-        if (_wordBreakCode[i] == data) {
+bool isPunctuationBreakCode(const int& data) {
+    for (i = 0; i < _punctuationBreakCode.size(); i++) {
+        if (_punctuationBreakCode[i] == data) {
             return true;
         }
     }
@@ -366,24 +366,24 @@ void insertState(const Uint16& keyCode, const bool& isCaps) {
 void saveWord() {
     //save word history
     if (_index > 0) {
-            if (_longWordHelper.size() > 0) { //save long word first
-                _typingStatesData.clear();
-                for (i = 0; i < _longWordHelper.size(); i++) {
-                    if (i != 0 && i % MAX_BUFF == 0) { //save if overflow
-                        _typingStates.push_back(_typingStatesData);
-                        _typingStatesData.clear();
-                    }
-                    _typingStatesData.push_back(_longWordHelper[i]);
-                }
-                _typingStates.push_back(_typingStatesData);
-                _longWordHelper.clear();
-            }
-            
-            //save current word
+        if (_longWordHelper.size() > 0) { //save long word first
             _typingStatesData.clear();
-            for (i = 0; i < _index; i++) {
-                _typingStatesData.push_back(TypingWord[i]);
+            for (i = 0; i < _longWordHelper.size(); i++) {
+                if (i != 0 && i % MAX_BUFF == 0) { //save if overflow
+                    _typingStates.push_back(_typingStatesData);
+                    _typingStatesData.clear();
+                }
+                _typingStatesData.push_back(_longWordHelper[i]);
             }
+            _typingStates.push_back(_typingStatesData);
+            _longWordHelper.clear();
+        }
+
+        //save current word
+        _typingStatesData.clear();
+        for (i = 0; i < _index; i++) {
+            _typingStatesData.push_back(TypingWord[i]);
+        }
         _typingStates.push_back(_typingStatesData);
     }
 }
@@ -1265,7 +1265,7 @@ void vKeyHandleEvent(const vKeyEvent& event,
         hNCC = 0;
         hExt = 1; //word break
         
-        if ((vQuickStartConsonant || vQuickEndConsonant) && !tempDisableKey && isWordBreakCode(data)) {
+        if ((vQuickStartConsonant || vQuickEndConsonant) && !tempDisableKey && isPunctuationBreakCode(data)) {
             checkQuickConsonant();
         } else if (vRestoreIfWrongSpelling && isWordBreak(event, state, data)) { //restore key if wrong spelling with break-key
             if (!tempDisableKey && vCheckSpelling) {
@@ -1427,7 +1427,6 @@ void vKeyHandleEvent(const vKeyEvent& event,
             insertKey(data, _isCaps);
             _stateIndex--;
         }
-        
         
         if (vUpperCaseFirstChar) {
             if (_index == 1 && _upperCaseStatus == 2) {

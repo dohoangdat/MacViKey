@@ -230,7 +230,16 @@ extern int vPerformLayoutCompat;
   // thanh trang thai. Khung noi dung giu nguyen vi tri cu de layout khong lech.
   tabviews = [NSArray arrayWithObjects:self.tabviewInfo, nil];
   tabbuttons = [NSArray arrayWithObjects:self.tabbuttonInfo, nil];
-  tabViewRect = NSMakeRect(20, 768, 520, 241);
+  // Trong storyboard, box noi dung tab cach mep tren cua viewParent 169pt va
+  // cao 241pt; autoresizingMask (flexibleMinY) giu nguyen khoang cach do khi
+  // viewParent duoc thu ve 490pt ngay ben tren. Tinh lai dung cong thuc ay.
+  const CGFloat kTabContentTopInset = 169;
+  const CGFloat kTabContentHeight = 241;
+  tabViewRect =
+      NSMakeRect(20,
+                 NSHeight(self.viewParent.frame) - kTabContentTopInset -
+                     kTabContentHeight,
+                 520, kTabContentHeight);
   self.tabviewInfo.frame = tabViewRect;
   for (NSBox *b in tabviews) {
     b.frame = tabViewRect;

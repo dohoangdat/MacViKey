@@ -76,8 +76,6 @@
 		237559BC2204156000FB8CB9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		237559BD2204156000FB8CB9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		237559BF2204156000FB8CB9 /* MacViKeyHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacViKeyHelper.entitlements; sourceTree = "<group>"; };
-		237724A3232BA3B800E92BDF /* linux.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = linux.h; sourceTree = "<group>"; };
-		237724A4232BA3B800E92BDF /* win32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = win32.h; sourceTree = "<group>"; };
 		237724A5232BA3B800E92BDF /* mac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mac.h; sourceTree = "<group>"; };
 		238519F221F1B8E200E79A41 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		238519F921F1BF4400E79A41 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -217,8 +215,6 @@
 		237724A2232BA3B800E92BDF /* platforms */ = {
 			isa = PBXGroup;
 			children = (
-				237724A3232BA3B800E92BDF /* linux.h */,
-				237724A4232BA3B800E92BDF /* win32.h */,
 				237724A5232BA3B800E92BDF /* mac.h */,
 			);
 			path = platforms;
