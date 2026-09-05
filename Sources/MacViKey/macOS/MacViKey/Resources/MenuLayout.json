@@ -254,13 +254,10 @@
     }
   ],
   "strings": {
-    "inputMethod.on": "Đang gõ: TIẾNG VIỆT - bấm để chuyển English",
-    "inputMethod.off": "Đang gõ: ENGLISH - bấm để chuyển Tiếng Việt",
     "inputMethod.on.textOnly": "Đang gõ TIẾNG VIỆT - bấm chuyển English",
     "inputMethod.off.textOnly": "Đang gõ ENGLISH - bấm chuyển Tiếng Việt",
     "statusBar.vi": "VI",
     "statusBar.en": "EN",
-    "engineStatus.format": "Bộ gõ %@ v%@: %@",
     "engineStatus.running": "Đang hoạt động",
     "engineStatus.running.recovered.format": "Đang hoạt động (đã tự khôi phục %d lần)",
     "statusLine.noPermission": "⚠️ Chưa có quyền Trợ năng — bấm để cấp quyền",

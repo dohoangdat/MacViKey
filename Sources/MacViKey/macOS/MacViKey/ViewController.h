@@ -9,11 +9,7 @@
 
 @interface ViewController : NSViewController<MyTextFieldDelegate>
 @property (strong) IBOutlet NSView *viewParent;
-@property (weak) IBOutlet NSButton *tabbuttonPrimary;
-@property (weak) IBOutlet NSButton *tabbuttonSystem;
 @property (weak) IBOutlet NSButton *tabbuttonInfo;
-@property (weak) IBOutlet NSBox *tabviewPrimary;
-@property (weak) IBOutlet NSBox *tabviewSystem;
 @property (weak) IBOutlet NSBox *tabviewInfo;
 
 @property (weak) IBOutlet NSPopUpButton *popupInputType;
@@ -27,35 +23,7 @@
 @property (weak) IBOutlet NSButton *EngButton;
 
 @property (weak) IBOutlet NSButton *FreeMarkButton;
-@property (weak) IBOutlet NSButton *UseModernOrthography;
 
-@property (weak) IBOutlet NSButton *CheckSpellingButton;
-
-@property (weak) IBOutlet NSButton *RunOnStartupButton;
-@property (weak) IBOutlet NSButton *ShowUIButton;
-
-@property (weak) IBOutlet NSButton *UseGrayIcon;
-
-@property (weak) IBOutlet NSButton *RestoreIfInvalidWord;
-@property (weak) IBOutlet NSButton *FixRecommendBrowser;
-@property (weak) IBOutlet NSButton *AllowZWJF;
-@property (weak) IBOutlet NSButton *TempOffSpellChecking;
-
-
-@property (weak) IBOutlet NSButton *SendKeyStepByStep;
-@property (weak) IBOutlet NSButton *AutoRememberSwitchKey;
-@property (weak) IBOutlet NSButton *UpperCaseFirstChar;
-
-@property (weak) IBOutlet NSButton *RememberTableCode;
-@property (weak) IBOutlet NSButtonCell *OtherLanguage;
-
-@property (weak) IBOutlet NSButton *TempOffEngineHotKey;
-@property (weak) IBOutlet NSButton *ShowIconOnDock;
-@property (weak) IBOutlet NSButton *CheckNewVersionOnStartup;
-@property (weak) IBOutlet NSButton *FixChromiumBrowser;
-@property (weak) IBOutlet NSButton *PerformLayoutCompat;
-
-@property (weak) IBOutlet NSButton *CheckNewVersionButton;
 @property (weak) IBOutlet NSTextField *VersionInfo;
 
 // Cac nhan thong tin/lien he duoc do tu Info.plist luc chay (xem MacViKeyInfo).
@@ -64,7 +32,6 @@
 @property (weak) IBOutlet NSTextField *EmailLink;
 @property (weak) IBOutlet NSTextField *CopyrightInfo;
 @property (weak) IBOutlet NSTextField *AboutText;
-
 
 -(void)fillData;
 @end

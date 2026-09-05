@@ -23,7 +23,6 @@
 #import <Cocoa/Cocoa.h>
 #import <ApplicationServices/ApplicationServices.h>
 #import "MacViKeyAX.h"
-#import "MacViKeyConfig.h"
 
 // Kết quả dò khả năng của một app
 typedef NS_ENUM(NSInteger, MVKAXSupport) {

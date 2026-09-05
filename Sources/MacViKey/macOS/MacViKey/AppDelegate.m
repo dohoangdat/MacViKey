@@ -43,13 +43,9 @@ int vCodeTable = 0;
 int vCheckSpelling = 1;
 int vUseModernOrthography = 1;
 int vQuickTelex = 0;
-#if MACVIKEY_MENUBAR_OPTIONS
 // MacViKey: chi con 4 to hop phim chuyen co dinh, luon keu beep (xem
 // MacViKeyConfig.h).
 #define DEFAULT_SWITCH_STATUS MACVIKEY_SWITCH_DEFAULT
-#else
-#define DEFAULT_SWITCH_STATUS 0x7A000206 // default option + z
-#endif
 int vSwitchKeyStatus = DEFAULT_SWITCH_STATUS;
 int vRestoreIfWrongSpelling = 0;
 int vFixRecommendBrowser = 1;
@@ -172,13 +168,10 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
            subMsg:@"Bộ gõ đã được kích hoạt, bạn có thể gõ tiếng Việt ngay."];
 }
 
-#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE || MACVIKEY_HIDE_ENGINE_OPTIONS ||       \
-    MACVIKEY_MENUBAR_OPTIONS
 // MacViKey: ghi đè config bị khoá, chạy trước mọi thứ khác để prefs cũ không
 // lọt vào.
 - (void)applyMacViKeyFixedConfig {
   NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE
   vInputType = MACVIKEY_FIXED_INPUT_TYPE;
   [prefs setInteger:vInputType forKey:@"InputType"];
   vCodeTable = MACVIKEY_FIXED_CODE_TABLE;
@@ -186,8 +179,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   // Nhớ bảng mã theo ứng dụng chỉ có nghĩa khi có nhiều bảng mã.
   vRememberCode = 0;
   [prefs setInteger:vRememberCode forKey:@"vRememberCode"];
-#endif
-#if MACVIKEY_HIDE_ENGINE_OPTIONS
   // Các tuỳ chọn bị ẩn khỏi GUI đều khoá về TẮT.
   vCheckSpelling = 0;
   [prefs setInteger:vCheckSpelling forKey:@"Spelling"];
@@ -202,33 +193,24 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   [prefs setInteger:vQuickEndConsonant forKey:@"vQuickEndConsonant"];
   vTempOffSpelling = 0;
   [prefs setInteger:vTempOffSpelling forKey:@"vTempOffSpelling"];
-#endif
-#if MACVIKEY_MENUBAR_OPTIONS
   // Phim chuyen chi duoc phep la 1 trong 4 to hop, va luon keu beep.
   vSwitchKeyStatus = (int)[prefs integerForKey:@"SwitchKeyStatus"];
   if (![self macViKeyIsSupportedSwitchKey:vSwitchKeyStatus])
     vSwitchKeyStatus = MACVIKEY_SWITCH_DEFAULT;
   vSwitchKeyStatus |= MACVIKEY_SWITCH_BEEP;
   [prefs setInteger:vSwitchKeyStatus forKey:@"SwitchKeyStatus"];
-#endif
 }
 
-#if MACVIKEY_MENUBAR_OPTIONS
 - (BOOL)macViKeyIsSupportedSwitchKey:(int)value {
   int v = value | MACVIKEY_SWITCH_BEEP;
   return v == MACVIKEY_SWITCH_CMD_SHIFT || v == MACVIKEY_SWITCH_OPT_SHIFT ||
          v == MACVIKEY_SWITCH_CTRL_SHIFT || v == MACVIKEY_SWITCH_FN_SHIFT;
 }
-#endif
-#endif
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
   appDelegate = self;
 
-#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE || MACVIKEY_HIDE_ENGINE_OPTIONS ||       \
-    MACVIKEY_MENUBAR_OPTIONS
   [self applyMacViKeyFixedConfig];
-#endif
 
   [self registerSupportedNotification];
 
@@ -347,7 +329,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 // Thu tu va chu cua menu nam trong Resources/MenuLayout.json. O day chi con
 // phan "id nao gan hanh dong gi" - sua menu thi sua file JSON, khong sua day.
 
-#if MACVIKEY_MENUBAR_OPTIONS
 // id trong JSON -> tag cua tuy chon bat/tat.
 - (NSDictionary<NSString *, NSNumber *> *)macViKeyOptionTagsById {
   static NSDictionary *map = nil;
@@ -388,7 +369,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   });
   return map;
 }
-#endif
 
 // Muc bi tat boi co bien dich trong MacViKeyConfig.h: cu de trong JSON, o day
 // bo qua.
@@ -397,17 +377,11 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   static dispatch_once_t once;
   dispatch_once(&once, ^{
     NSMutableSet *set = [NSMutableSet set];
-#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE
     [set addObjectsFromArray:@[
       @"inputTypeMenu", @"codeMenu", @"code.unicode", @"code.tcvn3",
       @"code.vniWindows"
     ]];
-#else
-    [set addObjectsFromArray:@[ @"fixedInputType", @"fixedCodeTable" ]];
-#endif
-#if MACVIKEY_HIDE_CONTROL_PANEL
     [set addObject:@"controlPanel"];
-#endif
     // Toan bo tuy chon go da bi khoa cung trong MacViKeyInit() -> an ca menu
     // cha lan cac muc con. Ba muc sua loi ben menu "He thong" cung vay.
     [set addObjectsFromArray:@[
@@ -416,12 +390,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
       @"option.otherLanguage", @"option.fixRecommendBrowser",
       @"option.sendKeyStepByStep", @"option.fixChromium", @"option.layoutCompat"
     ]];
-#if !MACVIKEY_MENUBAR_OPTIONS
-    [set addObjectsFromArray:@[
-      @"switchKeyMenu", @"typingOptionsMenu", @"systemOptionsMenu",
-      @"checkUpdateNow"
-    ]];
-#endif
     disabled = set;
   });
   return ![disabled containsObject:nodeId];
@@ -431,7 +399,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 - (NSMenuItem *)macViKeyAddNode:(NSString *)nodeId
                           title:(NSString *)title
                          toMenu:(NSMenu *)menu {
-#if MACVIKEY_MENUBAR_OPTIONS
   NSNumber *optionTag = [self macViKeyOptionTagsById][nodeId];
   if (optionTag != nil) {
     NSMenuItem *item = [menu addItemWithTitle:title
@@ -454,7 +421,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     [self macViKeyUseCheckboxGlyph:item];
     return item;
   }
-#endif
 
   // Menu cha: khong co hanh dong, chi de chua menu con.
   if ([nodeId isEqualToString:@"inputTypeMenu"] ||
@@ -655,10 +621,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 - (void)createStatusBarMenu {
   NSStatusBar *statusBar = [NSStatusBar systemStatusBar];
   statusItem = [statusBar statusItemWithLength:NSVariableStatusItemLength];
-#if !MACVIKEY_STATUS_TEXT_ONLY
-  statusItem.button.image = [NSImage imageNamed:@"Status"];
-  statusItem.button.alternateImage = [NSImage imageNamed:@"StatusHighlighted"];
-#endif
 
   theMenu = [[NSMenu alloc] initWithTitle:@""];
   [theMenu setAutoenablesItems:NO];
@@ -686,51 +648,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   [statusItem setMenu:theMenu];
 
   [self fillData];
-
-  // Chay voi MACVIKEY_DUMP_MENU=1 de in ra menu vua dung (kiem tra nhanh
-  // thu tu, chu, va anh dinh kem tung muc).
-  if ([NSProcessInfo.processInfo.environment[@"MACVIKEY_DUMP_MENU"]
-          isEqualToString:@"1"]) {
-    NSLog(@"[MacViKey][menu] === ngay sau khi dung menu ===");
-    [self macViKeyDumpMenu:theMenu depth:0];
-    // AppKit co the tu gan anh cho mot so muc luc chuan bi / luc menu mo ra,
-    // nen dump them o 2 thoi diem do.
-    dispatch_after(
-        dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)),
-        dispatch_get_main_queue(), ^{
-          NSLog(@"[MacViKey][menu] === sau [menu update] ===");
-          [self->theMenu update];
-          [self macViKeyDumpMenu:self->theMenu depth:0];
-          dispatch_after(
-              dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)),
-              dispatch_get_main_queue(), ^{
-                [self->theMenu cancelTracking];
-              });
-          [self->statusItem.button performClick:nil];
-        });
-  }
-}
-
-- (void)macViKeyDumpMenu:(NSMenu *)menu depth:(int)depth {
-  NSString *pad = [@"" stringByPaddingToLength:depth * 2
-                                    withString:@" "
-                               startingAtIndex:0];
-  for (NSMenuItem *item in menu.itemArray) {
-    if (item.isSeparatorItem) {
-      NSLog(@"[MacViKey][menu] %@---", pad);
-      continue;
-    }
-    NSLog(@"[MacViKey][menu] %@\"%@\" | image=%@ | onStateImage=%@ | "
-          @"offStateImage=%@ | state=%ld | key=%@ | hint=%@",
-          pad, item.title, item.image ? item.image.description : @"nil",
-          item.onStateImage ? item.onStateImage.name ?: @"(ve tay)" : @"nil",
-          item.offStateImage ? item.offStateImage.name ?: @"(ve tay)" : @"nil",
-          (long)item.state,
-          item.keyEquivalent.length ? item.keyEquivalent : @"-",
-          item.toolTip.length ? item.toolTip : @"(khong co)");
-    if (item.hasSubmenu)
-      [self macViKeyDumpMenu:item.submenu depth:depth + 1];
-  }
 }
 
 - (void)loadDefaultConfig {
@@ -740,11 +657,9 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   vInputType = 0;
   [[NSUserDefaults standardUserDefaults] setInteger:vInputType
                                              forKey:@"InputType"];
-#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE
   vInputType = MACVIKEY_FIXED_INPUT_TYPE;
   [[NSUserDefaults standardUserDefaults] setInteger:vInputType
                                              forKey:@"InputType"];
-#endif
   vFreeMark = 0;
   [[NSUserDefaults standardUserDefaults] setInteger:vFreeMark
                                              forKey:@"FreeMark"];
@@ -793,11 +708,9 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   vRememberCode = 1;
   [[NSUserDefaults standardUserDefaults] setInteger:vRememberCode
                                              forKey:@"vRememberCode"];
-#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE
   vRememberCode = 0;
   [[NSUserDefaults standardUserDefaults] setInteger:vRememberCode
                                              forKey:@"vRememberCode"];
-#endif
   vOtherLanguage = 1;
   [[NSUserDefaults standardUserDefaults] setInteger:vOtherLanguage
                                              forKey:@"vOtherLanguage"];
@@ -814,11 +727,8 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   [[NSUserDefaults standardUserDefaults] setInteger:vPerformLayoutCompat
                                              forKey:@"vPerformLayoutCompat"];
 
-#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE || MACVIKEY_HIDE_ENGINE_OPTIONS ||       \
-    MACVIKEY_MENUBAR_OPTIONS
   // Khôi phục mặc định không được làm sống lại các tuỳ chọn đã bị khoá.
   [self applyMacViKeyFixedConfig];
-#endif
 
   [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"GrayIcon"];
   [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"RunOnStartup"];
@@ -843,7 +753,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 
 #pragma mark -MacViKey: phim chuyen & tuy chon tren menu
 
-#if MACVIKEY_MENUBAR_OPTIONS
 
 - (void)onSwitchKeySelected:(NSMenuItem *)sender {
   if (sender.tag < 0 || sender.tag >= (NSInteger)mnuSwitchKeyValues.count)
@@ -974,7 +883,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
                                                       : NSControlStateValueOff];
   }
 }
-#endif
 
 #pragma mark -StatusBar menu data
 
@@ -982,7 +890,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   // fill data
   NSInteger intInputMethod =
       [[NSUserDefaults standardUserDefaults] integerForKey:@"InputMethod"];
-#if MACVIKEY_STATUS_TEXT_ONLY
   // MacViKey: bo bieu tuong tren thanh menu, chi hien chu VI / EN cho de doc.
   statusItem.button.image = nil;
   statusItem.button.alternateImage = nil;
@@ -994,38 +901,11 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
       (intInputMethod == 1)
           ? [MacViKeyMenuLayout string:@"statusBar.vi" fallback:@"VI"]
           : [MacViKeyMenuLayout string:@"statusBar.en" fallback:@"EN"];
-#else
-  NSInteger grayIcon =
-      [[NSUserDefaults standardUserDefaults] integerForKey:@"GrayIcon"];
-  if (intInputMethod == 1) {
-    statusItem.button.image = [NSImage imageNamed:@"Status"];
-    [statusItem.button.image setTemplate:(grayIcon ? YES : NO)];
-    statusItem.button.alternateImage =
-        [NSImage imageNamed:@"StatusHighlighted"];
-    statusItem.button.title =
-        [@" " stringByAppendingString:[MacViKeyMenuLayout string:@"statusBar.vi"
-                                                        fallback:@"VI"]];
-  } else {
-    statusItem.button.image = [NSImage imageNamed:@"StatusEng"];
-    [statusItem.button.image setTemplate:(grayIcon ? YES : NO)];
-    statusItem.button.alternateImage =
-        [NSImage imageNamed:@"StatusHighlightedEng"];
-    statusItem.button.title =
-        [@" " stringByAppendingString:[MacViKeyMenuLayout string:@"statusBar.en"
-                                                        fallback:@"EN"]];
-  }
-  // Chu VI/EN nam ngay canh bieu tuong tren thanh menu.
-  statusItem.button.imagePosition = NSImageLeft;
-  statusItem.button.font = [NSFont systemFontOfSize:[NSFont systemFontSize]
-                                             weight:NSFontWeightSemibold];
-#endif
   vLanguage = (int)intInputMethod;
 
   NSInteger intInputType =
       [[NSUserDefaults standardUserDefaults] integerForKey:@"InputType"];
-#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE
   intInputType = MACVIKEY_FIXED_INPUT_TYPE;
-#endif
   [mnuTelex setState:NSControlStateValueOff];
   [mnuVNI setState:NSControlStateValueOff];
   [mnuSimpleTelex1 setState:NSControlStateValueOff];
@@ -1046,19 +926,15 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   vSwitchKeyStatus = (int)intSwitchKeyStatus;
   if (vSwitchKeyStatus == 0)
     vSwitchKeyStatus = DEFAULT_SWITCH_STATUS;
-#if MACVIKEY_MENUBAR_OPTIONS
   if (![self macViKeyIsSupportedSwitchKey:vSwitchKeyStatus])
     vSwitchKeyStatus = MACVIKEY_SWITCH_DEFAULT;
   vSwitchKeyStatus |= MACVIKEY_SWITCH_BEEP;
   [[NSUserDefaults standardUserDefaults] setInteger:vSwitchKeyStatus
                                              forKey:@"SwitchKeyStatus"];
-#endif
 
   NSInteger intCode =
       [[NSUserDefaults standardUserDefaults] integerForKey:@"CodeTable"];
-#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE
   intCode = MACVIKEY_FIXED_CODE_TABLE;
-#endif
   [mnuUnicode setState:NSControlStateValueOff];
   [mnuTCVN setState:NSControlStateValueOff];
   [mnuVNIWindows setState:NSControlStateValueOff];
@@ -1076,19 +952,15 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     [mnuVietnameseLocaleCP1258 setState:NSControlStateValueOn];
   }
   vCodeTable = (int)intCode;
-#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE
   [mnuSimpleTelex1 setState:NSControlStateValueOn];
   [mnuUnicode setState:NSControlStateValueOn];
-#endif
 
   //
   NSInteger intRunOnStartup =
       [[NSUserDefaults standardUserDefaults] integerForKey:@"RunOnStartup"];
   [self setRunOnStartup:intRunOnStartup ? YES : NO];
 
-#if MACVIKEY_MENUBAR_OPTIONS
   [self macViKeyRefreshMenuStates];
-#endif
 }
 
 - (void)onImputMethodChanged:(BOOL)willNotify {
@@ -1206,21 +1078,12 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 
   BOOL vietnamese = ([[NSUserDefaults standardUserDefaults]
                          integerForKey:@"InputMethod"] == 1);
-#if MACVIKEY_STATUS_TEXT_ONLY
   NSString *on =
       [MacViKeyMenuLayout string:@"inputMethod.on.textOnly"
                         fallback:@"Đang TIẾNG VIỆT - bấm chuyển sang English"];
   NSString *off =
       [MacViKeyMenuLayout string:@"inputMethod.off.textOnly"
                         fallback:@"Đang ENGLISH - bấm chuyển sang Tiếng Việt"];
-#else
-  NSString *on = [MacViKeyMenuLayout
-        string:@"inputMethod.on"
-      fallback:@"Đang gõ: TIẾNG VIỆT — bấm để chuyển English"];
-  NSString *off = [MacViKeyMenuLayout
-        string:@"inputMethod.off"
-      fallback:@"Đang gõ: ENGLISH — bấm để chuyển Tiếng Việt"];
-#endif
   [self macViKeySetTitle:vietnamese ? on : off forItem:mnuStatusLine];
   [mnuStatusLine
       setState:vietnamese ? NSControlStateValueOn : NSControlStateValueOff];
@@ -1257,19 +1120,12 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 
 // Cac muc menu phu thuoc trang thai -> cap nhat ngay truoc khi menu mo ra.
 - (void)refreshDynamicMenu {
-#if MACVIKEY_MENUBAR_OPTIONS
   [self macViKeyRefreshMenuStates];
-#endif
   [self macViKeyUpdateStatusLine];
 }
 
 - (void)menuWillOpen:(NSMenu *)menu {
   [self refreshDynamicMenu];
-  if ([NSProcessInfo.processInfo.environment[@"MACVIKEY_DUMP_MENU"]
-          isEqualToString:@"1"]) {
-    NSLog(@"[MacViKey][menu] === luc menu mo ra ===");
-    [self macViKeyDumpMenu:menu depth:0];
-  }
 }
 
 #pragma mark -StatusBar menu action
@@ -1283,9 +1139,7 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 }
 
 - (void)onInputTypeSelectedIndex:(int)index {
-#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE
   index = MACVIKEY_FIXED_INPUT_TYPE;
-#endif
   [[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"InputType"];
   vInputType = index;
   [self fillData];
@@ -1293,9 +1147,7 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 }
 
 - (void)onCodeTableChanged:(int)index {
-#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE
   index = MACVIKEY_FIXED_CODE_TABLE;
-#endif
   [[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"CodeTable"];
   vCodeTable = index;
   [self fillData];

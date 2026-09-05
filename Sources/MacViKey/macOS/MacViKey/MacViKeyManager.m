@@ -121,6 +121,19 @@ BOOL MacViKeyIsEventTapAlive(void) {
     return [NSString stringWithUTF8String:__DATE__];
 }
 
++(void)showMessage:(NSWindow*)window message:(NSString*)msg subMsg:(NSString*)subMsg {
+    NSAlert *alert = [[NSAlert alloc] init];
+    [alert setMessageText:msg];
+    [alert setInformativeText:subMsg];
+    [alert addButtonWithTitle:@"OK"];
+    if (window) {
+        [alert beginSheetModalForWindow:window completionHandler:^(NSModalResponse returnCode) {
+        }];
+    } else {
+        [alert runModal];
+    }
+}
+
 #pragma mark -AutoUpdate feature
 
 +(void)checkNewVersion:(NSWindow*)parent callbackFunc:(CheckNewVersionCallback) callback {

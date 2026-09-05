@@ -47,10 +47,8 @@ extern ViewController* viewController;
 //MacViKey P0-3: ban nay khoa vCodeTable = 0 (Unicode dung san), nen IS_DOUBLE_CODE
 //luon false. Dinh nghia lai thanh hang so 0 de compiler loai bo toan bo co che
 //_syncKey khoi hot path - vua nhanh hon, vua xoa mot nguon bug lech pha kho tai hien.
-#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE && (MACVIKEY_FIXED_CODE_TABLE == 0)
-    #undef IS_DOUBLE_CODE
-    #define IS_DOUBLE_CODE(code) (0)
-#endif
+#undef IS_DOUBLE_CODE
+#define IS_DOUBLE_CODE(code) (0)
 
 //MacViKey: co so ha tang chan doan + khoi phuc event tap
 extern "C" BOOL MacViKeyReenableEventTap(void);
@@ -114,10 +112,8 @@ extern "C" {
 
     void MacViKeyInit() {
         macViKeyLog = os_log_create("com.macvikey.app", "MacViKey");
-#if MACVIKEY_ENABLE_AX_PATH
         //Che do thay the thong minh luon bat, khong con tuy chon trong menu.
         MacViKeyAXSetEnabled(YES);
-#endif
         queryFrontMostApp();
 
         //load saved data
@@ -266,9 +262,7 @@ extern "C" {
     void OnActiveAppChanged() { //use for smart switch key; improved on Sep 28th, 2019
         queryFrontMostApp();
         invalidateSpotlightCache();
-#if MACVIKEY_ENABLE_AX_PATH
         MacViKeyAXOnAppChanged(_frontMostApp);
-#endif
         _languageTemp = getAppInputMethodStatus(string(_frontMostApp.UTF8String), vLanguage | (vCodeTable << 1));
         if ((_languageTemp & 0x01) != vLanguage) { //for input method
             if (_languageTemp != -1) {
@@ -482,7 +476,6 @@ extern "C" {
         CFRelease(eventVkeyUp);
     }
     
-#if MACVIKEY_ENABLE_AX_PATH
     /**
      * Dung chuoi ky tu cuoi cung ma nguoi dung se nhin thay.
      * Logic giong het SendNewCharString() nhanh vCodeTable == 0, nhung ghi vao
@@ -531,7 +524,6 @@ extern "C" {
         }
         return false;
     }
-#endif
 
     void SendNewCharString(const Uint16& offset=0) {
         _j = 0;
@@ -817,13 +809,11 @@ extern "C" {
                 return event;
             } else if (pData->code == vWillProcess || pData->code == vRestore || pData->code == vRestoreAndStartNewSession) { //handle result signal
                 
-#if MACVIKEY_ENABLE_AX_PATH
                 //MacViKey: uu tien duong AX. Thanh cong thi bo qua toan bo
                 //co che xoa-roi-go-lai ben duoi - khong race, khong dup chu.
                 if (TryAccessibilityPath()) {
                     return NULL;
                 }
-#endif
                 //MacViKey: tinh trang thai app MOT lan cho ca hai nhanh ben duoi,
                 //thay vi goi isSpotlightVisible()/FRONT_APP nhieu lan nhu truoc.
                 NSString* _topApp = FRONT_APP;

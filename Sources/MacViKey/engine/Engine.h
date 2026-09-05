@@ -7,9 +7,6 @@
 #ifndef Engine_h
 #define Engine_h
 
-#include <locale>
-#include <codecvt>
-
 #include "DataType.h"
 #include "Vietnamese.h"
 #include "SmartSwitchKey.h"
@@ -203,11 +200,5 @@ void vSetCheckSpelling();
  * temporarily turn off the engine
  */
 void vTempOffEngine(const bool& off=true);
-
-/**
- * some utils function
- */
-wstring utf8ToWideString(const string& str);
-string wideStringToUtf8(const wstring& str);
 
 #endif /* Engine_h */

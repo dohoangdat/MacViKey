@@ -117,15 +117,6 @@ static bool _willTempOffEngine = false;
 void findAndCalculateVowel(const bool& forGrammar=false);
 void insertMark(const Uint32& markMask, const bool& canModifyFlag=true);
 
-static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-wstring utf8ToWideString(const string& str) {
-    return converter.from_bytes(str.c_str());
-}
-
-string wideStringToUtf8(const wstring& str) {
-    return converter.to_bytes(str.c_str());
-}
-
 void* vKeyInit() {
     _index = 0;
     _stateIndex = 0;
