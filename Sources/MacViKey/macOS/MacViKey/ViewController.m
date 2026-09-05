@@ -21,23 +21,17 @@ extern int vFreeMark;
 extern int vCheckSpelling;
 extern int vUseModernOrthography;
 extern int vSwitchKeyStatus;
-extern int vQuickTelex;
 extern int vRestoreIfWrongSpelling;
 extern int vFixRecommendBrowser;
-extern int vUseMacro;
-extern int vUseMacroInEnglishMode;
 extern int vSendKeyStepByStep;
 extern int vUseSmartSwitchKey;
 extern int vUpperCaseFirstChar;
 extern int vTempOffSpelling;
 extern int vAllowConsonantZFWJ;
-extern int vQuickStartConsonant;
-extern int vQuickEndConsonant;
 extern int vRememberCode;
 extern int vOtherLanguage;
 extern int vTempOffEngineByHotKey;
 extern int vShowIconOnDock;
-extern int vAutoCapsMacro;
 extern int vFixChromiumBrowser;
 extern int vPerformLayoutCompat;
 
@@ -63,8 +57,6 @@ extern int vPerformLayoutCompat;
        [NSArray arrayWithObjects:self.CheckSpellingButton,  // A5
                                  self.RestoreIfInvalidWord, // A8
                                  self.UseModernOrthography, // A6
-                                 self.QuickTelex,           // A7
-                                 self.QuickEndConsonant,    // A11
                                  self.TempOffSpellChecking, // A13
                                  nil]) {
     [controls addObject:b];
@@ -263,13 +255,13 @@ extern int vPerformLayoutCompat;
   // MacViKey: tab "Bo go", "Go tat" va "He thong" da chuyen len menu thanh
   // trang thai. Bang dieu khien chi con "Thong tin".
   for (NSBox *box in
-       [NSArray arrayWithObjects:self.tabviewPrimary, self.tabviewMacro,
-                                 self.tabviewSystem, nil]) {
+       [NSArray arrayWithObjects:self.tabviewPrimary, self.tabviewSystem,
+                                 nil]) {
     [box setHidden:YES];
   }
   for (NSButton *button in
-       [NSArray arrayWithObjects:self.tabbuttonPrimary, self.tabbuttonMacro,
-                                 self.tabbuttonSystem, nil]) {
+       [NSArray arrayWithObjects:self.tabbuttonPrimary, self.tabbuttonSystem,
+                                 nil]) {
     [button setHidden:YES];
     [button setEnabled:NO];
   }
@@ -277,11 +269,11 @@ extern int vPerformLayoutCompat;
   tabbuttons = [NSArray arrayWithObjects:self.tabbuttonInfo, nil];
 #else
   tabviews =
-      [NSArray arrayWithObjects:self.tabviewPrimary, self.tabviewMacro,
-                                self.tabviewSystem, self.tabviewInfo, nil];
+      [NSArray arrayWithObjects:self.tabviewPrimary, self.tabviewSystem,
+                                self.tabviewInfo, nil];
   tabbuttons =
-      [NSArray arrayWithObjects:self.tabbuttonPrimary, self.tabbuttonMacro,
-                                self.tabbuttonSystem, self.tabbuttonInfo, nil];
+      [NSArray arrayWithObjects:self.tabbuttonPrimary, self.tabbuttonSystem,
+                                self.tabbuttonInfo, nil];
 #endif
   tabViewRect = self.tabviewPrimary.frame;
 #if MACVIKEY_MENUBAR_OPTIONS
@@ -449,14 +441,6 @@ extern int vPerformLayoutCompat;
   [appDelegate setGrayIcon:val];
 }
 
-- (IBAction)onQuickTelex:(id)sender {
-#if MACVIKEY_HIDE_ENGINE_OPTIONS
-  return;
-#endif
-  NSInteger val = [self setCustomValue:sender keyToSet:@"QuickTelex"];
-  vQuickTelex = (int)val;
-}
-
 - (IBAction)onRestoreIfInvalidWord:(id)sender {
 #if MACVIKEY_HIDE_ENGINE_OPTIONS
   return;
@@ -556,21 +540,6 @@ extern int vPerformLayoutCompat;
   return val;
 }
 
-- (IBAction)onMacroButton:(id)sender {
-  [appDelegate onMacroSelected];
-}
-
-- (IBAction)onMacroChanged:(NSButton *)sender {
-  NSInteger val = [self setCustomValue:sender keyToSet:@"UseMacro"];
-  vUseMacro = (int)val;
-}
-
-- (IBAction)onUseMacroInEnglishModeChanged:(NSButton *)sender {
-  NSInteger val = [self setCustomValue:sender
-                              keyToSet:@"UseMacroInEnglishMode"];
-  vUseMacroInEnglishMode = (int)val;
-}
-
 - (IBAction)onAutoRememberSwitchKey:(NSButton *)sender {
   NSInteger val = [self setCustomValue:sender keyToSet:@"UseSmartSwitchKey"];
   vUseSmartSwitchKey = (int)val;
@@ -580,19 +549,6 @@ extern int vPerformLayoutCompat;
   NSInteger val = [self setCustomValue:sender keyToSet:@"UpperCaseFirstChar"];
   vUpperCaseFirstChar = (int)val;
 }
-- (IBAction)onQuickStartConsonant:(id)sender {
-  NSInteger val = [self setCustomValue:sender keyToSet:@"vQuickStartConsonant"];
-  vQuickStartConsonant = (int)val;
-}
-
-- (IBAction)onQuickEndConsonant:(id)sender {
-#if MACVIKEY_HIDE_ENGINE_OPTIONS
-  return;
-#endif
-  NSInteger val = [self setCustomValue:sender keyToSet:@"vQuickEndConsonant"];
-  vQuickEndConsonant = (int)val;
-}
-
 - (IBAction)onTempOffEngineByHotKey:(id)sender {
   NSInteger val = [self setCustomValue:sender
                               keyToSet:@"vTempOffEngineByHotKey"];
@@ -607,11 +563,6 @@ extern int vPerformLayoutCompat;
 
   NSInteger val = [self setCustomValue:sender keyToSet:@"vOtherLanguage"];
   vOtherLanguage = (int)val;
-}
-
-- (IBAction)onAutoCapsMacro:(id)sender {
-  NSInteger val = [self setCustomValue:sender keyToSet:@"vAutoCapsMacro"];
-  vAutoCapsMacro = (int)val;
 }
 
 - (IBAction)onShowIconOnDock:(id)sender {
@@ -693,11 +644,6 @@ extern int vPerformLayoutCompat;
   self.UseGrayIcon.state =
       useGrayIcon ? NSControlStateValueOn : NSControlStateValueOff;
 
-  NSInteger quicTelex =
-      [[NSUserDefaults standardUserDefaults] integerForKey:@"QuickTelex"];
-  self.QuickTelex.state =
-      quicTelex ? NSControlStateValueOn : NSControlStateValueOff;
-
   NSInteger restoreIfInvalidWord = [[NSUserDefaults standardUserDefaults]
       integerForKey:@"RestoreIfInvalidWord"];
   self.RestoreIfInvalidWord.state =
@@ -725,16 +671,6 @@ extern int vPerformLayoutCompat;
   self.FixRecommendBrowser.state =
       fixRecommendBrowser ? NSControlStateValueOn : NSControlStateValueOff;
 
-  NSInteger useMacro =
-      [[NSUserDefaults standardUserDefaults] integerForKey:@"UseMacro"];
-  self.UseMacro.state =
-      useMacro ? NSControlStateValueOn : NSControlStateValueOff;
-
-  NSInteger useMacroInEnglish = [[NSUserDefaults standardUserDefaults]
-      integerForKey:@"UseMacroInEnglishMode"];
-  self.UseMacroInEnglishMode.state =
-      useMacroInEnglish ? NSControlStateValueOn : NSControlStateValueOff;
-
   NSInteger sendKeySbS = [[NSUserDefaults standardUserDefaults]
       integerForKey:@"SendKeyStepByStep"];
   self.SendKeyStepByStep.state =
@@ -750,16 +686,6 @@ extern int vPerformLayoutCompat;
   self.UpperCaseFirstChar.state =
       upperCaseFirstChar ? NSControlStateValueOn : NSControlStateValueOff;
 
-  NSInteger quickStartConsonant = [[NSUserDefaults standardUserDefaults]
-      integerForKey:@"vQuickStartConsonant"];
-  self.QuickStartConsonant.state =
-      quickStartConsonant ? NSControlStateValueOn : NSControlStateValueOff;
-
-  NSInteger quickEndConsonant = [[NSUserDefaults standardUserDefaults]
-      integerForKey:@"vQuickEndConsonant"];
-  self.QuickEndConsonant.state =
-      quickEndConsonant ? NSControlStateValueOn : NSControlStateValueOff;
-
   value =
       [[NSUserDefaults standardUserDefaults] integerForKey:@"vRememberCode"];
   self.RememberTableCode.state =
@@ -773,11 +699,6 @@ extern int vPerformLayoutCompat;
   value = [[NSUserDefaults standardUserDefaults]
       integerForKey:@"vTempOffEngineByHotKey"];
   self.TempOffEngineHotKey.state =
-      value ? NSControlStateValueOn : NSControlStateValueOff;
-
-  value =
-      [[NSUserDefaults standardUserDefaults] integerForKey:@"vAutoCapsMacro"];
-  self.AutoCapsMacro.state =
       value ? NSControlStateValueOn : NSControlStateValueOff;
 
   value =

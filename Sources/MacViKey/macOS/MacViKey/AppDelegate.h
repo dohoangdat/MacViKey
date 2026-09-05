@@ -26,7 +26,6 @@
 
 -(void)setGrayIcon:(BOOL)val;
 
--(void)onMacroSelected;
 
 -(void)showIconOnDock:(BOOL)val;
 @end

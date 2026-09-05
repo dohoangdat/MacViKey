@@ -8,7 +8,6 @@
 #include "Engine.h"
 #include <string.h>
 #include <list>
-#include "Macro.h"
 
 static vector<Uint8> _charKeyCode = {
     KEY_BACKQUOTE, KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9, KEY_0, KEY_MINUS, KEY_EQUALS,
@@ -25,7 +24,7 @@ static vector<Uint8> _breakCode = {
 #endif
 };
 
-static vector<Uint8> _macroBreakCode = {
+static vector<Uint8> _wordBreakCode = {
     KEY_RETURN, KEY_COMMA, KEY_DOT, KEY_SLASH, KEY_SEMICOLON, KEY_QUOTE, KEY_BACK_SLASH, KEY_MINUS, KEY_EQUALS
 };
 
@@ -61,8 +60,6 @@ static Uint16 ProcessingChar[][11] = {
 #define hExt HookState.extCode
 #define hData HookState.charData
 #define GET getCharacterCode
-#define hMacroKey HookState.macroKey
-#define hMacroData HookState.macroData
 
 //Data to sendback to main program
 vKeyHookState HookState;
@@ -109,7 +106,6 @@ static Uint16 keyForAEO;
 static bool isCheckedGrammar;
 static bool _isCaps = false;
 static int _spaceCount = 0; //add: July 30th, 2019
-static bool _hasHandledMacro = false; //for macro flag August 9th, 2019
 static Byte _upperCaseStatus = 0; //for Write upper case for the first letter; 2: will upper case
 static bool _isCharKeyCode;
 static vector<Uint32> _specialChar;
@@ -151,9 +147,9 @@ bool isWordBreak(const vKeyEvent& event, const vKeyEventState& state, const Uint
     return false;
 }
 
-bool isMacroBreakCode(const int& data) {
-    for (i = 0; i < _macroBreakCode.size(); i++) {
-        if (_macroBreakCode[i] == data) {
+bool isWordBreakCode(const int& data) {
+    for (i = 0; i < _wordBreakCode.size(); i++) {
+        if (_wordBreakCode[i] == data) {
             return true;
         }
     }
@@ -378,8 +374,7 @@ void insertState(const Uint16& keyCode, const bool& isCaps) {
 
 void saveWord() {
     //save word history
-    if (hCode != vReplaceMaro) {
-        if (_index > 0) {
+    if (_index > 0) {
             if (_longWordHelper.size() > 0) { //save long word first
                 _typingStatesData.clear();
                 for (i = 0; i < _longWordHelper.size(); i++) {
@@ -398,17 +393,6 @@ void saveWord() {
             for (i = 0; i < _index; i++) {
                 _typingStatesData.push_back(TypingWord[i]);
             }
-            _typingStates.push_back(_typingStatesData);
-        }
-    } else { //save macro words
-        _typingStatesData.clear();
-        for (i = 0; i < hMacroData.size(); i++) {
-            if (i != 0 && i % MAX_BUFF == 0) { //break if overflow
-                _typingStates.push_back(_typingStatesData);
-                _typingStatesData.clear();
-            }
-            _typingStatesData.push_back(hMacroData[i]);
-        }
         _typingStates.push_back(_typingStatesData);
     }
 }
@@ -458,7 +442,6 @@ void startNewSession() {
     hNCC = 0;
     tempDisableKey = false;
     _stateIndex = 0;
-    _hasHandledMacro = false;
     _hasHandleQuickConsonant = false;
     _longWordHelper.clear();
 }
@@ -1045,8 +1028,6 @@ void upperCaseFirstCharacter() {
         TypingWord[0] |= CAPS_MASK;
         hData[0] = GET(TypingWord[0]);
         _upperCaseStatus = 0;
-        if (vUseMacro)
-            hMacroKey[0] |= CAPS_MASK;
     }
 }
 
@@ -1279,36 +1260,6 @@ bool checkQuickConsonant() {
 }
 /*==========================================================================================================*/
 
-void vEnglishMode(const vKeyEventState& state, const Uint16& data, const bool& isCaps, const bool& otherControlKey) {
-    hCode = vDoNothing;
-    if (state == vKeyEventState::MouseDown || (otherControlKey && !isCaps)) {
-        hMacroKey.clear();
-        _willTempOffEngine = false;
-    } else if (data == KEY_SPACE) {
-        if (!_hasHandledMacro && findMacro(hMacroKey, hMacroData)) {
-            hCode = vReplaceMaro;
-            hBPC = (Byte)hMacroKey.size();
-        }
-        hMacroKey.clear();
-        _willTempOffEngine = false;
-    } else if (data == KEY_DELETE) {
-        if (hMacroKey.size() > 0) {
-            hMacroKey.pop_back();
-        } else {
-            _willTempOffEngine = false;
-        }
-    } else {
-        if (isWordBreak(vKeyEvent::Keyboard, state, data) &&
-            std::find(_charKeyCode.begin(), _charKeyCode.end(), data) == _charKeyCode.end()) {
-            hMacroKey.clear();
-            _willTempOffEngine = false;
-        } else {
-            if (!_willTempOffEngine)
-                hMacroKey.push_back(data | (isCaps ? CAPS_MASK : 0));
-        }
-    }
-}
-
 void vKeyHandleEvent(const vKeyEvent& event,
                      const vKeyEventState& state,
                      const Uint16& data,
@@ -1323,12 +1274,7 @@ void vKeyHandleEvent(const vKeyEvent& event,
         hNCC = 0;
         hExt = 1; //word break
         
-        //check macro feature
-        if (vUseMacro && isMacroBreakCode(data) && !_hasHandledMacro && findMacro(hMacroKey, hMacroData)) {
-            hCode = vReplaceMaro;
-            hBPC = (Byte)hMacroKey.size();
-            _hasHandledMacro = true;
-        } else if ((vQuickStartConsonant || vQuickEndConsonant) && !tempDisableKey && isMacroBreakCode(data)) {
+        if ((vQuickStartConsonant || vQuickEndConsonant) && !tempDisableKey && isWordBreakCode(data)) {
             checkQuickConsonant();
         } else if (vRestoreIfWrongSpelling && isWordBreak(event, state, data)) { //restore key if wrong spelling with break-key
             if (!tempDisableKey && vCheckSpelling) {
@@ -1358,17 +1304,8 @@ void vKeyHandleEvent(const vKeyEvent& event,
             startNewSession();
             vCheckSpelling = _useSpellCheckingBefore;
             _willTempOffEngine = false;
-        } else if (hCode == vReplaceMaro || _hasHandleQuickConsonant) {
+        } else if (_hasHandleQuickConsonant) {
             _index = 0;
-        }
-        
-        //insert key for macro function
-        if (vUseMacro) {
-            if (_isCharKeyCode) {
-                hMacroKey.push_back(data | (_isCaps ? CAPS_MASK : 0));
-            } else {
-                hMacroKey.clear();
-            }
         }
         
         if (vUpperCaseFirstChar) {
@@ -1383,14 +1320,9 @@ void vKeyHandleEvent(const vKeyEvent& event,
         if (!tempDisableKey && vCheckSpelling) {
             checkSpelling(true); //force check spelling
         }
-        if (vUseMacro && !_hasHandledMacro && findMacro(hMacroKey, hMacroData)) { //macro
-            hCode = vReplaceMaro;
-            hBPC = (Byte)hMacroKey.size();
+        if ((vQuickStartConsonant || vQuickEndConsonant) && !tempDisableKey && checkQuickConsonant()) {
             _spaceCount++;
-            _hasHandledMacro = true;
-        } else if ((vQuickStartConsonant || vQuickEndConsonant) && !tempDisableKey && checkQuickConsonant()) {
-            _spaceCount++;
-        } else if (vRestoreIfWrongSpelling && tempDisableKey && !_hasHandledMacro) { //restore key if wrong spelling
+        } else if (vRestoreIfWrongSpelling && tempDisableKey) { //restore key if wrong spelling
             if (!checkRestoreIfWrongSpelling(vRestore)) {
                 hCode = vDoNothing;
             }
@@ -1398,9 +1330,6 @@ void vKeyHandleEvent(const vKeyEvent& event,
         } else { //do nothing with SPACE KEY
             hCode = vDoNothing;
             _spaceCount++;
-        }
-        if (vUseMacro) {
-            hMacroKey.clear();
         }
         if (vUpperCaseFirstChar && _upperCaseStatus == 1) {
             _upperCaseStatus = 2;
@@ -1446,10 +1375,6 @@ void vKeyHandleEvent(const vKeyEvent& event,
                 if (vCheckSpelling)
                     checkSpelling();
             }
-            if (vUseMacro && hMacroKey.size() > 0) {
-                hMacroKey.pop_back();
-            }
-            
             hBPC = 0;
             hNCC = 0;
             hExt = 2; //delete key
@@ -1512,21 +1437,6 @@ void vKeyHandleEvent(const vKeyEvent& event,
             _stateIndex--;
         }
         
-        //insert or replace key for macro feature
-        if (vUseMacro) {
-            if (hCode == vDoNothing) {
-                hMacroKey.push_back(data | (_isCaps ? CAPS_MASK : 0));
-            } else if (hCode == vWillProcess || hCode == vRestore) {
-                for (i = 0; i < hBPC; i++) {
-                    if (hMacroKey.size() > 0) {
-                        hMacroKey.pop_back();
-                    }
-                }
-                for (i = _index - hBPC; i < hNCC + (_index - hBPC); i++) {
-                    hMacroKey.push_back(TypingWord[i]);
-                }
-            }
-        }
         
         if (vUpperCaseFirstChar) {
             if (_index == 1 && _upperCaseStatus == 2) {

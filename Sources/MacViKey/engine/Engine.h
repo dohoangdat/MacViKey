@@ -12,7 +12,6 @@
 
 #include "DataType.h"
 #include "Vietnamese.h"
-#include "Macro.h"
 #include "SmartSwitchKey.h"
 
 #ifndef LOBYTE
@@ -98,23 +97,6 @@ extern int vRestoreIfWrongSpelling;
  * 1: Yes
  */
 extern int vFixRecommendBrowser;
-
-/**
- * Macro on or off
- */
-extern int vUseMacro;
-
-/**
- * Still use macro if you are in english mode
- */
-extern int vUseMacroInEnglishMode;
-
-/**
- * Ex: define: btw -> by the way
- * Type: `Btw` -> `By the way`
- * Type: `BTW` -> `BY THE WAY`
- */
-extern int vAutoCapsMacro;
 
 /**
  * auto switch language when switch app
@@ -206,11 +188,6 @@ void vKeyHandleEvent(const vKeyEvent& event,
  * Start a new word
  */
 void startNewSession();
-
-/**
- * do some task in english mode (use for macro)
- */
-void vEnglishMode(const vKeyEventState& state, const Uint16& data, const bool& isCaps, const bool& otherControlKey);
 
 /**
  * temporarily turn off spell checking

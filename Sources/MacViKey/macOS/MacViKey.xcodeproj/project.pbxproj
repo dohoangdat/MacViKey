@@ -17,7 +17,6 @@
 		232EDA6121F1B33F0085D362 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 232EDA5F21F1B33F0085D362 /* Main.storyboard */; };
 		232EDA6421F1B33F0085D362 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 232EDA6321F1B33F0085D362 /* main.m */; };
 		233C4A6E231F923D00DD7052 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 233C4A6D231F923D00DD7052 /* AppKit.framework */; };
-		2345899A22F720D7003E0923 /* MacroViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2345899922F720D7003E0923 /* MacroViewController.mm */; };
 		2371AAEF22FA85B200CA1B57 /* MacViKeyHook.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2371AAEE22FA85B200CA1B57 /* MacViKeyHook.mm */; };
 		2374A1302216720E005B0375 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2374A12F2216720E005B0375 /* AboutViewController.m */; };
 		238519F821F1BF3C00E79A41 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 238519F221F1B8E200E79A41 /* Foundation.framework */; };
@@ -29,7 +28,6 @@
 		MVK00000000000000000IF01 /* MacViKeyInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = MVK00000000000000000IF02 /* MacViKeyInfo.m */; };
 		23963B5022040C720097189E /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23963B4F22040C720097189E /* ServiceManagement.framework */; };
 		23CA6D1722F0439100804D6E /* MyTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 23CA6D1622F0439100804D6E /* MyTextField.m */; };
-		23E2E49D2314FD3A006CCC3E /* Macro.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23E2E4952314FD3A006CCC3E /* Macro.cpp */; };
 		23E2E49E2314FD3A006CCC3E /* SmartSwitchKey.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23E2E4982314FD3A006CCC3E /* SmartSwitchKey.cpp */; };
 		23E2E49F2314FD3A006CCC3E /* Engine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23E2E49A2314FD3A006CCC3E /* Engine.cpp */; };
 		23E2E4A02314FD3A006CCC3E /* Vietnamese.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23E2E49B2314FD3A006CCC3E /* Vietnamese.cpp */; };
@@ -68,8 +66,6 @@
 		233C4A6D231F923D00DD7052 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		233D800222F7D1F000E02DC6 /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		2344220522F42F70009E47D4 /* MacViKey.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacViKey.entitlements; sourceTree = "<group>"; };
-		2345899822F720D7003E0923 /* MacroViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MacroViewController.h; sourceTree = "<group>"; };
-		2345899922F720D7003E0923 /* MacroViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MacroViewController.mm; sourceTree = "<group>"; };
 		2371AAEE22FA85B200CA1B57 /* MacViKeyHook.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MacViKeyHook.mm; sourceTree = "<group>"; };
 		2374A12E2216720E005B0375 /* AboutViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
 		2374A12F2216720E005B0375 /* AboutViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
@@ -106,9 +102,7 @@
 		23CA6D1522F0439100804D6E /* MyTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyTextField.h; sourceTree = "<group>"; };
 		23CA6D1622F0439100804D6E /* MyTextField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyTextField.m; sourceTree = "<group>"; };
 		23E2E4942314FD3A006CCC3E /* Engine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Engine.h; sourceTree = "<group>"; };
-		23E2E4952314FD3A006CCC3E /* Macro.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Macro.cpp; sourceTree = "<group>"; };
 		23E2E4962314FD3A006CCC3E /* DataType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataType.h; sourceTree = "<group>"; };
-		23E2E4972314FD3A006CCC3E /* Macro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Macro.h; sourceTree = "<group>"; };
 		23E2E4982314FD3A006CCC3E /* SmartSwitchKey.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SmartSwitchKey.cpp; sourceTree = "<group>"; };
 		23E2E4992314FD3A006CCC3E /* Vietnamese.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vietnamese.h; sourceTree = "<group>"; };
 		23E2E49A2314FD3A006CCC3E /* Engine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Engine.cpp; sourceTree = "<group>"; };
@@ -194,8 +188,6 @@
 				MVK00000000000000000IF02 /* MacViKeyInfo.m */,
 				23CA6D1522F0439100804D6E /* MyTextField.h */,
 				23CA6D1622F0439100804D6E /* MyTextField.m */,
-				2345899822F720D7003E0923 /* MacroViewController.h */,
-				2345899922F720D7003E0923 /* MacroViewController.mm */,
 				2371AAEE22FA85B200CA1B57 /* MacViKeyHook.mm */,
 			);
 			path = MacViKey;
@@ -252,8 +244,6 @@
 			children = (
 				237724A2232BA3B800E92BDF /* platforms */,
 				23E2E4962314FD3A006CCC3E /* DataType.h */,
-				23E2E4972314FD3A006CCC3E /* Macro.h */,
-				23E2E4952314FD3A006CCC3E /* Macro.cpp */,
 				23E2E4982314FD3A006CCC3E /* SmartSwitchKey.cpp */,
 				23E2E49C2314FD3A006CCC3E /* SmartSwitchKey.h */,
 				23E2E4992314FD3A006CCC3E /* Vietnamese.h */,
@@ -355,9 +345,7 @@
 				2374A1302216720E005B0375 /* AboutViewController.m in Sources */,
 				23CA6D1722F0439100804D6E /* MyTextField.m in Sources */,
 				232EDA6421F1B33F0085D362 /* main.m in Sources */,
-				2345899A22F720D7003E0923 /* MacroViewController.mm in Sources */,
 				2371AAEF22FA85B200CA1B57 /* MacViKeyHook.mm in Sources */,
-				23E2E49D2314FD3A006CCC3E /* Macro.cpp in Sources */,
 				232EDA5921F1B33E0085D362 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

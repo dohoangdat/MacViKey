@@ -53,9 +53,6 @@ int vQuickTelex = 0;
 int vSwitchKeyStatus = DEFAULT_SWITCH_STATUS;
 int vRestoreIfWrongSpelling = 0;
 int vFixRecommendBrowser = 1;
-int vUseMacro = 1;
-int vUseMacroInEnglishMode = 1;
-int vAutoCapsMacro = 0;
 int vSendKeyStepByStep = 0;
 int vUseSmartSwitchKey = 1;
 int vUpperCaseFirstChar = 0;
@@ -101,7 +98,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 
 @implementation AppDelegate {
   NSWindowController *_mainWC;
-  NSWindowController *_macroWC;
   NSWindowController *_aboutWC;
 
   NSStatusItem *statusItem;
@@ -176,8 +172,8 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
            subMsg:@"Bộ gõ đã được kích hoạt, bạn có thể gõ tiếng Việt ngay."];
 }
 
-#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE ||    MACVIKEY_HIDE_ENGINE_OPTIONS || MACVIKEY_MENUBAR_OPTIONS ||                \
-    MACVIKEY_HIDE_MACRO
+#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE || MACVIKEY_HIDE_ENGINE_OPTIONS ||       \
+    MACVIKEY_MENUBAR_OPTIONS
 // MacViKey: ghi đè config bị khoá, chạy trước mọi thứ khác để prefs cũ không
 // lọt vào.
 - (void)applyMacViKeyFixedConfig {
@@ -207,15 +203,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   vTempOffSpelling = 0;
   [prefs setInteger:vTempOffSpelling forKey:@"vTempOffSpelling"];
 #endif
-#if MACVIKEY_HIDE_MACRO
-  // Go tat da bi go khoi giao dien -> tat han de engine khong con xu ly macro.
-  vUseMacro = 0;
-  [prefs setInteger:vUseMacro forKey:@"UseMacro"];
-  vUseMacroInEnglishMode = 0;
-  [prefs setInteger:vUseMacroInEnglishMode forKey:@"UseMacroInEnglishMode"];
-  vAutoCapsMacro = 0;
-  [prefs setInteger:vAutoCapsMacro forKey:@"vAutoCapsMacro"];
-#endif
 #if MACVIKEY_MENUBAR_OPTIONS
   // Phim chuyen chi duoc phep la 1 trong 4 to hop, va luon keu beep.
   vSwitchKeyStatus = (int)[prefs integerForKey:@"SwitchKeyStatus"];
@@ -238,8 +225,8 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
   appDelegate = self;
 
-#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE ||    MACVIKEY_HIDE_ENGINE_OPTIONS || MACVIKEY_MENUBAR_OPTIONS ||                \
-    MACVIKEY_HIDE_MACRO
+#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE || MACVIKEY_HIDE_ENGINE_OPTIONS ||       \
+    MACVIKEY_MENUBAR_OPTIONS
   [self applyMacViKeyFixedConfig];
 #endif
 
@@ -421,9 +408,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 #if MACVIKEY_HIDE_CONTROL_PANEL
     [set addObject:@"controlPanel"];
 #endif
-#if MACVIKEY_HIDE_MACRO
-    [set addObject:@"macro"];
-#endif
     // Toan bo tuy chon go da bi khoa cung trong MacViKeyInit() -> an ca menu
     // cha lan cac muc con. Ba muc sua loi ben menu "He thong" cung vay.
     [set addObjectsFromArray:@[
@@ -582,11 +566,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   if ([nodeId isEqualToString:@"controlPanel"]) {
     return [menu addItemWithTitle:title
                            action:@selector(onControlPanelSelected)
-                    keyEquivalent:@""];
-  }
-  if ([nodeId isEqualToString:@"macro"]) {
-    return [menu addItemWithTitle:title
-                           action:@selector(onMacroSelected)
                     keyEquivalent:@""];
   }
   if ([nodeId isEqualToString:@"about"]) {
@@ -790,14 +769,8 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   vFixRecommendBrowser = 1;
   [[NSUserDefaults standardUserDefaults] setInteger:vFixRecommendBrowser
                                              forKey:@"FixRecommendBrowser"];
-  vUseMacro = 1;
-  [[NSUserDefaults standardUserDefaults] setInteger:vUseMacro
-                                             forKey:@"UseMacro"];
-  vUseMacroInEnglishMode = 0;
-  [[NSUserDefaults standardUserDefaults] setInteger:vUseMacroInEnglishMode
-                                             forKey:@"UseMacroInEnglishMode"];
   vSendKeyStepByStep = 0;
-  [[NSUserDefaults standardUserDefaults] setInteger:vUseMacroInEnglishMode
+  [[NSUserDefaults standardUserDefaults] setInteger:vSendKeyStepByStep
                                              forKey:@"SendKeyStepByStep"];
   vUseSmartSwitchKey = 1;
   [[NSUserDefaults standardUserDefaults] setInteger:vUseSmartSwitchKey
@@ -841,8 +814,8 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   [[NSUserDefaults standardUserDefaults] setInteger:vPerformLayoutCompat
                                              forKey:@"vPerformLayoutCompat"];
 
-#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE ||    MACVIKEY_HIDE_ENGINE_OPTIONS || MACVIKEY_MENUBAR_OPTIONS ||                \
-    MACVIKEY_HIDE_MACRO
+#if MACVIKEY_LOCK_INPUT_TYPE_AND_CODE || MACVIKEY_HIDE_ENGINE_OPTIONS ||       \
+    MACVIKEY_MENUBAR_OPTIONS
   // Khôi phục mặc định không được làm sống lại các tuỳ chọn đã bị khoá.
   [self applyMacViKeyFixedConfig];
 #endif
@@ -1346,23 +1319,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   }
   [_mainWC.window makeKeyAndOrderFront:nil];
   [_mainWC.window setLevel:NSFloatingWindowLevel];
-}
-
-- (void)onMacroSelected {
-#if MACVIKEY_HIDE_MACRO
-  return;
-#else
-  if (_macroWC == nil) {
-    _macroWC = [[NSStoryboard storyboardWithName:@"Main" bundle:nil]
-        instantiateControllerWithIdentifier:@"MacroWindow"];
-  }
-  //[MacViKeyManager showDockIcon:YES];
-  if ([_macroWC.window isVisible])
-    return;
-
-  [_macroWC.window makeKeyAndOrderFront:nil];
-  [_macroWC.window setLevel:NSFloatingWindowLevel];
-#endif
 }
 
 - (void)onAboutSelected {

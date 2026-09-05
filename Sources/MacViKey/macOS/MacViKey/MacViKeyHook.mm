@@ -20,7 +20,6 @@
                             (_flag & kCGEventFlagMaskAlternate) || (_flag & kCGEventFlagMaskSecondaryFn) || \
                             (_flag & kCGEventFlagMaskNumericPad) || (_flag & kCGEventFlagMaskHelp)
 
-#define DYNA_DATA(macro, pos) (macro ? pData->macroData[pos] : pData->charData[pos])
 #define MAX_UNICODE_STRING  20
 #define EMPTY_HOTKEY 0xFE0000FE
 #define LOAD_DATA(VAR, KEY) VAR = (int)[[NSUserDefaults standardUserDefaults] integerForKey:@#KEY]
@@ -131,9 +130,6 @@ extern "C" {
         LOAD_DATA(vUseModernOrthography, ModernOrthography);
         LOAD_DATA(vRestoreIfWrongSpelling, RestoreIfInvalidWord);
         LOAD_DATA(vFixRecommendBrowser, FixRecommendBrowser);
-        LOAD_DATA(vUseMacro, UseMacro);
-        LOAD_DATA(vUseMacroInEnglishMode, UseMacroInEnglishMode);
-        LOAD_DATA(vAutoCapsMacro, vAutoCapsMacro);
         LOAD_DATA(vSendKeyStepByStep, SendKeyStepByStep);
         LOAD_DATA(vUseSmartSwitchKey, UseSmartSwitchKey);
         LOAD_DATA(vUpperCaseFirstChar, UpperCaseFirstChar);
@@ -181,13 +177,9 @@ extern "C" {
         eventBackSpaceDown = CGEventCreateKeyboardEvent (myEventSource, 51, true);
         eventBackSpaceUp = CGEventCreateKeyboardEvent (myEventSource, 51, false);
         
-        //init and load macro data
-        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-        NSData *data = [prefs objectForKey:@"macroData"];
-        initMacroMap((Byte*)data.bytes, (int)data.length);
-        
         //init and load smart switch key data
-        data = [prefs objectForKey:@"smartSwitchKey"];
+        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+        NSData *data = [prefs objectForKey:@"smartSwitchKey"];
         initSmartSwitchKey((Byte*)data.bytes, (int)data.length);
         
     }
@@ -297,7 +289,6 @@ extern "C" {
     }
     
     void OnTableCodeChange() {
-        onTableCodeChange();
         if (vRememberCode) {
             queryFrontMostApp();
             setAppInputMethodStatus(string(_frontMostApp.UTF8String), vLanguage | (vCodeTable << 1));
@@ -542,23 +533,21 @@ extern "C" {
     }
 #endif
 
-    void SendNewCharString(const bool& dataFromMacro=false, const Uint16& offset=0) {
+    void SendNewCharString(const Uint16& offset=0) {
         _j = 0;
-        _newCharSize = dataFromMacro ? pData->macroData.size() : pData->newCharCount;
+        _newCharSize = pData->newCharCount;
         _willContinuteSending = false;
         _willSendControlKey = false;
         
         if (_newCharSize > 0) {
-            for (_k = dataFromMacro ? offset : pData->newCharCount - 1 - offset;
-                 dataFromMacro ? _k < pData->macroData.size() : _k >= 0;
-                 dataFromMacro ? _k++ : _k--) {
+            for (_k = pData->newCharCount - 1 - offset; _k >= 0; _k--) {
                 
                 if (_j >= 16) {
                     _willContinuteSending = true;
                     break;
                 }
                 
-                _tempChar = DYNA_DATA(dataFromMacro, _k);
+                _tempChar = pData->charData[_k];
                 if (_tempChar & PURE_CHARACTER_MASK) {
                     _newCharString[_j++] = _tempChar;
                     if (IS_DOUBLE_CODE(vCodeTable)) {
@@ -625,7 +614,7 @@ extern "C" {
         CFRelease(_newEventUp);
 
         if (_willContinuteSending) {
-            SendNewCharString(dataFromMacro, dataFromMacro ? _k : 16);
+            SendNewCharString(16);
         }
         
         //the case when hCode is vRestore or vRestoreAndStartNewSession, the word is invalid and last key is control key such as TAB, LEFT ARROW, RIGHT ARROW,...
@@ -666,34 +655,6 @@ extern "C" {
         startNewSession();
     }
     
-    void handleMacro() {
-        //fix autocomplete
-        if (shouldUseRecommendWorkaround(FRONT_APP)) {
-            SendEmptyCharacter();
-            pData->backspaceCount++;
-        }
-        
-        //send backspace
-        if (pData->backspaceCount > 0) {
-            for (int i = 0; i < pData->backspaceCount; i++) {
-                SendBackspace();
-            }
-        }
-        //send real data
-        if (!vSendKeyStepByStep) {
-            SendNewCharString(true);
-        } else {
-            for (int i = 0; i < pData->macroData.size(); i++) {
-                if (pData->macroData[i] & PURE_CHARACTER_MASK) {
-                    SendPureCharacter(pData->macroData[i]);
-                } else {
-                    SendKeyCode(pData->macroData[i]);
-                }
-            }
-        }
-        SendKeyCode(_keycode | (_flag & kCGEventFlagMaskShift ? CAPS_MASK : 0));
-    }
-
     // TODO: Research API to convert character into CGKeyCode more elegantly!
     int ConvertKeyStringToKeyCode(NSString *keyString, CGKeyCode fallback) {
         // Infomation about capitalization (shift/caps) is already included
@@ -799,17 +760,6 @@ extern "C" {
 
         //If is in english mode
         if (vLanguage == 0) {
-            if (vUseMacro && vUseMacroInEnglishMode && type == kCGEventKeyDown) {
-                vEnglishMode((type == kCGEventKeyDown ? vKeyEventState::KeyDown : vKeyEventState::MouseDown),
-                             _keycode,
-                             (_flag & kCGEventFlagMaskShift) || (_flag & kCGEventFlagMaskAlphaShift),
-                             OTHER_CONTROL_KEY);
-                
-                if (pData->code == vReplaceMaro) { //handle macro in english mode
-                    handleMacro();
-                    return NULL;
-                }
-            }
             return event;
         }
         
@@ -928,8 +878,6 @@ extern "C" {
                         startNewSession();
                     }
                 }
-            } else if (pData->code == vReplaceMaro) { //MACRO
-                handleMacro();
             }
             
             return NULL;

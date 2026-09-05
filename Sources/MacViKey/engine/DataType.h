@@ -46,7 +46,6 @@ enum HoolCodeState {
     vWillProcess, //will reverse
     vBreakWord, //start new
     vRestore, //restore character to old char
-    vReplaceMaro, //replace by macro
     vRestoreAndStartNewSession, //special flag: use for restore key if invalid word with break character (, . ")
 };
 
@@ -57,7 +56,6 @@ struct vKeyHookState {
      * 1: Process
      * 2: Word break;
      * 3: Restore
-     * 4: replace by macro
      */
     Byte code;
     Byte backspaceCount;
@@ -72,9 +70,6 @@ struct vKeyHookState {
     Byte extCode;
     
     Uint32 charData[MAX_BUFF]; //new character will be put in queue
-    
-    vector<Uint32> macroKey; //used for macro function; it is a key
-    vector<Uint32> macroData; //used for macro function; it is keycode data
 };
 
 //MacViKey chi ho tro macOS - ma nguon Windows/Linux cua du an goc da duoc go bo.

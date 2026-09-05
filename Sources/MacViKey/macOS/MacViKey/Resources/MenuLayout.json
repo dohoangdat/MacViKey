@@ -238,12 +238,6 @@
       "hint": "Mở bảng điều khiển đầy đủ."
     },
     {
-      "id": "macro",
-      "title": "Gõ tắt...",
-      "enabled": true,
-      "hint": "Đặt chữ viết tắt tự bung thành cụm dài, ví dụ vn thành Việt Nam."
-    },
-    {
       "id": "about",
       "title": "Giới thiệu",
       "enabled": true,
