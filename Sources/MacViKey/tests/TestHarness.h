@@ -48,9 +48,6 @@ int vQuickTelex = 0;
 int vSwitchKeyStatus = 0x7A000206;
 int vRestoreIfWrongSpelling = 0;
 int vFixRecommendBrowser = 1;
-int vUseMacro = 0;
-int vUseMacroInEnglishMode = 0;
-int vAutoCapsMacro = 0;
 int vSendKeyStepByStep = 0;
 int vUseSmartSwitchKey = 0;
 int vUpperCaseFirstChar = 0;
@@ -178,7 +175,6 @@ inline void resetToMacViKeyDefaults() {
     vAllowConsonantZFWJ = 0;
     vQuickStartConsonant = 0;
     vUpperCaseFirstChar = 0;
-    vUseMacro = 0;
     vSetCheckSpelling();
     startNewSession();
 }
