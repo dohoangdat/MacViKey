@@ -1,0 +1,6 @@
+.DS_Store
+build/
+DerivedData/
+*.xcuserdatad
+Sources/MacViKey/tests/explore
+Sources/MacViKey/tests/test_engine
