@@ -85,7 +85,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   MacViKeyOptionFixChromium,
   MacViKeyOptionLayoutCompat,
   MacViKeyOptionShowUIOnStartup,
-  MacViKeyOptionCheckUpdate,
 };
 
 @interface AppDelegate ()
@@ -283,12 +282,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   }
   [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"NonFirstTime"];
 
-  // check update if enable
-  NSInteger dontCheckUpdate =
-      [[NSUserDefaults standardUserDefaults] integerForKey:@"DontCheckUpdate"];
-  if (!dontCheckUpdate)
-    [MacViKeyManager checkNewVersion:nil callbackFunc:nil];
-
   // correct run on startup
   NSInteger val =
       [[NSUserDefaults standardUserDefaults] integerForKey:@"RunOnStartup"];
@@ -349,7 +342,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
       @"option.fixChromium" : @(MacViKeyOptionFixChromium),
       @"option.layoutCompat" : @(MacViKeyOptionLayoutCompat),
       @"option.showUIOnStartup" : @(MacViKeyOptionShowUIOnStartup),
-      @"option.checkUpdate" : @(MacViKeyOptionCheckUpdate),
     };
   });
   return map;
@@ -796,9 +788,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     return @"vPerformLayoutCompat";
   case MacViKeyOptionShowUIOnStartup:
     return @"ShowUIOnStartup";
-  // Prefs luu nguoc: 1 = KHONG kiem tra ban moi.
-  case MacViKeyOptionCheckUpdate:
-    return @"DontCheckUpdate";
   }
   return nil;
 }
@@ -831,13 +820,12 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   return NULL;
 }
 
-// Gia tri hien thi cua tuy chon (da xu ly truong hop prefs luu nguoc).
+// Gia tri hien thi cua tuy chon.
 - (BOOL)macViKeyOptionIsOn:(NSInteger)tag {
-  NSInteger raw = [[NSUserDefaults standardUserDefaults]
-      integerForKey:[self macViKeyPrefKeyForTag:tag]];
-  if (tag == MacViKeyOptionCheckUpdate)
-    return raw ? NO : YES;
-  return raw ? YES : NO;
+  return [[NSUserDefaults standardUserDefaults]
+             integerForKey:[self macViKeyPrefKeyForTag:tag]]
+             ? YES
+             : NO;
 }
 
 - (void)onOptionToggled:(NSMenuItem *)sender {
@@ -847,9 +835,8 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     return;
 
   BOOL newValue = ![self macViKeyOptionIsOn:tag];
-  NSInteger stored = (tag == MacViKeyOptionCheckUpdate) ? (newValue ? 0 : 1)
-                                                        : (newValue ? 1 : 0);
-  [[NSUserDefaults standardUserDefaults] setInteger:stored forKey:key];
+  [[NSUserDefaults standardUserDefaults] setInteger:newValue ? 1 : 0
+                                             forKey:key];
 
   int *var = [self macViKeyVarForTag:tag];
   if (var != NULL)

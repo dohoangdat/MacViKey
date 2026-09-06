@@ -817,19 +817,8 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qgw-K2-HcQ">
-                                <rect key="frame" x="180" y="256" width="280" height="18"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="check" title="Kiểm tra bản mới khi khởi động" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="7Pv-o7-ffq">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="systemLight" size="13"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="onCheckUpdateOnStartup:" target="SDG-I4-o9t" id="8RZ-cL-RzN"/>
-                                </connections>
-                            </button>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tvC-7v-OW8">
-                                <rect key="frame" x="178" y="216" width="180" height="32"/>
+                                <rect key="frame" x="178" y="242" width="180" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="push" title="Kiểm tra bản mới..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Nhb-MP-s0Y">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -910,7 +899,6 @@
                     <connections>
                         <outlet property="AppTitle" destination="Olz-Hc-wyN" id="mvk-Ab-t01"/>
                         <outlet property="CheckNewVersionButton" destination="tvC-7v-OW8" id="8Ou-a0-9mM"/>
-                        <outlet property="CheckUpdateOnStatus" destination="Qgw-K2-HcQ" id="tx8-Ab-Sbx"/>
                         <outlet property="CopyrightInfo" destination="USx-Nt-l0Y" id="mvk-Ab-t02"/>
                         <outlet property="DonateBody" destination="dnb-Bo-005" id="mvk-Ab-t06"/>
                         <outlet property="DonateLink" destination="dnb-Ln-007" id="mvk-Ab-t07"/>

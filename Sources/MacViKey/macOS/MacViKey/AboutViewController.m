@@ -20,9 +20,6 @@
     
     self.VersionInfo.stringValue = MacViKeyInfo.versionInfoText;
     [self macViKeyFillContactInfo];
-    
-    NSInteger dontCheckUpdate = [[NSUserDefaults standardUserDefaults] integerForKey:@"DontCheckUpdate"];
-    self.CheckUpdateOnStatus.state = dontCheckUpdate ? NSControlStateValueOff :NSControlStateValueOn;
 }
 
 /// Do moi nhan lien he tu Info.plist (xem MacViKeyInfo) thay vi chuoi trong storyboard.
@@ -50,11 +47,6 @@
 
 - (IBAction)onDonate:(id)sender {
     [MacViKeyInfo openURL:MacViKeyInfo.donateURL];
-}
-
-- (IBAction)onCheckUpdateOnStartup:(NSButton *)sender {
-    NSInteger val = sender.state == NSControlStateValueOn ? 0 : 1;
-    [[NSUserDefaults standardUserDefaults] setInteger:val forKey:@"DontCheckUpdate"];
 }
 
 - (IBAction)onCheckNewVersion:(id)sender {

@@ -215,16 +215,10 @@
           "separator": true
         },
         {
-          "id": "option.checkUpdate",
-          "title": "Kiểm tra bản mới lúc khởi động",
-          "enabled": true,
-          "hint": "Tự kiểm tra bản mới mỗi lần khởi động."
-        },
-        {
           "id": "checkUpdateNow",
-          "title": "Kiểm tra bản mới ngay...",
+          "title": "Kiểm tra bản mới...",
           "enabled": true,
-          "hint": "Kiểm tra ngay xem có bản MacViKey mới hay không."
+          "hint": "Kiểm tra xem có bản MacViKey mới hay không."
         }
       ]
     },

@@ -11,7 +11,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface AboutViewController : NSViewController
 @property (weak) IBOutlet NSTextField *VersionInfo;
 @property (weak) IBOutlet NSButton *CheckNewVersionButton;
-@property (weak) IBOutlet NSButton *CheckUpdateOnStatus;
 
 // Cac nhan thong tin duoc do tu Info.plist luc chay (xem MacViKeyInfo).
 @property (weak) IBOutlet NSTextField *AppTitle;
