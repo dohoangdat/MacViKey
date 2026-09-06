@@ -50,6 +50,10 @@
 	<string>https://github.com/dohoangdat/MacViKey/issues</string>
 	<key>MVKReleasesURL</key>
 	<string>https://github.com/dohoangdat/MacViKey/releases</string>
+	<key>MVKDonateURL</key>
+	<string>https://dohoangdat.com/macvikey</string>
+	<key>MVKDonateText</key>
+	<string>MacViKey là phần mềm mã nguồn mở và miễn phí, nhưng việc tối ưu và hỗ trợ người dùng luôn cần kinh phí. Mỗi đóng góp của bạn là một phần trong sự phát triển của dự án. Tên người ủng hộ sẽ được sao kê công khai tại hòm công đức - truy cập để kiểm tra.</string>
 	<key>MVKAboutText</key>
 	<string>MacViKey là phần mềm mã nguồn mở, phát hành miễn phí theo giấy phép GNU GPL v3. Bạn có thể góp ý hoặc yêu cầu tính năng mới qua email của tác giả hoặc trên GitHub.</string>
 	<key>NSHumanReadableCopyright</key>

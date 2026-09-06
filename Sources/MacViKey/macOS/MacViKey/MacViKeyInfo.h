@@ -42,6 +42,8 @@ extern NSString *const MacViKeyInfoKeyVersionCheckURL; // MVKVersionCheckURL
 extern NSString *const MacViKeyInfoKeyUpstreamName;    // MVKUpstreamName
 extern NSString *const MacViKeyInfoKeyUpstreamURL;     // MVKUpstreamURL
 extern NSString *const MacViKeyInfoKeyAboutText;       // MVKAboutText
+extern NSString *const MacViKeyInfoKeyDonateURL;       // MVKDonateURL
+extern NSString *const MacViKeyInfoKeyDonateText;      // MVKDonateText
 
 @interface MacViKeyInfo : NSObject
 
@@ -66,6 +68,8 @@ extern NSString *const MacViKeyInfoKeyAboutText;       // MVKAboutText
 @property(class, readonly) NSString *copyrightFull;    // NSHumanReadableCopyright
 @property(class, readonly) NSString *licenseName;
 @property(class, readonly) NSString *aboutText;
+/// Loi keu goi ung ho hien trong khung Donate.
+@property(class, readonly) NSString *donateText;
 @property(class, readonly) NSString *upstreamName;
 
 #pragma mark - Liên kết
@@ -77,6 +81,8 @@ extern NSString *const MacViKeyInfoKeyAboutText;       // MVKAboutText
 @property(class, readonly, nullable) NSURL *versionCheckURL;
 @property(class, readonly, nullable) NSURL *licenseURL;
 @property(class, readonly, nullable) NSURL *upstreamURL;
+/// Hom cong duc (sao ke ten nguoi ung ho).
+@property(class, readonly, nullable) NSURL *donateURL;
 /// mailto: dựng từ authorEmail.
 @property(class, readonly, nullable) NSURL *authorMailtoURL;
 

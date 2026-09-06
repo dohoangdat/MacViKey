@@ -37,25 +37,25 @@
       "items": [
         {
           "id": "switchKey.cmdShift",
-          "title": "Bấm ⌘ Command + ⇧ Shift",
+          "title": "Bấm: Command + Shift (⌘ + ⇧)",
           "enabled": true,
           "hint": "Nhấn Command + Shift để đổi Việt / Anh."
         },
         {
           "id": "switchKey.optShift",
-          "title": "Bấm ⌥ Option + ⇧ Shift",
+          "title": "Bấm: Option + Shift (⌥ + ⇧)",
           "enabled": true,
           "hint": "Nhấn Option + Shift để đổi Việt / Anh."
         },
         {
           "id": "switchKey.ctrlShift",
-          "title": "Bấm ⌃ Control + ⇧ Shift",
+          "title": "Bấm: Control + Shift (⌃ + ⇧)",
           "enabled": true,
           "hint": "Nhấn Control + Shift để đổi Việt / Anh."
         },
         {
           "id": "switchKey.fnShift",
-          "title": "Bấm fn + ⇧ Shift",
+          "title": "Bấm: Fn + Shift (fn + ⇧)",
           "enabled": true,
           "hint": "Nhấn phím fn + Shift để đổi Việt / Anh."
         }

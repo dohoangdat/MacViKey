@@ -1182,6 +1182,14 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   if ([_aboutWC.window isVisible])
     return;
 
+  // Cua so Gioi thieu khong cho resize -> ep kich thuoc dung bang view goc
+  // trong storyboard, tranh cat mat noi dung (link, khung ung ho, ban quyen).
+  NSView *aboutView = _aboutWC.contentViewController.view;
+  if (aboutView) {
+    [_aboutWC.window setContentSize:aboutView.frame.size];
+    [_aboutWC.window center];
+  }
+
   [_aboutWC.window makeKeyAndOrderFront:nil];
   [_aboutWC.window setLevel:NSFloatingWindowLevel];
 }

@@ -19,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak) IBOutlet NSTextField *ReleasesLink;
 @property (weak) IBOutlet NSTextField *IssuesLink;
 @property (weak) IBOutlet NSTextField *CopyrightInfo;
+@property (weak) IBOutlet NSTextField *DonateBody;
+@property (weak) IBOutlet NSTextField *DonateLink;
 
 @end
 

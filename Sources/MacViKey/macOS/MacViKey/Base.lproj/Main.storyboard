@@ -688,7 +688,7 @@
                 <windowController storyboardIdentifier="AboutWindow" showSeguePresentationStyle="single" id="2XQ-D7-GhY" sceneMemberID="viewController">
                     <window key="window" title="Giới thiệu" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="8ft-jm-pO3">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
-                        <rect key="contentRect" x="1346" y="584" width="480" height="270"/>
+                        <rect key="contentRect" x="1346" y="584" width="620" height="490"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
                         <connections>
                             <outlet property="delegate" destination="2XQ-D7-GhY" id="SAi-r6-fvl"/>
@@ -707,44 +707,53 @@
             <objects>
                 <viewController id="SDG-I4-o9t" customClass="AboutViewController" sceneMemberID="viewController">
                     <view key="view" id="ATQ-uD-hpO">
-                        <rect key="frame" x="0.0" y="0.0" width="580" height="308"/>
+                        <rect key="frame" x="0.0" y="0.0" width="620" height="490"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cOa-h2-TPT">
-                                <rect key="frame" x="160" y="210" width="263" height="21"/>
+                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xzQ-X1-r15">
+                                <rect key="frame" x="24" y="326" width="140" height="140"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" title="Bộ gõ Tiếng Việt dành cho macOS" id="yWO-xd-t3K">
-                                    <font key="font" metaFont="systemThin" size="17"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="m7F-5x-ESn">
-                                <rect key="frame" x="160" y="143" width="68" height="17"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" title="Trang chủ:" id="eZE-Iu-ykp">
-                                    <font key="font" metaFont="systemThin" size="13"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="center" imageScaling="proportionallyUpOrDown" image="logo_macvikey" id="qxo-YX-7X4"/>
+                            </imageView>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Olz-Hc-wyN">
-                                <rect key="frame" x="160" y="235" width="277" height="48"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" alignment="left" title="MacViKey" id="nbR-li-HBd">
+                                <rect key="frame" x="180" y="418" width="416" height="48"/>
+                                <autoresizingMask key="autoresizingMask" flexibleWidth="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" alignment="left" title="MacViKey" id="nbR-li-HBd">
                                     <font key="font" metaFont="systemThin" size="40"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xzQ-X1-r15">
-                                <rect key="frame" x="0.0" y="83" width="160" height="160"/>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cOa-h2-TPT">
+                                <rect key="frame" x="182" y="394" width="414" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleWidth="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" title="Bộ gõ Tiếng Việt dành cho macOS" id="yWO-xd-t3K">
+                                    <font key="font" metaFont="systemThin" size="17"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AeG-WX-JbZ">
+                                <rect key="frame" x="182" y="370" width="414" height="18"/>
+                                <autoresizingMask key="autoresizingMask" flexibleWidth="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" alignment="left" title="Phiên bản: 1.0, cập nhật ngày 1/1/2019" id="FiL-a8-YwW">
+                                    <font key="font" metaFont="systemThin" size="13"/>
+                                    <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="m7F-5x-ESn">
+                                <rect key="frame" x="182" y="338" width="100" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="logo_macvikey" id="qxo-YX-7X4"/>
-                            </imageView>
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" title="Trang chủ:" id="eZE-Iu-ykp">
+                                    <font key="font" metaFont="systemThin" size="13"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jet-Gl-mzT">
-                                <rect key="frame" x="263" y="143" width="229" height="17"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <rect key="frame" x="286" y="338" width="310" height="17"/>
+                                <autoresizingMask key="autoresizingMask" flexibleWidth="YES" flexibleMinY="YES"/>
                                 <gestureRecognizers>
                                     <clickGestureRecognizer delaysPrimaryMouseButtonEvents="YES" numberOfClicksRequired="1" id="bsm-Pg-VQL">
                                         <connections>
@@ -752,24 +761,24 @@
                                         </connections>
                                     </clickGestureRecognizer>
                                 </gestureRecognizers>
-                                <textFieldCell key="cell" lineBreakMode="clipping" continuous="YES" sendsActionOnEndEditing="YES" title="https://github.com/dohoangdat/MacViKey" id="VCX-6k-cHt">
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" continuous="YES" sendsActionOnEndEditing="YES" title="https://dohoangdat.com/macvikey" id="VCX-6k-cHt">
                                     <font key="font" metaFont="systemThin" size="13"/>
                                     <color key="textColor" name="controlAccentColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lsv-mg-ayU">
-                                <rect key="frame" x="160" y="118" width="93" height="17"/>
+                                <rect key="frame" x="182" y="314" width="100" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" title="Phiên bản mới:" id="E5F-GD-BjU">
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" title="Phiên bản mới:" id="E5F-GD-BjU">
                                     <font key="font" metaFont="systemThin" size="13"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="C49-2T-6ca">
-                                <rect key="frame" x="263" y="118" width="283" height="17"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <rect key="frame" x="286" y="314" width="310" height="17"/>
+                                <autoresizingMask key="autoresizingMask" flexibleWidth="YES" flexibleMinY="YES"/>
                                 <gestureRecognizers>
                                     <clickGestureRecognizer delaysPrimaryMouseButtonEvents="YES" numberOfClicksRequired="1" id="VUh-Rw-bCl">
                                         <connections>
@@ -777,24 +786,24 @@
                                         </connections>
                                     </clickGestureRecognizer>
                                 </gestureRecognizers>
-                                <textFieldCell key="cell" lineBreakMode="clipping" continuous="YES" sendsActionOnEndEditing="YES" title="https://github.com/dohoangdat/MacViKey/releases" id="zCu-0X-Rqo">
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" continuous="YES" sendsActionOnEndEditing="YES" title="https://github.com/dohoangdat/MacViKey/releases" id="zCu-0X-Rqo">
                                     <font key="font" metaFont="systemThin" size="13"/>
                                     <color key="textColor" name="controlAccentColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uOE-QV-t9P">
-                                <rect key="frame" x="161" y="93" width="60" height="17"/>
+                                <rect key="frame" x="182" y="290" width="100" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" title="Góp ý:" id="TtI-Mk-9cF">
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" title="Góp ý:" id="TtI-Mk-9cF">
                                     <font key="font" metaFont="systemThin" size="13"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QoG-g6-y7i">
-                                <rect key="frame" x="263" y="93" width="241" height="17"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <rect key="frame" x="286" y="290" width="310" height="17"/>
+                                <autoresizingMask key="autoresizingMask" flexibleWidth="YES" flexibleMinY="YES"/>
                                 <gestureRecognizers>
                                     <clickGestureRecognizer delaysPrimaryMouseButtonEvents="YES" numberOfClicksRequired="1" id="GiO-w4-Qrl">
                                         <connections>
@@ -802,43 +811,14 @@
                                         </connections>
                                     </clickGestureRecognizer>
                                 </gestureRecognizers>
-                                <textFieldCell key="cell" lineBreakMode="clipping" continuous="YES" sendsActionOnEndEditing="YES" title="https://github.com/dohoangdat/MacViKey/issues" id="a54-tw-Amh">
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" continuous="YES" sendsActionOnEndEditing="YES" title="https://github.com/dohoangdat/MacViKey/issues" id="a54-tw-Amh">
                                     <font key="font" metaFont="systemThin" size="13"/>
                                     <color key="textColor" name="controlAccentColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AeG-WX-JbZ">
-                                <rect key="frame" x="160" y="185" width="422" height="18"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" alignment="left" title="Phiên bản: 1.0, cập nhật ngày 1/1/2019" id="FiL-a8-YwW">
-                                    <font key="font" metaFont="systemThin" size="13"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="USx-Nt-l0Y">
-                                <rect key="frame" x="225" y="7" width="123" height="16"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" title="" id="630-DT-XcR">
-                                    <font key="font" metaFont="systemThin" size="12"/>
-                                    <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tvC-7v-OW8">
-                                <rect key="frame" x="156" y="30" width="141" height="32"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="push" title="Kiểm tra bản mới..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Nhb-MP-s0Y">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="onCheckNewVersion:" target="SDG-I4-o9t" id="tfs-Fv-jfi"/>
-                                </connections>
-                            </button>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qgw-K2-HcQ">
-                                <rect key="frame" x="160" y="67" width="236" height="18"/>
+                                <rect key="frame" x="180" y="256" width="280" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="check" title="Kiểm tra bản mới khi khởi động" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="7Pv-o7-ffq">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -848,16 +828,95 @@
                                     <action selector="onCheckUpdateOnStartup:" target="SDG-I4-o9t" id="8RZ-cL-RzN"/>
                                 </connections>
                             </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tvC-7v-OW8">
+                                <rect key="frame" x="178" y="216" width="180" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Kiểm tra bản mới..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Nhb-MP-s0Y">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="onCheckNewVersion:" target="SDG-I4-o9t" id="tfs-Fv-jfi"/>
+                                </connections>
+                            </button>
+                            <box fixedFrame="YES" boxType="custom" borderType="line" cornerRadius="6" title="Ung ho" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="dnb-Bx-001">
+                                <rect key="frame" x="24" y="66" width="572" height="136"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" id="dnb-Cv-002">
+                                    <rect key="frame" x="1" y="1" width="570" height="134"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dnb-Ti-003">
+                                            <rect key="frame" x="14" y="105" width="380" height="19"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" title="Ủng hộ dự án MacViKey" id="dnb-Tc-004">
+                                                <font key="font" metaFont="systemBold" size="14"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dnb-Bo-005">
+                                            <rect key="frame" x="14" y="36" width="542" height="64"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" lineBreakMode="wordWrapping" title="MacViKey là phần mềm mã nguồn mở, miễn phí." id="dnb-Bc-006">
+                                                <font key="font" metaFont="systemLight" size="12"/>
+                                                <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dnb-Ln-007">
+                                            <rect key="frame" x="14" y="11" width="330" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <gestureRecognizers>
+                                                <clickGestureRecognizer delaysPrimaryMouseButtonEvents="YES" numberOfClicksRequired="1" id="dnb-Gr-008">
+                                                    <connections>
+                                                        <action selector="onDonate:" target="SDG-I4-o9t" id="dnb-Ga-009"/>
+                                                    </connections>
+                                                </clickGestureRecognizer>
+                                            </gestureRecognizers>
+                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" continuous="YES" sendsActionOnEndEditing="YES" title="https://dohoangdat.com/macvikey" id="dnb-Lc-010">
+                                                <font key="font" metaFont="systemThin" size="13"/>
+                                                <color key="textColor" name="controlAccentColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dnb-Bt-011">
+                                            <rect key="frame" x="376" y="6" width="180" height="28"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                            <buttonCell key="cell" type="push" title="Mở hòm công đức" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="dnb-Bc-012">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="onDonate:" target="SDG-I4-o9t" id="dnb-Ba-013"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                </view>
+                                <color key="borderColor" name="unemphasizedSelectedContentBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                <color key="fillColor" name="alternatingContentBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </box>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="USx-Nt-l0Y">
+                                <rect key="frame" x="24" y="28" width="572" height="16"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" alignment="center" title="" id="630-DT-XcR">
+                                    <font key="font" metaFont="systemThin" size="12"/>
+                                    <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                     </view>
                     <connections>
                         <outlet property="AppTitle" destination="Olz-Hc-wyN" id="mvk-Ab-t01"/>
                         <outlet property="CheckNewVersionButton" destination="tvC-7v-OW8" id="8Ou-a0-9mM"/>
+                        <outlet property="CheckUpdateOnStatus" destination="Qgw-K2-HcQ" id="tx8-Ab-Sbx"/>
                         <outlet property="CopyrightInfo" destination="USx-Nt-l0Y" id="mvk-Ab-t02"/>
+                        <outlet property="DonateBody" destination="dnb-Bo-005" id="mvk-Ab-t06"/>
+                        <outlet property="DonateLink" destination="dnb-Ln-007" id="mvk-Ab-t07"/>
                         <outlet property="HomePageLink" destination="jet-Gl-mzT" id="mvk-Ab-t03"/>
                         <outlet property="IssuesLink" destination="QoG-g6-y7i" id="mvk-Ab-t04"/>
                         <outlet property="ReleasesLink" destination="C49-2T-6ca" id="mvk-Ab-t05"/>
-                        <outlet property="CheckUpdateOnStatus" destination="Qgw-K2-HcQ" id="tx8-Ab-Sbx"/>
                         <outlet property="VersionInfo" destination="AeG-WX-JbZ" id="sEO-BZ-DBo"/>
                     </connections>
                 </viewController>

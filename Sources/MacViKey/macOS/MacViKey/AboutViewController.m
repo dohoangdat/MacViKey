@@ -32,6 +32,8 @@
     self.ReleasesLink.stringValue = MacViKeyInfo.releasesURL.absoluteString ?: @"";
     self.IssuesLink.stringValue = MacViKeyInfo.issuesURL.absoluteString ?: @"";
     self.CopyrightInfo.stringValue = MacViKeyInfo.copyrightShort;
+    self.DonateBody.stringValue = MacViKeyInfo.donateText;
+    self.DonateLink.stringValue = MacViKeyInfo.donateURL.absoluteString ?: @"";
 }
 
 - (IBAction)onHomePage:(id)sender {
@@ -44,6 +46,10 @@
 
 - (IBAction)onLatestReleaseVersion:(id)sender {
     [MacViKeyInfo openURL:MacViKeyInfo.releasesURL];
+}
+
+- (IBAction)onDonate:(id)sender {
+    [MacViKeyInfo openURL:MacViKeyInfo.donateURL];
 }
 
 - (IBAction)onCheckUpdateOnStartup:(NSButton *)sender {
