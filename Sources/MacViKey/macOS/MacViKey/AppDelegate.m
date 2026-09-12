@@ -60,7 +60,7 @@ int vRememberCode = 1;          // new on version 2.0
 int vOtherLanguage = 1;         // new on version 2.0
 int vTempOffEngineByHotKey = 0; // new on version 2.0
 
-int vShowIconOnDock = 0; // new on version 2.0
+int vShowIconOnDock = 1; // MacViKey: mac dinh hien icon tren Dock
 
 int vPerformLayoutCompat = 0;
 
@@ -184,7 +184,12 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   // cua nguoi dung (da ghi vao prefs) van duoc ton trong.
   // Hien bieu tuong tren thanh menu la mac dinh BAT - do la cho duy nhat nguoi
   // dung thay bo go dang o che do nao.
-  [prefs registerDefaults:@{@"RunOnStartup" : @1, @"vShowIconOnMenuBar" : @1}];
+  // Hien bieu tuong tren thanh Dock cung mac dinh BAT.
+  [prefs registerDefaults:@{
+    @"RunOnStartup" : @1,
+    @"vShowIconOnMenuBar" : @1,
+    @"vShowIconOnDock" : @1
+  }];
   vInputType = MACVIKEY_FIXED_INPUT_TYPE;
   [prefs setInteger:vInputType forKey:@"InputType"];
   vCodeTable = MACVIKEY_FIXED_CODE_TABLE;
@@ -264,18 +269,18 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   [self setRunOnStartup:[[NSUserDefaults standardUserDefaults]
                             integerForKey:@"RunOnStartup"] != 0];
 
+  // Icon tren Dock: ap dung TRUOC nhanh xin quyen. Ban cu doc pref trong ca hai
+  // nhanh nhung chi nhanh da co quyen moi goi setActivationPolicy - may chua cap
+  // quyen thi khong co icon, dung luc nguoi dung can tim app nhat.
+  vShowIconOnDock = (int)[[NSUserDefaults standardUserDefaults]
+      integerForKey:@"vShowIconOnDock"];
+  [self showIconOnDock:vShowIconOnDock != 0];
+
   // check if user granted Accessabilty permission
   if (!MJAccessibilityIsEnabled()) {
-    vShowIconOnDock = (int)[[NSUserDefaults standardUserDefaults]
-        integerForKey:@"vShowIconOnDock"];
     [self askPermission];
     return; // askPermission se tu khoi dong bo go khi quyen duoc cap
   }
-
-  vShowIconOnDock = (int)[[NSUserDefaults standardUserDefaults]
-      integerForKey:@"vShowIconOnDock"];
-  if (vShowIconOnDock)
-    [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
 
   if (vSwitchKeyStatus & 0x8000)
     NSBeep();
@@ -730,9 +735,11 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   vTempOffEngineByHotKey = 0;
   [[NSUserDefaults standardUserDefaults] setInteger:vTempOffEngineByHotKey
                                              forKey:@"vTempOffEngineByHotKey"];
-  vShowIconOnDock = 0;
+  // Khop voi mac dinh xuat xuong trong applyMacViKeyFixedConfig.
+  vShowIconOnDock = 1;
   [[NSUserDefaults standardUserDefaults] setInteger:vShowIconOnDock
                                              forKey:@"vShowIconOnDock"];
+  [self showIconOnDock:YES];
   vFixChromiumBrowser = 0;
   [[NSUserDefaults standardUserDefaults] setInteger:vFixChromiumBrowser
                                              forKey:@"vFixChromiumBrowser"];
@@ -750,19 +757,73 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   [viewController fillData];
 }
 
+// Duong dan file LaunchAgent cho duong macOS < 13.
+- (NSString *)macViKeyLaunchAgentPath {
+  NSString *dir = [NSHomeDirectory()
+      stringByAppendingPathComponent:@"Library/LaunchAgents"];
+  return [dir stringByAppendingPathComponent:MACVIKEY_BUNDLE @".plist"];
+}
+
+// Khoi dong cung may tren macOS < 13: tu ghi mot LaunchAgent vao
+// ~/Library/LaunchAgents.
+//
+// Vi sao khong dung SMLoginItemSetEnabled: ham do doi mot helper app nam trong
+// Contents/Library/LoginItems, ma target helper da bi go khoi project - goi vao
+// la that bai AM THAM. LaunchAgent thi khong can helper, va chay tu 10.13.
+//
+// Ghi lai plist moi lan bat (chu khong bo qua neu file da ton tai): nguoi dung
+// keo app sang cho khac thi Program trong plist cu tro vao duong dan chet.
+- (BOOL)macViKeySetLaunchAgentEnabled:(BOOL)val {
+  NSString *path = [self macViKeyLaunchAgentPath];
+  NSFileManager *fm = [NSFileManager defaultManager];
+
+  if (!val) {
+    if (![fm fileExistsAtPath:path])
+      return YES;
+    NSError *error = nil;
+    if ([fm removeItemAtPath:path error:&error])
+      return YES;
+    NSLog(@"[MacViKey] Khong xoa duoc LaunchAgent: %@", error);
+    return NO;
+  }
+
+  NSError *error = nil;
+  if (![fm createDirectoryAtPath:[path stringByDeletingLastPathComponent]
+      withIntermediateDirectories:YES
+                       attributes:nil
+                            error:&error]) {
+    NSLog(@"[MacViKey] Khong tao duoc ~/Library/LaunchAgents: %@", error);
+    return NO;
+  }
+
+  // RunAtLoad: chay khi dang nhap. KeepAlive KHONG bat - nguoi dung chon Thoat
+  // thi phai thoat that, khong duoc launchd dung len lai.
+  NSDictionary *plist = @{
+    @"Label" : MACVIKEY_BUNDLE,
+    @"ProgramArguments" : @[ [[NSBundle mainBundle] executablePath] ],
+    @"RunAtLoad" : @YES,
+    @"KeepAlive" : @NO,
+    @"ProcessType" : @"Interactive",
+  };
+  if ([plist writeToFile:path atomically:YES])
+    return YES;
+  NSLog(@"[MacViKey] Khong ghi duoc LaunchAgent vao %@", path);
+  return NO;
+}
+
 // Khoi dong cung may.
 //
-// Ban goc dung SMLoginItemSetEnabled voi mot helper rieng nam trong
-// Contents/Library/LoginItems. Target helper da bi go khoi project, nen loi goi
-// do luon that bai AM THAM: prefs ghi RunOnStartup = 1 ma app khong bao gio tu
-// chay.
+// Hai duong theo phien ban macOS:
+//   - macOS 13+: SMAppService.mainAppService. Day la duong Apple cong nhan, va
+//     no hien ra trong Cai dat He thong > Muc dang nhap nen nguoi dung tu tat
+//     duoc.
+//   - macOS 10.13-12: tu ghi LaunchAgent. SMAppService chua co o cac ban nay.
 //
-// SMAppService.mainAppService dang ky chinh app lam login item, khong can
-// helper - nhung chi co tu macOS 13. Duoi nguong do khong con duong nao dung
-// duoc: helper da khong ton tai, SMLoginItemSetEnabled se that bai am tham.
-// Nen o day ghi log ro rang thay vi im lang - im lang la dung cai bug vua sua.
+// Tren 13+ con don them LaunchAgent cu: may nang cap tu 12 len 13 se co CA HAI
+// duong cung bat -> app bi khoi chay hai lan moi lan dang nhap.
 - (void)setRunOnStartup:(BOOL)val {
   if (@available(macOS 13.0, *)) {
+    [self macViKeySetLaunchAgentEnabled:NO];
     SMAppService *service = [SMAppService mainAppService];
     NSError *error = nil;
     BOOL ok = val ? [service registerAndReturnError:&error]
@@ -774,8 +835,7 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     }
     return;
   }
-  NSLog(@"[MacViKey] Khoi dong cung may can macOS 13 tro len; ban macOS nay "
-        @"khong ho tro.");
+  [self macViKeySetLaunchAgentEnabled:val];
 }
 
 // An bieu tuong khoi thanh menu.
