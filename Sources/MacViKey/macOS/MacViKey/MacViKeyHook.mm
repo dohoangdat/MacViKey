@@ -13,7 +13,6 @@
 #import "AppDelegate.h"
 #import "MacViKeyConfig.h"
 #import "MacViKeyAX.h"
-#import "ViewController.h"
 
 #define FRONT_APP [[NSWorkspace sharedWorkspace] frontmostApplication].bundleIdentifier
 #define OTHER_CONTROL_KEY (_flag & kCGEventFlagMaskCommand) || (_flag & kCGEventFlagMaskControl) || \
@@ -42,7 +41,6 @@ NSDictionary *keyStringToKeyCodeMap = @{
     @",": @43, @"<": @43, @".": @47, @">": @47, @"/": @44, @"?": @44
 };
 
-extern ViewController* viewController;
 
 //MacViKey P0-3: ban nay khoa vCodeTable = 0 (Unicode dung san), nen IS_DOUBLE_CODE
 //luon false. Dinh nghia lai thanh hang so 0 de compiler loai bo toan bo co che

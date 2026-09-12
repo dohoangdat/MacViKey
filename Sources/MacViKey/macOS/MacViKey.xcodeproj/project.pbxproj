@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		232EDA5921F1B33E0085D362 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 232EDA5821F1B33E0085D362 /* AppDelegate.m */; };
-		232EDA5C21F1B33E0085D362 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 232EDA5B21F1B33E0085D362 /* ViewController.m */; };
 		MVK000000000000000ML01 /* MenuLayout.json in Resources */ = {isa = PBXBuildFile; fileRef = MVK000000000000000ML04 /* MenuLayout.json */; };
 		MVK000000000000000ML02 /* MacViKeyMenuLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = MVK000000000000000ML06 /* MacViKeyMenuLayout.m */; };
 		MVK0000000000000000003 /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = MVK0000000000000000004 /* Icon.icns */; };
@@ -26,7 +25,6 @@
 		MVK00000000000000000AX01 /* MacViKeyAX.m in Sources */ = {isa = PBXBuildFile; fileRef = MVK00000000000000000AX02 /* MacViKeyAX.m */; };
 		MVK00000000000000000IF01 /* MacViKeyInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = MVK00000000000000000IF02 /* MacViKeyInfo.m */; };
 		23963B5022040C720097189E /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23963B4F22040C720097189E /* ServiceManagement.framework */; };
-		23CA6D1722F0439100804D6E /* MyTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 23CA6D1622F0439100804D6E /* MyTextField.m */; };
 		23E2E49E2314FD3A006CCC3E /* SmartSwitchKey.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23E2E4982314FD3A006CCC3E /* SmartSwitchKey.cpp */; };
 		23E2E49F2314FD3A006CCC3E /* Engine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23E2E49A2314FD3A006CCC3E /* Engine.cpp */; };
 		23E2E4A02314FD3A006CCC3E /* Vietnamese.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23E2E49B2314FD3A006CCC3E /* Vietnamese.cpp */; };
@@ -37,6 +35,7 @@
 		MVKBSW03 /* MacViKeyQuickPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MVKFSW03 /* MacViKeyQuickPanelView.swift */; };
 		MVKBSW04 /* MacViKeyWindows.swift in Sources */ = {isa = PBXBuildFile; fileRef = MVKFSW04 /* MacViKeyWindows.swift */; };
 		MVKBQR01 /* MacViKeyQuickRow.m in Sources */ = {isa = PBXBuildFile; fileRef = MVKFQR01 /* MacViKeyQuickRow.m */; };
+		MVKBSW05 /* MacViKeyControlPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MVKFSW05 /* MacViKeyControlPanelView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -55,8 +54,6 @@
 		232EDA5421F1B33E0085D362 /* MacViKey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacViKey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		232EDA5721F1B33E0085D362 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		232EDA5821F1B33E0085D362 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		232EDA5A21F1B33E0085D362 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		232EDA5B21F1B33E0085D362 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		MVK000000000000000ML04 /* MenuLayout.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = MenuLayout.json; sourceTree = "<group>"; };
 		MVK000000000000000ML05 /* MacViKeyMenuLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MacViKeyMenuLayout.h; sourceTree = "<group>"; };
 		MVK000000000000000ML06 /* MacViKeyMenuLayout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MacViKeyMenuLayout.m; sourceTree = "<group>"; };
@@ -92,8 +89,6 @@
 		2397059B23143267002DDEA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2397059C23143267002DDEA7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		23A984BE220ED07E000914A2 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
-		23CA6D1522F0439100804D6E /* MyTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyTextField.h; sourceTree = "<group>"; };
-		23CA6D1622F0439100804D6E /* MyTextField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyTextField.m; sourceTree = "<group>"; };
 		23E2E4942314FD3A006CCC3E /* Engine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Engine.h; sourceTree = "<group>"; };
 		23E2E4962314FD3A006CCC3E /* DataType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataType.h; sourceTree = "<group>"; };
 		23E2E4982314FD3A006CCC3E /* SmartSwitchKey.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SmartSwitchKey.cpp; sourceTree = "<group>"; };
@@ -110,6 +105,7 @@
 		MVKFQR01 /* MacViKeyQuickRow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MacViKeyQuickRow.m; sourceTree = "<group>"; };
 		MVKFQR02 /* MacViKeyQuickRow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MacViKeyQuickRow.h; sourceTree = "<group>"; };
 		MVKFBR01 /* MacViKey-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacViKey-Bridging-Header.h"; sourceTree = "<group>"; };
+		MVKFSW05 /* MacViKeyControlPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacViKeyControlPanelView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -167,8 +163,6 @@
 				23F512832336386200397988 /* MJAccessibilityUtils.m */,
 				232EDA5721F1B33E0085D362 /* AppDelegate.h */,
 				232EDA5821F1B33E0085D362 /* AppDelegate.m */,
-				232EDA5A21F1B33E0085D362 /* ViewController.h */,
-				232EDA5B21F1B33E0085D362 /* ViewController.m */,
 				232EDA5D21F1B33F0085D362 /* Assets.xcassets */,
 				232EDA5F21F1B33F0085D362 /* Main.storyboard */,
 				232EDA6221F1B33F0085D362 /* Info.plist */,
@@ -190,8 +184,7 @@
 				MVKFSW02 /* MacViKeyAboutView.swift */,
 				MVKFSW03 /* MacViKeyQuickPanelView.swift */,
 				MVKFSW04 /* MacViKeyWindows.swift */,
-				23CA6D1522F0439100804D6E /* MyTextField.h */,
-				23CA6D1622F0439100804D6E /* MyTextField.m */,
+				MVKFSW05 /* MacViKeyControlPanelView.swift */,
 				2371AAEE22FA85B200CA1B57 /* MacViKeyHook.mm */,
 			);
 			path = MacViKey;
@@ -322,7 +315,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				23E2E49F2314FD3A006CCC3E /* Engine.cpp in Sources */,
-				232EDA5C21F1B33E0085D362 /* ViewController.m in Sources */,
 				23E2E49E2314FD3A006CCC3E /* SmartSwitchKey.cpp in Sources */,
 				23F512852336386200397988 /* MJAccessibilityUtils.m in Sources */,
 				2389467D21FDDB920030A13B /* MacViKeyManager.m in Sources */,
@@ -330,7 +322,6 @@
 				MVK00000000000000000AX01 /* MacViKeyAX.m in Sources */,
 				MVK00000000000000000IF01 /* MacViKeyInfo.m in Sources */,
 				23E2E4A02314FD3A006CCC3E /* Vietnamese.cpp in Sources */,
-				23CA6D1722F0439100804D6E /* MyTextField.m in Sources */,
 				232EDA6421F1B33F0085D362 /* main.m in Sources */,
 				2371AAEF22FA85B200CA1B57 /* MacViKeyHook.mm in Sources */,
 				232EDA5921F1B33E0085D362 /* AppDelegate.m in Sources */,
@@ -339,6 +330,7 @@
 				MVKBSW02 /* MacViKeyAboutView.swift in Sources */,
 				MVKBSW03 /* MacViKeyQuickPanelView.swift in Sources */,
 				MVKBSW04 /* MacViKeyWindows.swift in Sources */,
+				MVKBSW05 /* MacViKeyControlPanelView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

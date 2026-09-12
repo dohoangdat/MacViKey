@@ -12,7 +12,6 @@
 #import "MacViKeyInfo.h"
 #import "MacViKeyManager.h"
 #import "MacViKeyMenuLayout.h"
-#import "ViewController.h"
 #import <AppKit/AppKit.h>
 #import <Carbon/Carbon.h>
 #import <Cocoa/Cocoa.h>
@@ -33,7 +32,6 @@ extern int _macViKeyTapDisabledCount;
 
 // MacViKey: loai tru ung dung + duong Accessibility
 extern NSString *MacViKeyCurrentAppName(void);
-extern ViewController *viewController;
 extern void OnTableCodeChange(void);
 extern void OnInputMethodChanged(void);
 extern void RequestNewSession(void);
@@ -92,12 +90,15 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   MacViKeyOptionShowIconOnMenuBar,
 };
 
-@interface AppDelegate () <MacViKeyQuickPanelActions>
+@interface AppDelegate () <MacViKeyQuickPanelActions,
+                           MacViKeyControlPanelActions>
 
 @end
 
 @implementation AppDelegate {
-  NSWindowController *_mainWC;
+  // Bang dieu khien la SwiftUI (MacViKeyControlPanelWindow), khong con la
+  // scene "MacViKey" trong Main.storyboard.
+  MacViKeyControlPanelWindow *_controlPanel;
   // Cua so Gioi thieu la SwiftUI (MacViKeyAboutWindow), khong con la scene
   // "AboutWindow" trong Main.storyboard.
   MacViKeyAboutWindow *_aboutWindow;
@@ -759,7 +760,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"RunOnStartup"];
 
   [self fillData];
-  [viewController fillData];
 }
 
 // Duong dan file LaunchAgent cho duong macOS < 13.
@@ -879,7 +879,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   [[NSUserDefaults standardUserDefaults] setInteger:vSwitchKeyStatus
                                              forKey:@"SwitchKeyStatus"];
   [self fillData];
-  [viewController fillData];
 }
 
 - (NSString *)macViKeyPrefKeyForTag:(NSInteger)tag {
@@ -978,7 +977,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   }
 
   [self fillData];
-  [viewController fillData];
 }
 
 - (void)onCheckNewVersionNow {
@@ -1216,6 +1214,35 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 // bang dieu khien khong bao gio lech nhau.
 - (void)macViKeyRefreshQuickPanel {
   [_quickPanel refresh];
+  [_controlPanel refresh];
+}
+
+#pragma mark - MacViKeyControlPanelActions
+
+- (NSString *)controlPanelStatusTitle {
+  return mnuStatusLine.title ?: @"";
+}
+
+- (BOOL)controlPanelEngineIsRunning {
+  return MJAccessibilityIsEnabled() && MacViKeyIsEventTapAlive();
+}
+
+- (void)controlPanelRestartEngine {
+  [self onRestartEngine];
+}
+
+- (void)controlPanelOpenQuickPanel {
+  [self onQuickPanelSelected];
+}
+
+- (void)controlPanelOpenAbout {
+  [self onAboutSelected];
+}
+
+- (void)controlPanelResetToDefaults {
+  // loadDefaultConfig goi fillData nen bang nhanh va bang dieu khien tu dong
+  // dong bo lai; khong can lam gi them o day.
+  [self loadDefaultConfig];
 }
 
 - (void)onQuickPanelSelected {
@@ -1342,7 +1369,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
                                              forKey:@"InputMethod"];
 
   [self fillData];
-  [viewController fillData];
 
   if (willNotify)
     OnInputMethodChanged();
@@ -1510,7 +1536,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   [[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"InputType"];
   vInputType = index;
   [self fillData];
-  [viewController fillData];
 }
 
 - (void)onCodeTableChanged:(int)index {
@@ -1518,7 +1543,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   [[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"CodeTable"];
   vCodeTable = index;
   [self fillData];
-  [viewController fillData];
   OnTableCodeChange();
 }
 
@@ -1528,16 +1552,9 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 }
 
 - (void)onControlPanelSelected {
-  if (_mainWC == nil) {
-    _mainWC = [[NSStoryboard storyboardWithName:@"Main" bundle:nil]
-        instantiateControllerWithIdentifier:@"MacViKey"];
-  }
-  //[MacViKeyManager showDockIcon:YES];
-  if ([_mainWC.window isVisible]) {
-    return;
-  }
-  [_mainWC.window makeKeyAndOrderFront:nil];
-  [_mainWC.window setLevel:NSFloatingWindowLevel];
+  if (_controlPanel == nil)
+    _controlPanel = [[MacViKeyControlPanelWindow alloc] initWithActions:self];
+  [_controlPanel show];
 }
 
 - (void)onAboutSelected {
@@ -1549,7 +1566,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 #pragma mark -Short key event
 - (void)onSwitchLanguage {
   [self onInputMethodSelected];
-  [viewController fillData];
 }
 
 #pragma mark Reset engine after mac computer awake

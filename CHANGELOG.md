@@ -31,8 +31,10 @@
 - Bỏ mã nguồn Windows và Linux
 - Bundle identifier giữ nguyên `com.mac.vi.key`
 - Yêu cầu tối thiểu macOS 11 (Big Sur) — giao diện dùng SwiftUI
-- Cửa sổ Giới thiệu và bảng nhanh viết lại bằng SwiftUI; bỏ scene storyboard
-  và `AboutViewController`
+- Cửa sổ Giới thiệu, bảng nhanh và bảng điều khiển viết lại bằng SwiftUI; bỏ
+  `AboutViewController`, `ViewController`, `MyTextField` và 707 dòng storyboard
+- Bảng điều khiển giờ làm đúng việc chỉ nó làm được: xem trạng thái bộ gõ,
+  khởi động lại, và khôi phục cấu hình mặc định
 - Hiện biểu tượng trên thanh Dock đổi thành mặc định BẬT
 
 ### Hạ tầng

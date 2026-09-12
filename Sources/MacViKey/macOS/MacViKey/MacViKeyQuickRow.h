@@ -82,4 +82,18 @@ typedef NS_ENUM(NSInteger, MacViKeyQuickRowKind) {
 
 @end
 
+/// Bang dieu khien goi nguoc ve AppDelegate qua giao thuc nay.
+@protocol MacViKeyControlPanelActions <NSObject>
+
+/// Cau trang thai bo go, dung chuoi ma menu thanh trang thai dang dung.
+- (NSString *)controlPanelStatusTitle;
+- (BOOL)controlPanelEngineIsRunning;
+- (void)controlPanelRestartEngine;
+- (void)controlPanelOpenQuickPanel;
+- (void)controlPanelOpenAbout;
+/// Dat lai moi tuy chon ve mac dinh xuat xuong.
+- (void)controlPanelResetToDefaults;
+
+@end
+
 NS_ASSUME_NONNULL_END

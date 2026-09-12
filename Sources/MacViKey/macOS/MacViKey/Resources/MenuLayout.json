@@ -234,7 +234,7 @@
       "id": "controlPanel",
       "title": "Bảng điều khiển...",
       "enabled": true,
-      "hint": "Mở bảng điều khiển đầy đủ."
+      "hint": "Trạng thái bộ gõ, khởi động lại và khôi phục cấu hình mặc định."
     },
     {
       "id": "about",

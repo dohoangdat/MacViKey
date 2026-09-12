@@ -99,3 +99,32 @@ final class MacViKeyQuickPanelWindow: NSObject {
         model.refresh()
     }
 }
+
+// MARK: - Bang dieu khien
+
+@objc(MacViKeyControlPanelWindow)
+final class MacViKeyControlPanelWindow: NSObject {
+    private var window: NSWindow?
+    private let model: ControlPanelModel
+
+    @objc init(actions: any MacViKeyControlPanelActions) {
+        self.model = ControlPanelModel(actions: actions)
+        super.init()
+    }
+
+    @objc func show() {
+        model.refresh()
+        if window == nil {
+            window = makeHostedWindow(title: "Bảng điều khiển",
+                                      content: MacViKeyControlPanelView(model: model))
+        }
+        guard let window else { return }
+        present(window)
+    }
+
+    /// Gọi từ fillData, cùng nhịp với bảng nhanh.
+    @objc func refresh() {
+        guard window != nil else { return }
+        model.refresh()
+    }
+}

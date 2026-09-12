@@ -7,7 +7,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "ViewController.h"
 
 #define MACVIKEY_BUNDLE @"com.mac.vi.key"
 
