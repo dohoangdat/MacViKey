@@ -13,8 +13,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// Truy cap file mo ta menu (thu tu, chu, menu con). Doc mot lan roi nho lai.
 @interface MacViKeyMenuLayout : NSObject
 
-/// Cay menu goc: mang cac dictionary { id | separator, title, items }.
+/// Cay menu tha xuong tren thanh trang thai.
 + (NSArray<NSDictionary *> *)nodes;
+
+/// Cay cua so Cai dat: mang cac trang, moi trang co 'items' rieng.
++ (NSArray<NSDictionary *> *)settingsNodes;
 
 /// Cau chu co phan thay doi luc chay. Thieu key thi tra ve `fallback`.
 + (NSString *)string:(NSString *)key fallback:(NSString *)fallback;

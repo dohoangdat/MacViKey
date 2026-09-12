@@ -1,9 +1,9 @@
 //  SPDX-License-Identifier: GPL-3.0-or-later
 //
 //  MacViKeyAboutView.swift
-//  MacViKey — cửa sổ Giới thiệu, viết bằng SwiftUI
+//  MacViKey — trang Giới thiệu trong cửa sổ Cài đặt
 //
-//  Thay cho AboutViewController + scene "AboutWindow" trong Main.storyboard.
+//  Trước đây là cửa sổ riêng; gộp vào Cài đặt để cả ứng dụng chỉ còn một cửa sổ.
 //  Mọi chuỗi vẫn đọc từ Info.plist qua MacViKeyInfo, không hard-code lại.
 //
 //  Copyright © 2026 Do Hoang Dat
@@ -25,59 +25,42 @@
 
 import SwiftUI
 
-struct MacViKeyAboutView: View {
-    /// Nhãn nút kiểm tra bản mới đổi theo trạng thái, nên phải là state.
-    @State private var checking = false
-
+struct MacViKeyAboutPage: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: Design.sectionSpacing) {
-            header
-            Text(MacViKeyInfo.aboutText)
-                .font(.system(size: 12))
-                .foregroundColor(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-            links
-            donate
-            footer
+        ScrollView {
+            VStack(alignment: .leading, spacing: Design.sectionSpacing) {
+                header
+                Text(MacViKeyInfo.aboutText)
+                    .font(.system(size: 12))
+                    .foregroundColor(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                links
+                donate
+                footer
+                Spacer(minLength: 0)
+            }
+            .padding(Design.pagePadding)
+            .frame(width: Design.detailWidth, alignment: .leading)
         }
-        .padding(Design.pagePadding)
-        .frame(width: Design.windowWidth)
     }
 
-    // MARK: - Đầu trang: logo, tên, phiên bản
+    // MARK: - Đầu trang
 
     private var header: some View {
-        HStack(alignment: .top, spacing: 14) {
-            appIcon
-            VStack(alignment: .leading, spacing: 2) {
+        HStack(alignment: .center, spacing: 14) {
+            Image(nsImage: NSApp.applicationIconImage)
+                .resizable()
+                .frame(width: 64, height: 64)
+            VStack(alignment: .leading, spacing: 3) {
                 Text(MacViKeyInfo.appName)
-                    .font(.system(size: 20, weight: .semibold))
+                    .font(.system(size: 22, weight: .semibold))
                 Text(MacViKeyInfo.versionInfoText)
                     .font(.system(size: 11))
                     .foregroundColor(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
-                checkButton
-                    .padding(.top, 6)
             }
+            Spacer(minLength: 0)
         }
-    }
-
-    private var appIcon: some View {
-        Image(nsImage: NSApp.applicationIconImage)
-            .resizable()
-            .frame(width: 56, height: 56)
-    }
-
-    private var checkButton: some View {
-        Button {
-            checking = true
-            MacViKeyManager.checkNewVersion(nil) {
-                checking = false
-            }
-        } label: {
-            Text(checking ? "Đang kiểm tra..." : "Kiểm tra bản mới")
-        }
-        .disabled(checking)
     }
 
     // MARK: - Liên kết
@@ -85,7 +68,7 @@ struct MacViKeyAboutView: View {
     private var links: some View {
         VStack(alignment: .leading, spacing: Design.tightSpacing) {
             SectionHeader(title: "Liên kết")
-            Card {
+            Card(spacing: 9) {
                 LinkRow(label: "Trang chủ", url: MacViKeyInfo.homePageURL)
                 LinkRow(label: "Bản phát hành", url: MacViKeyInfo.releasesURL)
                 LinkRow(label: "Mã nguồn", url: MacViKeyInfo.sourceCodeURL)
@@ -110,16 +93,15 @@ struct MacViKeyAboutView: View {
                     } label: {
                         Text("Mở hòm công đức")
                     }
-                    .padding(.top, 2)
                 }
             }
         }
     }
 
-    // MARK: - Chân trang: bản quyền, giấy phép
+    // MARK: - Chân trang
 
     private var footer: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 5) {
             Divider()
             Text(MacViKeyInfo.copyrightShort)
                 .font(.system(size: 11))

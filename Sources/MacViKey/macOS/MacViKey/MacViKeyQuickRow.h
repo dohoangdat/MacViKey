@@ -1,12 +1,12 @@
 //  SPDX-License-Identifier: GPL-3.0-or-later
 //
 //  MacViKeyQuickRow.h
-//  MacViKey — mô tả một dòng của bảng nhanh, để lớp SwiftUI vẽ lại
+//  MacViKey — mô tả các trang và dòng của cửa sổ Cài đặt, để SwiftUI vẽ lại
 //
 //  Vì sao cần lớp mô tả này: MenuLayout.json là nguồn sự thật duy nhất cho cả
-//  menu trên thanh trạng thái và bảng nhanh. Phía Objective-C đi cây JSON đó
-//  (đã có sẵn bộ lọc cờ biên dịch + cờ "enabled"), rồi trả ra một danh sách
-//  dòng phẳng; SwiftUI chỉ việc vẽ. Nếu để Swift tự đọc JSON thì thành hai bộ
+//  menu trên thanh trạng thái và cửa sổ Cài đặt. Phía Objective-C đi cây JSON
+//  đó (đã có sẵn bộ lọc cờ biên dịch + cờ "enabled"), rồi trả ra danh sách
+//  trang/dòng; SwiftUI chỉ việc vẽ. Nếu để Swift tự đọc JSON thì thành hai bộ
 //  luật lọc song song, và đó đúng là kiểu lệch mà dự án đang cố tránh.
 //
 //  Copyright © 2026 Do Hoang Dat
@@ -33,9 +33,9 @@ NS_ASSUME_NONNULL_BEGIN
 typedef NS_ENUM(NSInteger, MacViKeyQuickRowKind) {
   /// Đường kẻ ngang.
   MacViKeyQuickRowKindSeparator = 0,
-  /// Tiêu đề nhóm; các dòng con nằm trong `children`.
-  MacViKeyQuickRowKindGroup,
-  /// Dòng trạng thái - nút lớn ở đầu bảng.
+  /// Một trang trong thanh bên của cửa sổ Cài đặt; các dòng nằm trong `children`.
+  MacViKeyQuickRowKindPage,
+  /// Dòng chế độ gõ Việt / Anh.
   MacViKeyQuickRowKindStatus,
   /// Thông tin đã khoá cứng (kiểu gõ, bảng mã): chỉ đọc.
   MacViKeyQuickRowKindFixedInfo,
@@ -45,6 +45,8 @@ typedef NS_ENUM(NSInteger, MacViKeyQuickRowKind) {
   MacViKeyQuickRowKindRadio,
   /// Nút chạy một hành động; nhận biết qua `rowId`.
   MacViKeyQuickRowKindAction,
+  /// Trang Giới thiệu - SwiftUI tự vẽ, không sinh từ `children`.
+  MacViKeyQuickRowKindAboutPage,
 };
 
 @interface MacViKeyQuickRow : NSObject
@@ -57,8 +59,11 @@ typedef NS_ENUM(NSInteger, MacViKeyQuickRowKind) {
 @property(nonatomic, copy, nullable) NSString *hint;
 @property(nonatomic) NSInteger tag;
 @property(nonatomic) BOOL on;
-/// Hành động mang tính phá huỷ (Thoát) - SwiftUI tô khác màu.
+/// Hành động mang tính phá huỷ (khôi phục mặc định) - SwiftUI tô khác màu và
+/// hỏi lại trước khi chạy.
 @property(nonatomic) BOOL destructive;
+/// Tên SF Symbol cho biểu tượng trang trong thanh bên ("symbol" trong JSON).
+@property(nonatomic, copy, nullable) NSString *symbol;
 @property(nonatomic, copy) NSArray<MacViKeyQuickRow *> *children;
 
 + (instancetype)rowWithKind:(MacViKeyQuickRowKind)kind
@@ -67,32 +72,22 @@ typedef NS_ENUM(NSInteger, MacViKeyQuickRowKind) {
 
 @end
 
-/// Bảng nhanh gọi ngược về AppDelegate qua giao thức này. Không có tham chiếu
-/// nào từ Swift sang AppDelegate, nên không sinh vòng phụ thuộc.
-@protocol MacViKeyQuickPanelActions <NSObject>
+/// Cửa sổ Cài đặt gọi ngược về AppDelegate qua giao thức này. Không có tham
+/// chiếu nào từ Swift sang AppDelegate, nên không sinh vòng phụ thuộc.
+@protocol MacViKeySettingsActions <NSObject>
 
-/// Dựng lại danh sách dòng theo trạng thái hiện tại.
-- (NSArray<MacViKeyQuickRow *> *)quickPanelRows;
-/// Tiêu đề dòng trạng thái, luôn khớp với dòng đầu menu thanh trạng thái.
-- (NSString *)quickPanelStatusTitle;
-- (void)quickPanelDidToggleOptionWithTag:(NSInteger)tag;
-- (void)quickPanelDidSelectSwitchKeyAtIndex:(NSInteger)index;
-- (void)quickPanelDidTapStatusLine;
-- (void)quickPanelDidTapActionWithId:(NSString *)rowId;
-
-@end
-
-/// Bang dieu khien goi nguoc ve AppDelegate qua giao thuc nay.
-@protocol MacViKeyControlPanelActions <NSObject>
-
-/// Cau trang thai bo go, dung chuoi ma menu thanh trang thai dang dung.
-- (NSString *)controlPanelStatusTitle;
-- (BOOL)controlPanelEngineIsRunning;
-- (void)controlPanelRestartEngine;
-- (void)controlPanelOpenQuickPanel;
-- (void)controlPanelOpenAbout;
-/// Dat lai moi tuy chon ve mac dinh xuat xuong.
-- (void)controlPanelResetToDefaults;
+/// Dựng lại danh sách trang + dòng theo trạng thái hiện tại.
+- (NSArray<MacViKeyQuickRow *> *)settingsPages;
+/// Câu trạng thái bộ gõ, dùng đúng chuỗi mà menu thanh trạng thái đang dùng.
+- (NSString *)settingsStatusTitle;
+/// YES nếu đang gõ Tiếng Việt.
+- (BOOL)settingsVietnameseIsOn;
+- (BOOL)settingsEngineIsRunning;
+- (void)settingsSetVietnamese:(BOOL)on;
+- (void)settingsRestartEngine;
+- (void)settingsToggleOptionWithTag:(NSInteger)tag;
+- (void)settingsSelectSwitchKeyAtIndex:(NSInteger)index;
+- (void)settingsRunActionWithId:(NSString *)rowId;
 
 @end
 

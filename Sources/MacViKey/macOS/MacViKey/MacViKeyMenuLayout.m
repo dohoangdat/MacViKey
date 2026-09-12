@@ -41,6 +41,11 @@
   return [nodes isKindOfClass:NSArray.class] ? nodes : @[];
 }
 
++ (NSArray<NSDictionary *> *)settingsNodes {
+  id nodes = [self layout][@"settings"];
+  return [nodes isKindOfClass:NSArray.class] ? nodes : @[];
+}
+
 + (NSString *)string:(NSString *)key fallback:(NSString *)fallback {
   id strings = [self layout][@"strings"];
   if ([strings isKindOfClass:NSDictionary.class]) {

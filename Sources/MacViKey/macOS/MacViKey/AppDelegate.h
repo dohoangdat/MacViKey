@@ -17,7 +17,6 @@
 
 -(void)askPermission;
 
--(void)onInputTypeSelectedIndex:(int)index;
 -(void)onCodeTableChanged:(int)index;
 
 -(void)setRunOnStartup:(BOOL)val;

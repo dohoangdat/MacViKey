@@ -1,7 +1,7 @@
 //  SPDX-License-Identifier: GPL-3.0-or-later
 //
 //  MacViKeyWindows.swift
-//  MacViKey — cửa ngõ cho Objective-C mở các cửa sổ SwiftUI
+//  MacViKey — cửa ngõ cho Objective-C mở cửa sổ Cài đặt
 //
 //  AppDelegate vẫn là Objective-C, nên mọi thứ Swift mà nó cần đều phải đi qua
 //  @objc. Gom vào một file để chỗ giao nhau giữa hai ngôn ngữ chỉ có một nơi.
@@ -25,104 +25,48 @@
 
 import SwiftUI
 
-/// Dựng cửa sổ cho một view SwiftUI.
+/// Cửa sổ Cài đặt - cửa sổ duy nhất của ứng dụng.
 ///
-/// Vì sao tự dựng NSWindow chứ không dùng `Window`/`Settings` của SwiftUI App:
+/// Vì sao tự dựng NSWindow chứ không dùng `Settings`/`Window` của SwiftUI App:
 /// MacViKey là ứng dụng LSUIElement với NSApplicationMain sẵn có, vòng đời do
 /// AppDelegate giữ. Đổi sang SwiftUI App life-cycle là viết lại chỗ đó, mà chỗ
-/// đó đang gánh event tap - không đáng đổi lấy hai cửa sổ phụ.
-private func makeHostedWindow<Content: View>(title: String,
-                                            content: Content) -> NSWindow {
-    let hosting = NSHostingController(rootView: content)
-    let window = NSWindow(contentViewController: hosting)
-    window.title = title
-    window.styleMask = [.titled, .closable]
-    window.isReleasedWhenClosed = false
-    // Kích thước do SwiftUI tự quyết (view đã cố định bề rộng); gọi
-    // setContentSize theo fittingSize để cửa sổ không cắt mất nội dung.
-    window.setContentSize(hosting.view.fittingSize)
-    window.center()
-    return window
-}
-
-/// Đưa một cửa sổ lên trước. Với ứng dụng LSUIElement thì phải activate app
-/// trước, nếu không cửa sổ hiện ra mà không nhận được bàn phím.
-private func present(_ window: NSWindow) {
-    if window.isVisible { return }
-    NSApp.activate(ignoringOtherApps: true)
-    window.makeKeyAndOrderFront(nil)
-    window.level = .floating
-}
-
-// MARK: - Cửa sổ Giới thiệu
-
-@objc(MacViKeyAboutWindow)
-final class MacViKeyAboutWindow: NSObject {
+/// đó đang gánh event tap - không đáng đổi lấy một cửa sổ.
+@objc(MacViKeySettingsWindow)
+final class MacViKeySettingsWindow: NSObject {
     private var window: NSWindow?
+    private let model: SettingsModel
 
-    @objc func show() {
-        if window == nil {
-            window = makeHostedWindow(title: "Giới thiệu \(MacViKeyInfo.appName)",
-                                      content: MacViKeyAboutView())
-        }
-        guard let window else { return }
-        present(window)
-    }
-}
-
-// MARK: - Bảng nhanh
-
-@objc(MacViKeyQuickPanelWindow)
-final class MacViKeyQuickPanelWindow: NSObject {
-    private var window: NSWindow?
-    private let model: QuickPanelModel
-
-    @objc init(actions: any MacViKeyQuickPanelActions) {
-        self.model = QuickPanelModel(actions: actions)
+    @objc init(actions: any MacViKeySettingsActions) {
+        self.model = SettingsModel(actions: actions)
         super.init()
     }
 
     @objc func show() {
         model.refresh()
         if window == nil {
-            let title = MacViKeyMenuLayout.string("quickPanel.title", fallback: "MacViKey")
-            window = makeHostedWindow(title: title,
-                                      content: MacViKeyQuickPanelView(model: model))
+            let hosting = NSHostingController(
+                rootView: MacViKeySettingsView(model: model))
+            let w = NSWindow(contentViewController: hosting)
+            w.title = MacViKeyMenuLayout.string("settings.title",
+                                                fallback: "Cài đặt MacViKey")
+            w.styleMask = [.titled, .closable, .fullSizeContentView]
+            // Thanh bên của NavigationView chạy lên sát thanh tiêu đề, nên để
+            // thanh tiêu đề trong suốt cho hai vùng liền một khối.
+            w.titlebarAppearsTransparent = true
+            w.isReleasedWhenClosed = false
+            w.setContentSize(hosting.view.fittingSize)
+            w.center()
+            window = w
         }
-        guard let window else { return }
-        present(window)
+        guard let window = window else { return }
+        if window.isVisible { return }
+        // Ứng dụng LSUIElement phải activate trước, nếu không cửa sổ hiện ra mà
+        // không nhận được bàn phím.
+        NSApp.activate(ignoringOtherApps: true)
+        window.makeKeyAndOrderFront(nil)
     }
 
-    /// Gọi từ fillData: bảng nhanh, menu và prefs không bao giờ lệch nhau.
-    @objc func refresh() {
-        guard window != nil else { return }
-        model.refresh()
-    }
-}
-
-// MARK: - Bang dieu khien
-
-@objc(MacViKeyControlPanelWindow)
-final class MacViKeyControlPanelWindow: NSObject {
-    private var window: NSWindow?
-    private let model: ControlPanelModel
-
-    @objc init(actions: any MacViKeyControlPanelActions) {
-        self.model = ControlPanelModel(actions: actions)
-        super.init()
-    }
-
-    @objc func show() {
-        model.refresh()
-        if window == nil {
-            window = makeHostedWindow(title: "Bảng điều khiển",
-                                      content: MacViKeyControlPanelView(model: model))
-        }
-        guard let window else { return }
-        present(window)
-    }
-
-    /// Gọi từ fillData, cùng nhịp với bảng nhanh.
+    /// Gọi từ fillData: cửa sổ, menu và prefs không bao giờ lệch nhau.
     @objc func refresh() {
         guard window != nil else { return }
         model.refresh()

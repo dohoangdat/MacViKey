@@ -1,21 +1,27 @@
 {
   "_doc": [
-    "Thu tu va toan bo chu tren menu thanh trang thai cua MacViKey.",
-    "Sua file nay la doi duoc menu, khong can dong vao AppDelegate.m.",
+    "Toan bo chu va thu tu cua giao dien MacViKey. Sua file nay la doi duoc",
+    "giao dien, khong can dong vao AppDelegate.m.",
     "",
-    "- 'menu' la danh sach cac muc, hien thi dung theo thu tu trong mang.",
-    "- Moi muc co 'id' (dinh danh co dinh, code dua vao day de gan hanh dong)",
-    "  va 'title' (chu hien ra - tu do sua/dich).",
-    "- { \"separator\": true } la duong ke ngang.",
-    "- 'items' la menu con.",
-    "- Muc co id la khong doi; id la de code nhan ra, doi id = mat chuc nang.",
-    "- \"enabled\": false = tat muc do (ke ca menu con cua no). Doi lai thanh",
-    "  true la hien lai - khong can sua code, chi can khoi dong lai app.",
-    "- Muc bi tat boi co bien dich (MacViKeyConfig.h) se tu dong bi bo qua,",
-    "  cu de nguyen trong file nay cung khong sao. Co bien dich tat thi",
-    "  \"enabled\": true cung khong bat lai duoc.",
-    "- 'hint' la cau huong dan: muc nao co hint co bong huong dan:",
-    "  re chuot len muc do khoang mot giay la hien ra. Xoa 'hint' la khong hien nua.",
+    "Co HAI cay:",
+    "- 'menu' la menu tha xuong tren thanh trang thai. Co tinh giu that gon:",
+    "  chi trang thai + thong tin phim chuyen + nut mo Cai dat + Thoat.",
+    "- 'settings' la cua so Cai dat (SwiftUI). Moi muc trong mang nay la MOT",
+    "  trang trong thanh ben trai; 'items' cua no la cac dong trong trang do.",
+    "  MOI cau hinh deu nam o day, khong con nam tren menu.",
+    "",
+    "Quy tac chung cho ca hai cay:",
+    "- 'id' la dinh danh co dinh, code dua vao day de gan hanh dong.",
+    "  Doi id = mat chuc nang. 'title' la chu hien ra - tu do sua/dich.",
+    "- { \"separator\": true } la duong ke ngang (chi dung trong 'menu').",
+    "- \"enabled\": false = tat muc do. Doi lai thanh true la hien lai -",
+    "  khong can sua code, chi can khoi dong lai app.",
+    "- Muc bi tat boi co bien dich (MacViKeyConfig.h) se tu dong bi bo qua.",
+    "  Co bien dich tat thi \"enabled\": true cung khong bat lai duoc.",
+    "- 'hint' la cau huong dan: re chuot len muc do khoang mot giay la hien ra.",
+    "  Xoa 'hint' la khong hien nua.",
+    "- 'symbol' la ten SF Symbol cho bieu tuong trang trong thanh ben.",
+    "- 'short' la ten ngan cua phim chuyen, dung cho dong thong tin tren menu.",
     "- 'strings' chua cac cau co phan thay doi luc chay (%@ = chuoi, %d = so).",
     "  Phai giu nguyen so luong va thu tu cac ky hieu %@ / %d."
   ],
@@ -24,223 +30,25 @@
       "id": "statusLine",
       "title": "Đang gõ: TIẾNG VIỆT — bấm để chuyển English",
       "enabled": true,
-      "hint": "Dòng trạng thái chính. Khi chưa có quyền Trợ năng, bấm để cấp quyền. Khi bộ gõ đã dừng, bấm để khởi động lại. Bình thường: bấm để đổi qua lại Tiếng Việt / English."
+      "hint": "Khi chưa có quyền Trợ năng, bấm để cấp quyền. Khi bộ gõ đã dừng, bấm để khởi động lại. Bình thường: bấm để đổi qua lại Tiếng Việt / English."
     },
     {
       "separator": true
     },
     {
-      "id": "switchKeyMenu",
-      "title": "Phím tắt chuyển nhanh Việt / Anh",
+      "id": "switchKeyInfo",
+      "title": "Phím chuyển: Control + Shift",
       "enabled": true,
-      "hint": "Chọn tổ hợp phím để chuyển nhanh giữa Tiếng Việt và English mà không cần mở menu.",
-      "items": [
-        {
-          "id": "switchKey.cmdShift",
-          "title": "Bấm: Command + Shift (⌘ + ⇧)",
-          "enabled": true,
-          "hint": "Nhấn Command + Shift để đổi Việt / Anh."
-        },
-        {
-          "id": "switchKey.optShift",
-          "title": "Bấm: Option + Shift (⌥ + ⇧)",
-          "enabled": true,
-          "hint": "Nhấn Option + Shift để đổi Việt / Anh."
-        },
-        {
-          "id": "switchKey.ctrlShift",
-          "title": "Bấm: Control + Shift (⌃ + ⇧)",
-          "enabled": true,
-          "hint": "Nhấn Control + Shift để đổi Việt / Anh."
-        },
-        {
-          "id": "switchKey.fnShift",
-          "title": "Bấm: Fn + Shift (fn + ⇧)",
-          "enabled": true,
-          "hint": "Nhấn phím fn + Shift để đổi Việt / Anh."
-        }
-      ]
+      "hint": "Tổ hợp phím đang dùng để đổi nhanh Việt / Anh. Đổi được trong Cài đặt."
     },
     {
       "separator": true
     },
     {
-      "id": "fixedInputType",
-      "title": "Kiểu gõ Telex",
+      "id": "openSettings",
+      "title": "Cài đặt...",
       "enabled": true,
-      "hint": "Kiểu gõ đang dùng, đã khoá cố định nên không đổi được."
-    },
-    {
-      "id": "fixedCodeTable",
-      "title": "Bảng mã Unicode",
-      "enabled": true,
-      "hint": "Bảng mã đang dùng, đã khoá cố định nên không đổi được."
-    },
-    {
-      "id": "inputTypeMenu",
-      "title": "Kiểu gõ",
-      "enabled": true,
-      "hint": "Chọn cách gõ dấu: Telex gõ aa=â, VNI gõ a6=â.",
-      "items": [
-        {
-          "id": "inputType.telex",
-          "title": "Telex",
-          "enabled": true,
-          "hint": "Gõ dấu bằng chữ: aa=â, aw=ă, s=sắc, f=huyền, j=nặng."
-        },
-        {
-          "id": "inputType.vni",
-          "title": "VNI",
-          "enabled": true,
-          "hint": "Gõ dấu bằng số: a6=â, a8=ă, 1=sắc, 2=huyền, 5=nặng."
-        },
-        {
-          "id": "inputType.simpleTelex1",
-          "title": "Simple Telex 1",
-          "enabled": true,
-          "hint": "Telex rút gọn: bỏ bớt vài quy tắc ít dùng cho đỡ gõ nhầm."
-        },
-        {
-          "id": "inputType.simpleTelex2",
-          "title": "Simple Telex 2",
-          "enabled": true,
-          "hint": "Telex rút gọn nhiều hơn Simple Telex 1."
-        }
-      ]
-    },
-    {
-      "id": "code.unicode",
-      "title": "Unicode dựng sẵn",
-      "enabled": true,
-      "hint": "Bảng mã tiêu chuẩn, dùng cho hầu hết ứng dụng hiện nay."
-    },
-    {
-      "id": "code.tcvn3",
-      "title": "TCVN3 (ABC)",
-      "enabled": true,
-      "hint": "Bảng mã cũ (font ABC), chỉ dùng khi mở tài liệu cũ."
-    },
-    {
-      "id": "code.vniWindows",
-      "title": "VNI Windows",
-      "enabled": true,
-      "hint": "Bảng mã cũ của VNI, chỉ dùng khi mở tài liệu cũ."
-    },
-    {
-      "id": "codeMenu",
-      "title": "Bảng mã khác",
-      "enabled": true,
-      "hint": "Các bảng mã ít dùng, chỉ cần khi làm việc với tài liệu cũ.",
-      "items": [
-        {
-          "id": "code.unicodeComposite",
-          "title": "Unicode tổ hợp",
-          "enabled": true,
-          "hint": "Unicode tổ hợp: dấu là ký tự riêng ghép vào chữ."
-        },
-        {
-          "id": "code.cp1258",
-          "title": "Vietnamese Locale CP 1258",
-          "enabled": true,
-          "hint": "Bảng mã CP 1258 của Windows, rất ít khi cần."
-        }
-      ]
-    },
-    {
-      "separator": true
-    },
-    {
-      "id": "typingOptionsMenu",
-      "title": "Tuỳ chọn gõ",
-      "enabled": true,
-      "hint": "Các tuỳ chọn nhỏ giúp gõ tiếng Việt đúng ý hơn.",
-      "items": [
-        {
-          "id": "option.upperCaseFirstChar",
-          "title": "Viết hoa chữ cái đầu câu",
-          "enabled": true,
-          "hint": "Tự viết hoa chữ cái đầu câu."
-        },
-        {
-          "id": "option.allowZFWJ",
-          "title": "Cho phép \"z w j f\" làm phụ âm",
-          "enabled": true,
-          "hint": "Cho phép gõ z w j f như phụ âm thường, tiện khi viết từ nước ngoài."
-        },
-        {
-          "id": "option.smartSwitchKey",
-          "title": "Chuyển chế độ thông minh theo ứng dụng",
-          "enabled": true,
-          "hint": "Nhớ chế độ Việt / Anh riêng cho từng ứng dụng và tự đổi khi bạn chuyển qua lại."
-        },
-        {
-          "id": "option.tempOffEngine",
-          "title": "Tạm tắt MacViKey bằng phím ⌘",
-          "enabled": true,
-          "hint": "Giữ phím ⌘ thì MacViKey tạm ngưng, tránh phá phím tắt."
-        },
-        {
-          "id": "option.otherLanguage",
-          "title": "Tắt tiếng Việt khi bộ gõ hệ thống khác tiếng Anh",
-          "enabled": true,
-          "hint": "Khi bộ gõ hệ thống chuyển sang ngôn ngữ khác tiếng Anh, MacViKey tự nhường."
-        }
-      ]
-    },
-    {
-      "id": "systemOptionsMenu",
-      "title": "Hệ thống",
-      "enabled": true,
-      "hint": "Các tuỳ chọn về chạy nền, hiển thị và sửa lỗi tương thích.",
-      "items": [
-        {
-          "id": "option.runOnStartup",
-          "title": "Khởi động cùng MacOS",
-          "enabled": true,
-          "hint": "Tự chạy MacViKey mỗi lần đăng nhập máy."
-        },
-        {
-          "id": "option.showIconOnDock",
-          "title": "Hiện biểu tượng trên thanh Dock",
-          "enabled": true,
-          "hint": "Hiện biểu tượng MacViKey ở thanh Dock."
-        },
-        {
-          "id": "option.showIconOnMenuBar",
-          "title": "Hiện biểu tượng trên thanh menu",
-          "hint": "Tắt thì MacViKey biến mất khỏi thanh menu. Bấm vào MacViKey.app để mở bảng nhanh và bật lại."
-        },
-        {
-          "id": "option.showUIOnStartup",
-          "title": "Mở bảng điều khiển khi khởi động",
-          "enabled": false,
-          "hint": "Mở bảng điều khiển ngay khi khởi động."
-        },
-        {
-          "separator": true
-        },
-        {
-          "id": "checkUpdateNow",
-          "title": "Kiểm tra bản mới...",
-          "enabled": true,
-          "hint": "Kiểm tra xem có bản MacViKey mới hay không."
-        }
-      ]
-    },
-    {
-      "separator": true
-    },
-    {
-      "id": "controlPanel",
-      "title": "Bảng điều khiển...",
-      "enabled": true,
-      "hint": "Trạng thái bộ gõ, khởi động lại và khôi phục cấu hình mặc định."
-    },
-    {
-      "id": "about",
-      "title": "Giới thiệu",
-      "enabled": true,
-      "hint": "Thông tin phiên bản, giấy phép và nguồn gốc của MacViKey."
+      "hint": "Mở cửa sổ Cài đặt - mọi tuỳ chọn đều ở đó."
     },
     {
       "separator": true
@@ -250,6 +58,121 @@
       "title": "Thoát",
       "enabled": true,
       "hint": "Thoát MacViKey. Bộ gõ sẽ ngừng hoạt động cho tới khi bạn mở lại."
+    }
+  ],
+  "settings": [
+    {
+      "id": "page.overview",
+      "title": "Tổng quan",
+      "symbol": "waveform.and.mic",
+      "enabled": true,
+      "items": [
+        {
+          "id": "statusLine",
+          "title": "Chế độ gõ",
+          "enabled": true,
+          "hint": "Đổi qua lại giữa Tiếng Việt và English."
+        },
+        {
+          "id": "fixedInputType",
+          "title": "Kiểu gõ Telex",
+          "enabled": true,
+          "hint": "Kiểu gõ đang dùng, đã khoá cố định nên không đổi được."
+        },
+        {
+          "id": "fixedCodeTable",
+          "title": "Bảng mã Unicode dựng sẵn",
+          "enabled": true,
+          "hint": "Bảng mã đang dùng, đã khoá cố định nên không đổi được."
+        }
+      ]
+    },
+    {
+      "id": "page.switchKey",
+      "title": "Phím chuyển",
+      "symbol": "command",
+      "enabled": true,
+      "hint": "Chọn tổ hợp phím để đổi nhanh giữa Tiếng Việt và English.",
+      "items": [
+        {
+          "id": "switchKey.ctrlShift",
+          "title": "Control + Shift",
+          "short": "Control + Shift",
+          "enabled": true,
+          "hint": "Nhấn ⌃ + ⇧ để đổi Việt / Anh."
+        },
+        {
+          "id": "switchKey.cmdShift",
+          "title": "Command + Shift",
+          "short": "Command + Shift",
+          "enabled": true,
+          "hint": "Nhấn ⌘ + ⇧ để đổi Việt / Anh."
+        },
+        {
+          "id": "switchKey.optShift",
+          "title": "Option + Shift",
+          "short": "Option + Shift",
+          "enabled": true,
+          "hint": "Nhấn ⌥ + ⇧ để đổi Việt / Anh."
+        },
+        {
+          "id": "switchKey.fnShift",
+          "title": "Fn + Shift",
+          "short": "Fn + Shift",
+          "enabled": true,
+          "hint": "Nhấn fn + ⇧ để đổi Việt / Anh."
+        }
+      ]
+    },
+    {
+      "id": "page.system",
+      "title": "Hệ thống",
+      "symbol": "gearshape",
+      "enabled": true,
+      "items": [
+        {
+          "id": "option.runOnStartup",
+          "title": "Khởi động cùng macOS",
+          "enabled": true,
+          "hint": "Tự chạy MacViKey mỗi lần đăng nhập máy."
+        },
+        {
+          "id": "option.showIconOnMenuBar",
+          "title": "Hiện biểu tượng trên thanh menu",
+          "enabled": true,
+          "hint": "Tắt thì MacViKey biến mất khỏi thanh menu. Bấm vào MacViKey.app để mở lại Cài đặt."
+        },
+        {
+          "id": "option.showIconOnDock",
+          "title": "Hiện biểu tượng trên thanh Dock",
+          "enabled": true,
+          "hint": "Hiện biểu tượng MacViKey ở thanh Dock."
+        },
+        {
+          "id": "option.showUIOnStartup",
+          "title": "Mở Cài đặt khi khởi động",
+          "enabled": true,
+          "hint": "Mở cửa sổ Cài đặt ngay khi MacViKey chạy."
+        },
+        {
+          "id": "checkUpdateNow",
+          "title": "Kiểm tra bản mới",
+          "enabled": true,
+          "hint": "Xem có bản MacViKey mới hay không."
+        },
+        {
+          "id": "resetDefaults",
+          "title": "Khôi phục cấu hình mặc định",
+          "enabled": true,
+          "hint": "Đặt lại mọi tuỳ chọn về mặc định xuất xưởng. Có hỏi lại trước khi ghi đè."
+        }
+      ]
+    },
+    {
+      "id": "page.about",
+      "title": "Giới thiệu",
+      "symbol": "info.circle",
+      "enabled": true
     }
   ],
   "strings": {
@@ -263,6 +186,17 @@
     "statusLine.stopped": "⚠️ Bộ gõ đã dừng — bấm để khởi động lại",
     "statusLine.hint.format": "%@ v%@ — %@",
     "statusLine.hint.noPermission": "chưa có quyền Trợ năng",
-    "statusLine.hint.stopped": "bộ gõ đã dừng"
+    "statusLine.hint.stopped": "bộ gõ đã dừng",
+    "menu.switchKeyInfo.format": "Phím chuyển: %@",
+    "settings.title": "Cài đặt MacViKey",
+    "settings.section.mode": "Chế độ",
+    "settings.section.fixed": "Đã khoá cố định",
+    "settings.section.engine": "Bộ gõ",
+    "settings.section.startup": "Chạy nền & hiển thị",
+    "settings.section.maintenance": "Bảo trì",
+    "settings.mode.vi": "Tiếng Việt",
+    "settings.mode.en": "English",
+    "settings.restartEngine": "Khởi động lại bộ gõ",
+    "settings.startEngine": "Khởi động bộ gõ"
   }
 }

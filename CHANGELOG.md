@@ -19,6 +19,8 @@
 - Tắt bộ gõ riêng cho từng ứng dụng
 - Chế độ thay thế thông minh dùng Accessibility API (mặc định tắt)
 - Mục menu hiển thị trạng thái bộ gõ, bấm để khởi động lại
+- Cửa sổ Cài đặt (SwiftUI) có thanh bên: Tổng quan, Phím chuyển, Hệ thống,
+  Giới thiệu. Mọi cấu hình nằm ở đây
 - Bảng nhanh: bấm vào MacViKey.app mở một cửa sổ có đúng nội dung của menu
 - Ẩn biểu tượng khỏi thanh menu (vẫn vào lại được qua bảng nhanh)
 - Khởi động cùng máy hoạt động từ macOS 11 (LaunchAgent), không cần helper
@@ -31,10 +33,13 @@
 - Bỏ mã nguồn Windows và Linux
 - Bundle identifier giữ nguyên `com.mac.vi.key`
 - Yêu cầu tối thiểu macOS 11 (Big Sur) — giao diện dùng SwiftUI
-- Cửa sổ Giới thiệu, bảng nhanh và bảng điều khiển viết lại bằng SwiftUI; bỏ
-  `AboutViewController`, `ViewController`, `MyTextField` và 707 dòng storyboard
-- Bảng điều khiển giờ làm đúng việc chỉ nó làm được: xem trạng thái bộ gõ,
-  khởi động lại, và khôi phục cấu hình mặc định
+- Toàn bộ giao diện cửa sổ viết lại bằng SwiftUI; bỏ `AboutViewController`,
+  `ViewController`, `MyTextField` và 707 dòng storyboard
+- Cả ứng dụng giờ chỉ còn MỘT cửa sổ: Cài đặt. Bảng nhanh, bảng điều khiển và
+  cửa sổ Giới thiệu gộp vào đó
+- Biểu tượng trên thanh menu chỉ còn chữ VI / EN, bỏ logo
+- Menu thả xuống chỉ còn trạng thái, thông tin phím chuyển, nút mở Cài đặt và
+  Thoát
 - Hiện biểu tượng trên thanh Dock đổi thành mặc định BẬT
 
 ### Hạ tầng
