@@ -15,10 +15,10 @@ cask "macvikey" do
 
   app "MacViKey.app"
 
-  uninstall quit: "com.macvikey.app"
+  uninstall quit: "com.mac.vi.key"
 
   zap trash: [
-    "~/Library/Preferences/com.macvikey.app.plist",
+    "~/Library/Preferences/com.mac.vi.key.plist",
     "~/Library/Application Support/MacViKey",
   ]
 

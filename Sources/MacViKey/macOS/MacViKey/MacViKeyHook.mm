@@ -111,7 +111,7 @@ extern "C" {
     }
 
     void MacViKeyInit() {
-        macViKeyLog = os_log_create("com.macvikey.app", "MacViKey");
+        macViKeyLog = os_log_create("com.mac.vi.key", "MacViKey");
         //Che do thay the thong minh luon bat, khong con tuy chon trong menu.
         MacViKeyAXSetEnabled(YES);
         queryFrontMostApp();

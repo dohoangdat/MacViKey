@@ -26,7 +26,7 @@
 - Bỏ công cụ chuyển mã
 - Bỏ các tuỳ chọn chính tả và gõ tắt phụ âm
 - Bỏ mã nguồn Windows và Linux
-- Bundle identifier đổi thành `com.macvikey.app`
+- Bundle identifier giữ nguyên `com.mac.vi.key`
 - Yêu cầu tối thiểu macOS 10.13
 
 ### Hạ tầng

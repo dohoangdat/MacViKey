@@ -1022,7 +1022,9 @@ static const CGFloat kQuickWidth = 340.0;
                                           target:self
                                           action:@selector(onStatusLineClicked)];
     button.bezelStyle = NSBezelStyleRounded;
-    button.controlSize = NSControlSizeLarge;
+    // NSControlSizeLarge chi co tu macOS 11; duoi nguong do giu co mac dinh.
+    if (@available(macOS 11.0, *))
+      button.controlSize = NSControlSizeLarge;
     [button.widthAnchor constraintEqualToConstant:kQuickWidth].active = YES;
     _quickStatusButton = button;
     return button;

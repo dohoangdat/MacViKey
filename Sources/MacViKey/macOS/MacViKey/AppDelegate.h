@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "ViewController.h"
 
-#define MACVIKEY_BUNDLE @"com.macvikey.app"
+#define MACVIKEY_BUNDLE @"com.mac.vi.key"
 
 @interface AppDelegate : NSObject <NSApplicationDelegate, NSMenuDelegate>
 
