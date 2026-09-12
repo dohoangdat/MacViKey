@@ -774,7 +774,7 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 //
 // Vi sao khong dung SMLoginItemSetEnabled: ham do doi mot helper app nam trong
 // Contents/Library/LoginItems, ma target helper da bi go khoi project - goi vao
-// la that bai AM THAM. LaunchAgent thi khong can helper, va chay tu 10.13.
+// la that bai AM THAM. LaunchAgent thi khong can helper, va chay tu macOS 11.
 //
 // Ghi lai plist moi lan bat (chu khong bo qua neu file da ton tai): nguoi dung
 // keo app sang cho khac thi Program trong plist cu tro vao duong dan chet.
@@ -822,7 +822,7 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 //   - macOS 13+: SMAppService.mainAppService. Day la duong Apple cong nhan, va
 //     no hien ra trong Cai dat He thong > Muc dang nhap nen nguoi dung tu tat
 //     duoc.
-//   - macOS 10.13-12: tu ghi LaunchAgent. SMAppService chua co o cac ban nay.
+//   - macOS 11-12: tu ghi LaunchAgent. SMAppService chua co o cac ban nay.
 //
 // Tren 13+ con don them LaunchAgent cu: may nang cap tu 12 len 13 se co CA HAI
 // duong cung bat -> app bi khoi chay hai lan moi lan dang nhap.

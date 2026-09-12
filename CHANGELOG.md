@@ -21,7 +21,7 @@
 - Mục menu hiển thị trạng thái bộ gõ, bấm để khởi động lại
 - Bảng nhanh: bấm vào MacViKey.app mở một cửa sổ có đúng nội dung của menu
 - Ẩn biểu tượng khỏi thanh menu (vẫn vào lại được qua bảng nhanh)
-- Khởi động cùng máy hoạt động từ macOS 10.15 (LaunchAgent), không cần helper
+- Khởi động cùng máy hoạt động từ macOS 11 (LaunchAgent), không cần helper
 
 ### Thay đổi
 
@@ -30,7 +30,7 @@
 - Bỏ các tuỳ chọn chính tả và gõ tắt phụ âm
 - Bỏ mã nguồn Windows và Linux
 - Bundle identifier giữ nguyên `com.mac.vi.key`
-- Yêu cầu tối thiểu macOS 10.15 (Catalina) — giao diện dùng SwiftUI
+- Yêu cầu tối thiểu macOS 11 (Big Sur) — giao diện dùng SwiftUI
 - Cửa sổ Giới thiệu và bảng nhanh viết lại bằng SwiftUI; bỏ scene storyboard
   và `AboutViewController`
 - Hiện biểu tượng trên thanh Dock đổi thành mặc định BẬT

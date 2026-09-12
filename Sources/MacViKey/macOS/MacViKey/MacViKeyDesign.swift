@@ -99,14 +99,14 @@ struct LinkRow: View {
 // MARK: - Tuong thich phien ban
 
 extension View {
-    /// `.help()` (bong huong dan khi re chuot) chi co tu macOS 11.
+    /// Bong huong dan khi re chuot, lay tu truong "hint" trong MenuLayout.json.
     ///
-    /// MenuLayout.json co truong "hint" cho tung muc va README coi bong huong
-    /// dan la mot tinh nang, nen khong the bo han. Tren 10.15 thi khong co
-    /// tooltip - do la gioi han cua SwiftUI ban dau, khong phai lua chon.
+    /// Goi qua mot modifier rieng chu khong goi `.help()` truc tiep vi hint la
+    /// tuy chon: xoa "hint" khoi JSON la khong hien nua, va o day phai coi
+    /// chuoi rong y nhu khong co - `.help("")` van ve mot bong trong.
     @ViewBuilder
     func mvkHelp(_ text: String?) -> some View {
-        if let text = text, !text.isEmpty, #available(macOS 11.0, *) {
+        if let text = text, !text.isEmpty {
             self.help(text)
         } else {
             self

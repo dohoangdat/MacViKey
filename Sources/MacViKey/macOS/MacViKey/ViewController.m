@@ -141,11 +141,7 @@ extern int vPerformLayoutCompat;
     box.titlePosition = NSNoTitle;
     box.cornerRadius = 10;
     box.borderWidth = 1;
-    if (@available(macOS 10.14, *)) {
-      box.borderColor = [NSColor separatorColor];
-    } else {
-      box.borderColor = [NSColor gridColor];
-    }
+    box.borderColor = [NSColor separatorColor];
     box.fillColor = [NSColor controlBackgroundColor];
   }
 
@@ -202,13 +198,9 @@ extern int vPerformLayoutCompat;
 
   if (role == 0) {
     button.keyEquivalent = @"\r"; // nut mac dinh -> to mau accent cua he thong
-    if (@available(macOS 10.14, *)) {
-      button.contentTintColor = nil;
-    }
+    button.contentTintColor = nil;
   } else if (role == 2) {
-    if (@available(macOS 10.14, *)) {
-      button.contentTintColor = [NSColor systemRedColor];
-    }
+    button.contentTintColor = [NSColor systemRedColor];
   }
   button.toolTip = button.title;
 }

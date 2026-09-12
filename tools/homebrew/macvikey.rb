@@ -11,7 +11,7 @@ cask "macvikey" do
   desc "Bo go tieng Viet gon nhe cho macOS"
   homepage "https://github.com/dohoangdat/MacViKey"
 
-  depends_on macos: ">= :catalina"
+  depends_on macos: ">= :big_sur"
 
   app "MacViKey.app"
 
