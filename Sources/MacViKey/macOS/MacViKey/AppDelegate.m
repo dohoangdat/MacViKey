@@ -1023,8 +1023,14 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     if (![symbol isKindOfClass:NSString.class])
       symbol = nil;
 
-    // Trang Gioi thieu do SwiftUI tu ve, khong sinh tu "items".
-    BOOL isAbout = [pageId isEqualToString:@"page.about"];
+    // Ba trang thong tin do SwiftUI tu ve, khong sinh tu "items".
+    static NSSet *infoPages = nil;
+    static dispatch_once_t onceInfo;
+    dispatch_once(&onceInfo, ^{
+      infoPages = [NSSet setWithArray:@[ @"page.about", @"page.donate",
+                                         @"page.links" ]];
+    });
+    BOOL isAbout = [infoPages containsObject:pageId];
 
     NSMutableArray<MacViKeyQuickRow *> *rows = [NSMutableArray array];
     if (!isAbout) {
@@ -1044,7 +1050,7 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     }
 
     MacViKeyQuickRow *page = [MacViKeyQuickRow
-        rowWithKind:isAbout ? MacViKeyQuickRowKindAboutPage
+        rowWithKind:isAbout ? MacViKeyQuickRowKindInfoPage
                             : MacViKeyQuickRowKindPage
               rowId:pageId
               title:title];

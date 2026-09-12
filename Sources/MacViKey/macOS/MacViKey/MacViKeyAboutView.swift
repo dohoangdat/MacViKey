@@ -1,9 +1,12 @@
 //  SPDX-License-Identifier: GPL-3.0-or-later
 //
 //  MacViKeyAboutView.swift
-//  MacViKey — trang Giới thiệu trong cửa sổ Cài đặt
+//  MacViKey — ba trang thông tin trong cửa sổ Cài đặt
 //
-//  Trước đây là cửa sổ riêng; gộp vào Cài đặt để cả ứng dụng chỉ còn một cửa sổ.
+//  Giới thiệu, Ủng hộ và Liên kết là ba mục riêng trong thanh bên. Tách ra vì
+//  chúng là ba việc khác nhau: đọc xem đây là phần mềm gì, góp tiền, và mở
+//  trang ngoài — gộp một chỗ thì phải cuộn mới thấy hết.
+//
 //  Mọi chuỗi vẫn đọc từ Info.plist qua MacViKeyInfo, không hard-code lại.
 //
 //  Copyright © 2026 Do Hoang Dat
@@ -25,99 +28,130 @@
 
 import SwiftUI
 
-struct MacViKeyAboutPage: View {
+/// Khung chung cho ba trang thông tin: cùng lề, cùng bề rộng, cùng kiểu cuộn.
+private struct InfoPage<Content: View>: View {
+    @ViewBuilder var content: Content
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Design.sectionSpacing) {
-                header
-                Text(MacViKeyInfo.aboutText)
-                    .font(.system(size: 12))
-                    .foregroundColor(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-                links
-                donate
-                footer
+                content
                 Spacer(minLength: 0)
             }
             .padding(Design.pagePadding)
             .frame(width: Design.detailWidth, alignment: .leading)
         }
     }
+}
 
-    // MARK: - Đầu trang
+// MARK: - Giới thiệu
 
-    private var header: some View {
-        HStack(alignment: .center, spacing: 14) {
-            Image(nsImage: NSApp.applicationIconImage)
-                .resizable()
-                .frame(width: 64, height: 64)
-            VStack(alignment: .leading, spacing: 3) {
-                Text(MacViKeyInfo.appName)
-                    .font(.system(size: 22, weight: .semibold))
-                Text(MacViKeyInfo.versionInfoText)
+struct MacViKeyAboutPage: View {
+    var body: some View {
+        InfoPage {
+            HStack(alignment: .center, spacing: 14) {
+                Image(nsImage: NSApp.applicationIconImage)
+                    .resizable()
+                    .frame(width: 64, height: 64)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(MacViKeyInfo.appName)
+                        .font(.system(size: 22, weight: .semibold))
+                    Text(MacViKeyInfo.versionInfoText)
+                        .font(.system(size: 11))
+                        .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
+            }
+
+            Text(MacViKeyInfo.aboutText)
+                .font(.system(size: 12))
+                .foregroundColor(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            VStack(alignment: .leading, spacing: 6) {
+                Divider()
+                Text(MacViKeyInfo.copyrightShort)
                     .font(.system(size: 11))
                     .foregroundColor(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            Spacer(minLength: 0)
-        }
-    }
-
-    // MARK: - Liên kết
-
-    private var links: some View {
-        VStack(alignment: .leading, spacing: Design.tightSpacing) {
-            SectionHeader(title: "Liên kết")
-            Card(spacing: 9) {
-                LinkRow(label: "Trang chủ", url: MacViKeyInfo.homePageURL)
-                LinkRow(label: "Bản phát hành", url: MacViKeyInfo.releasesURL)
-                LinkRow(label: "Mã nguồn", url: MacViKeyInfo.sourceCodeURL)
-                LinkRow(label: "Góp ý / báo lỗi", url: MacViKeyInfo.issuesURL)
+                HStack(spacing: 4) {
+                    Text("Giấy phép")
+                        .font(.system(size: 11))
+                        .foregroundColor(.secondary)
+                    Button {
+                        MacViKeyInfo.open(MacViKeyInfo.licenseURL)
+                    } label: {
+                        Text(MacViKeyInfo.licenseName)
+                            .font(.system(size: 11))
+                            .underline()
+                    }
+                    .buttonStyle(LinkButtonStyle())
+                }
             }
         }
     }
+}
 
-    // MARK: - Ủng hộ / hòm công đức
+// MARK: - Ủng hộ
 
-    private var donate: some View {
-        VStack(alignment: .leading, spacing: Design.tightSpacing) {
-            SectionHeader(title: "Ủng hộ")
+struct MacViKeyDonatePage: View {
+    var body: some View {
+        InfoPage {
+            PageTitle(title: MacViKeyMenuLayout.string("settings.donate.title",
+                                                      fallback: "Ủng hộ MacViKey"),
+                      subtitle: nil)
+
             Card {
-                Text(MacViKeyInfo.donateText)
-                    .font(.system(size: 12))
-                    .foregroundColor(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
+                // Trái tim đặt cạnh lời kêu gọi để trang không chỉ là một khối
+                // chữ; đây là trang duy nhất xin người dùng điều gì đó.
+                HStack(alignment: .top, spacing: 12) {
+                    Image(systemName: "heart.fill")
+                        .font(.system(size: 22))
+                        .foregroundColor(Design.danger)
+                    Text(MacViKeyInfo.donateText)
+                        .font(.system(size: 12))
+                        .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
                 if let url = MacViKeyInfo.donateURL {
                     Button {
                         MacViKeyInfo.open(url)
                     } label: {
-                        Text("Mở hòm công đức")
+                        Text(MacViKeyMenuLayout.string("settings.donate.button",
+                                                       fallback: "Mở hòm công đức"))
                     }
+                    .mvkHelp(url.absoluteString)
                 }
             }
         }
     }
+}
 
-    // MARK: - Chân trang
+// MARK: - Liên kết
 
-    private var footer: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Divider()
-            Text(MacViKeyInfo.copyrightShort)
-                .font(.system(size: 11))
-                .foregroundColor(.secondary)
-            HStack(spacing: 4) {
-                Text("Giấy phép")
-                    .font(.system(size: 11))
-                    .foregroundColor(.secondary)
-                Button {
-                    MacViKeyInfo.open(MacViKeyInfo.licenseURL)
-                } label: {
-                    Text(MacViKeyInfo.licenseName)
-                        .font(.system(size: 11))
-                        .underline()
-                }
-                .buttonStyle(LinkButtonStyle())
+struct MacViKeyLinksPage: View {
+    var body: some View {
+        InfoPage {
+            PageTitle(title: MacViKeyMenuLayout.string("settings.links.title",
+                                                      fallback: "Liên kết"),
+                      subtitle: nil)
+
+            Card(spacing: 9) {
+                LinkRow(label: MacViKeyMenuLayout.string("settings.links.home",
+                                                         fallback: "Trang chủ"),
+                        url: MacViKeyInfo.homePageURL)
+                LinkRow(label: MacViKeyMenuLayout.string("settings.links.releases",
+                                                         fallback: "Bản phát hành"),
+                        url: MacViKeyInfo.releasesURL)
+                LinkRow(label: MacViKeyMenuLayout.string("settings.links.source",
+                                                         fallback: "Mã nguồn"),
+                        url: MacViKeyInfo.sourceCodeURL)
+                LinkRow(label: MacViKeyMenuLayout.string("settings.links.issues",
+                                                         fallback: "Góp ý / báo lỗi"),
+                        url: MacViKeyInfo.issuesURL)
+                LinkRow(label: MacViKeyMenuLayout.string("settings.links.email",
+                                                         fallback: "Email tác giả"),
+                        url: MacViKeyInfo.authorMailtoURL)
             }
         }
     }

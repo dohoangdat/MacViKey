@@ -138,8 +138,13 @@ struct MacViKeySettingsView: View {
 
     @ViewBuilder
     private func detailFor(_ page: MacViKeyQuickRow) -> some View {
-        if page.kind == .aboutPage {
-            MacViKeyAboutPage()
+        if page.kind == .infoPage {
+            // Ba trang thông tin tự vẽ, nhận ra nhau bằng id trong JSON.
+            switch page.rowId {
+            case "page.donate": MacViKeyDonatePage()
+            case "page.links": MacViKeyLinksPage()
+            default: MacViKeyAboutPage()
+            }
         } else {
             ScrollView {
                 VStack(alignment: .leading, spacing: Design.sectionSpacing) {

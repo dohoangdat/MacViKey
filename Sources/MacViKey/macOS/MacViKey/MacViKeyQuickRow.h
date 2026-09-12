@@ -45,8 +45,9 @@ typedef NS_ENUM(NSInteger, MacViKeyQuickRowKind) {
   MacViKeyQuickRowKindRadio,
   /// Nút chạy một hành động; nhận biết qua `rowId`.
   MacViKeyQuickRowKindAction,
-  /// Trang Giới thiệu - SwiftUI tự vẽ, không sinh từ `children`.
-  MacViKeyQuickRowKindAboutPage,
+  /// Trang thông tin (Giới thiệu, Ủng hộ, Liên kết) - SwiftUI tự vẽ theo
+  /// `rowId`, không sinh từ `children`.
+  MacViKeyQuickRowKindInfoPage,
 };
 
 @interface MacViKeyQuickRow : NSObject

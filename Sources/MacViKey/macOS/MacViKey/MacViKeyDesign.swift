@@ -105,6 +105,16 @@ struct LinkRow: View {
     let label: String
     let url: URL?
 
+    /// Chữ hiện ra cho một địa chỉ. Với mailto: thì `host` là nil, mà in cả
+    /// "mailto:..." ra thì thô - bỏ tiền tố đi chỉ còn địa chỉ email.
+    static func display(_ url: URL) -> String {
+        if url.scheme == "mailto" {
+            return url.absoluteString.replacingOccurrences(of: "mailto:",
+                                                           with: "")
+        }
+        return url.host ?? url.absoluteString
+    }
+
     var body: some View {
         if let url = url {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
@@ -114,7 +124,7 @@ struct LinkRow: View {
                 Button {
                     MacViKeyInfo.open(url)
                 } label: {
-                    Text(url.host ?? url.absoluteString)
+                    Text(LinkRow.display(url))
                         .underline()
                 }
                 .buttonStyle(LinkButtonStyle())

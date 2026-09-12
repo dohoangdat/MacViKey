@@ -173,6 +173,18 @@
       "title": "Giới thiệu",
       "symbol": "info.circle",
       "enabled": true
+    },
+    {
+      "id": "page.donate",
+      "title": "Ủng hộ",
+      "symbol": "heart",
+      "enabled": true
+    },
+    {
+      "id": "page.links",
+      "title": "Liên kết",
+      "symbol": "link",
+      "enabled": true
     }
   ],
   "strings": {
@@ -194,6 +206,14 @@
     "settings.section.engine": "Bộ gõ",
     "settings.section.startup": "Chạy nền & hiển thị",
     "settings.section.maintenance": "Bảo trì",
+    "settings.donate.title": "Ủng hộ MacViKey",
+    "settings.donate.button": "Mở hòm công đức",
+    "settings.links.title": "Liên kết",
+    "settings.links.home": "Trang chủ",
+    "settings.links.releases": "Bản phát hành",
+    "settings.links.source": "Mã nguồn",
+    "settings.links.issues": "Góp ý / báo lỗi",
+    "settings.links.email": "Email tác giả",
     "settings.mode.vi": "Tiếng Việt",
     "settings.mode.en": "English",
     "settings.restartEngine": "Khởi động lại bộ gõ",
