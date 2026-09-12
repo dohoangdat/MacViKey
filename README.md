@@ -53,8 +53,7 @@ macOS) để tránh xung đột.
 Sources/MacViKey/
 ├── engine/          Engine tiếng Việt (C++ thuần, không phụ thuộc hệ điều hành)
 ├── macOS/
-│   ├── MacViKey/        Ứng dụng: event tap, giao diện, đường Accessibility
-│   └── MacViKeyHelper/  Login item để khởi động cùng hệ thống
+│   └── MacViKey/        Ứng dụng: event tap, giao diện, đường Accessibility
 └── tests/           Test hồi quy cho engine
 ```
 
