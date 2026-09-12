@@ -917,7 +917,12 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 }
 
 - (void)onCheckNewVersionNow {
-  [MacViKeyManager checkNewVersion:nil callbackFunc:nil];
+  // Callback khac nil = kiem tra do nguoi dung chu dong bam: MacViKeyManager se
+  // bao ca ket qua "dang dung ban moi nhat" va ca truong hop that bai, thay vi
+  // im lang.
+  [MacViKeyManager checkNewVersion:nil
+                     callbackFunc:^{
+                     }];
 }
 
 // Dong bo trang thai dau tich cua phim chuyen va cac tuy chon.

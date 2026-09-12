@@ -50,6 +50,8 @@
 	<string>https://github.com/dohoangdat/MacViKey/issues</string>
 	<key>MVKReleasesURL</key>
 	<string>https://github.com/dohoangdat/MacViKey/releases</string>
+	<key>MVKVersionCheckURL</key>
+	<string>https://raw.githubusercontent.com/dohoangdat/MacViKey/main/version.json</string>
 	<key>MVKDonateURL</key>
 	<string>https://dohoangdat.com/macvikey</string>
 	<key>MVKDonateText</key>

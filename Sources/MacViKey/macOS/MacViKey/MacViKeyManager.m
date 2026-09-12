@@ -136,45 +136,73 @@ BOOL MacViKeyIsEventTapAlive(void) {
 
 #pragma mark -AutoUpdate feature
 
+// Kiem tra ban moi.
+//
+// callback != nil nghia la NGUOI DUNG tu bam kiem tra. Khi do moi ket qua deu
+// phai bao ra - ke ca "dang dung ban moi nhat" va ke ca khi that bai. Bam mot
+// muc menu roi khong thay gi la nguoi dung tuong app treo.
+// callback == nil la kiem tra nen: chi len tieng khi that co ban moi.
 +(void)checkNewVersion:(NSWindow*)parent callbackFunc:(CheckNewVersionCallback) callback {
-    //load new version config
+    BOOL userInitiated = (callback != nil);
+
+    void (^finish)(void) = ^{
+        if (callback != nil)
+            callback();
+    };
+    void (^fail)(NSString*) = ^(NSString* detail) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            finish();
+            if (userInitiated)
+                [self showMessage:parent
+                          message:@"Không kiểm tra được bản mới"
+                           subMsg:detail];
+        });
+    };
+
+    // versionCheckURL doc tu Info.plist (MVKVersionCheckURL). Thieu key do la
+    // nil, ma dataTaskWithURL:nil nem NSInvalidArgumentException -> bam muc
+    // menu la crash. Phai chan truoc khi goi.
+    NSURL* url = MacViKeyInfo.versionCheckURL;
+    if (url == nil) {
+        fail(@"Bản này không cấu hình địa chỉ kiểm tra phiên bản. "
+             @"Xem trang phát hành trên GitHub.");
+        return;
+    }
+
     NSURLSession *aSession = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
-    [[aSession dataTaskWithURL:MacViKeyInfo.versionCheckURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if (((NSHTTPURLResponse *)response).statusCode == 200) {
-            if (data) {
-                if(NSClassFromString(@"NSJSONSerialization")) {
-                    NSError *error = nil;
-                    id object = [NSJSONSerialization
-                                 JSONObjectWithData:data
-                                 options:0
-                                 error:&error];
-                    
-                    if(error) {  }
-                    if([object isKindOfClass:[NSDictionary class]]) {
-                        NSDictionary *results = object;
-                        NSDictionary *ver = [results valueForKey:@"latestVersion"];
-                        NSString* versionCodeString = [ver valueForKey:@"versionCode"];
-                        int versionCode = (int)[versionCodeString integerValue];
-                        int currentVersionCode = (int)[((NSString*)[[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleVersion"]) integerValue];
-                        
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            if (callback != nil) {
-                                callback();
-                            }
-                            if (versionCode > currentVersionCode || callback != nil) {
-                                [self showUpdateMessage:parent needUpdating:versionCode > currentVersionCode newVersion:[ver valueForKey:@"versionName"]];
-                            }
-                        });
-                    }
-                    else {
-                        //oh my god
-                    }
-                }
-                else {
-                    //can not parse json
-                }
-            }
+    [[aSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if (error != nil) {
+            fail(@"Không kết nối được. Kiểm tra lại mạng rồi thử lần nữa.");
+            return;
         }
+        NSInteger status = [response isKindOfClass:[NSHTTPURLResponse class]]
+                               ? ((NSHTTPURLResponse *)response).statusCode : 0;
+        if (status != 200 || data == nil) {
+            fail([NSString stringWithFormat:@"Máy chủ trả về lỗi (%ld).", (long)status]);
+            return;
+        }
+
+        NSError *jsonError = nil;
+        id object = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
+        NSDictionary *ver = [object isKindOfClass:[NSDictionary class]]
+                                ? [object valueForKey:@"latestVersion"] : nil;
+        if (![ver isKindOfClass:[NSDictionary class]]) {
+            fail(@"Dữ liệu phiên bản không đọc được.");
+            return;
+        }
+
+        int versionCode = [[ver valueForKey:@"versionCode"] intValue];
+        int currentVersionCode = (int)[((NSString*)[[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleVersion"]) integerValue];
+        BOOL needUpdating = versionCode > currentVersionCode;
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            finish();
+            if (needUpdating || userInitiated) {
+                [self showUpdateMessage:parent
+                           needUpdating:needUpdating
+                             newVersion:[[ver valueForKey:@"versionName"] description]];
+            }
+        });
     }] resume];
 }
 
