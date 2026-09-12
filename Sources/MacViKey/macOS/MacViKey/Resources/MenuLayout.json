@@ -22,6 +22,7 @@
     "  Xoa 'hint' la khong hien nua.",
     "- 'symbol' la ten SF Symbol cho bieu tuong trang trong thanh ben.",
     "- 'short' la ten ngan cua phim chuyen, dung cho dong thong tin tren menu.",
+    "- 'button' la chu tren nut cua mot dong hanh dong.",
     "- 'strings' chua cac cau co phan thay doi luc chay (%@ = chuoi, %d = so).",
     "  Phai giu nguyen so luong va thu tu cac ky hieu %@ / %d."
   ],
@@ -155,14 +156,29 @@
           "hint": "Mở cửa sổ Cài đặt ngay khi MacViKey chạy."
         },
         {
+          "id": "versionInfo",
+          "title": "Phiên bản hiện tại",
+          "enabled": true,
+          "hint": "Phiên bản MacViKey đang chạy trên máy này."
+        },
+        {
+          "id": "changelog",
+          "title": "Lịch sử cập nhật",
+          "button": "Xem trên GitHub",
+          "enabled": true,
+          "hint": "Mở CHANGELOG trên GitHub để xem các bản trước đã đổi những gì."
+        },
+        {
           "id": "checkUpdateNow",
           "title": "Kiểm tra bản mới",
+          "button": "Kiểm tra",
           "enabled": true,
           "hint": "Xem có bản MacViKey mới hay không."
         },
         {
           "id": "resetDefaults",
           "title": "Khôi phục cấu hình mặc định",
+          "button": "Khôi phục",
           "enabled": true,
           "hint": "Đặt lại mọi tuỳ chọn về mặc định xuất xưởng. Có hỏi lại trước khi ghi đè."
         }

@@ -39,6 +39,7 @@ extern NSString *const MacViKeyInfoKeySourceCodeURL;   // MVKSourceCodeURL
 extern NSString *const MacViKeyInfoKeyIssuesURL;       // MVKIssuesURL
 extern NSString *const MacViKeyInfoKeyReleasesURL;     // MVKReleasesURL
 extern NSString *const MacViKeyInfoKeyVersionCheckURL; // MVKVersionCheckURL
+extern NSString *const MacViKeyInfoKeyChangelogURL;    // MVKChangelogURL
 extern NSString *const MacViKeyInfoKeyUpstreamName;    // MVKUpstreamName
 extern NSString *const MacViKeyInfoKeyUpstreamURL;     // MVKUpstreamURL
 extern NSString *const MacViKeyInfoKeyAboutText;       // MVKAboutText
@@ -79,6 +80,8 @@ extern NSString *const MacViKeyInfoKeyDonateText;      // MVKDonateText
 @property(class, readonly, nullable) NSURL *issuesURL;
 @property(class, readonly, nullable) NSURL *releasesURL;
 @property(class, readonly, nullable) NSURL *versionCheckURL;
+/// Lich su cap nhat (CHANGELOG tren GitHub).
+@property(class, readonly, nullable) NSURL *changelogURL;
 @property(class, readonly, nullable) NSURL *licenseURL;
 @property(class, readonly, nullable) NSURL *upstreamURL;
 /// Hom cong duc (sao ke ten nguoi ung ho).

@@ -33,6 +33,7 @@ NSString *const MacViKeyInfoKeySourceCodeURL = @"MVKSourceCodeURL";
 NSString *const MacViKeyInfoKeyIssuesURL = @"MVKIssuesURL";
 NSString *const MacViKeyInfoKeyReleasesURL = @"MVKReleasesURL";
 NSString *const MacViKeyInfoKeyVersionCheckURL = @"MVKVersionCheckURL";
+NSString *const MacViKeyInfoKeyChangelogURL = @"MVKChangelogURL";
 NSString *const MacViKeyInfoKeyUpstreamName = @"MVKUpstreamName";
 NSString *const MacViKeyInfoKeyUpstreamURL = @"MVKUpstreamURL";
 NSString *const MacViKeyInfoKeyAboutText = @"MVKAboutText";
@@ -126,6 +127,10 @@ NSString *const MacViKeyInfoKeyDonateText = @"MVKDonateText";
 
 + (NSURL *)versionCheckURL {
   return [self URLForKey:MacViKeyInfoKeyVersionCheckURL];
+}
+
++ (NSURL *)changelogURL {
+  return [self URLForKey:MacViKeyInfoKeyChangelogURL];
 }
 
 + (NSURL *)licenseURL {

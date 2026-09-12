@@ -193,7 +193,9 @@ struct MacViKeySettingsView: View {
         let fixed = rows.filter { $0.kind == .fixedInfo }
         let radios = rows.filter { $0.kind == .radio }
         let toggles = rows.filter { $0.kind == .toggle }
-        let actions = rows.filter { $0.kind == .action }
+        // Nhom Bao tri gom ca dong chi doc lan dong hanh dong, giu nguyen thu
+        // tu trong JSON - phien ban dung truoc lich su cap nhat la co chu y.
+        let maintenance = rows.filter { $0.kind == .action || $0.kind == .infoValue }
 
         VStack(alignment: .leading, spacing: Design.sectionSpacing) {
             if !status.isEmpty {
@@ -223,11 +225,15 @@ struct MacViKeySettingsView: View {
                     }
                 }
             }
-            if !actions.isEmpty {
+            if !maintenance.isEmpty {
                 labelledCard(MacViKeyMenuLayout.string("settings.section.maintenance",
                                                        fallback: "Bảo trì")) {
-                    ForEach(Array(actions.enumerated()), id: \.offset) { _, row in
-                        ActionRow(row: row, model: model)
+                    ForEach(Array(maintenance.enumerated()), id: \.offset) { _, row in
+                        if row.kind == .infoValue {
+                            infoValueRow(row)
+                        } else {
+                            ActionRow(row: row, model: model)
+                        }
                     }
                 }
             }
@@ -318,6 +324,18 @@ struct MacViKeySettingsView: View {
         .mvkHelp(row.hint)
     }
 
+    /// Dòng chỉ đọc "nhãn — giá trị", canh phải cho thẳng hàng với nút và phím gạt.
+    private func infoValueRow(_ row: MacViKeyQuickRow) -> some View {
+        HStack(spacing: 12) {
+            Text(row.title).font(.system(size: 12))
+            Spacer(minLength: 8)
+            Text(row.value ?? "")
+                .font(.system(size: 12))
+                .foregroundColor(.secondary)
+        }
+        .mvkHelp(row.hint)
+    }
+
     private func fixedRow(_ row: MacViKeyQuickRow) -> some View {
         HStack(spacing: 7) {
             Image(systemName: "lock.fill")
@@ -352,7 +370,7 @@ private struct ActionRow: View {
                     model.runAction(row)
                 }
             } label: {
-                Text(row.destructive ? "Khôi phục" : "Kiểm tra")
+                Text(row.buttonTitle ?? row.title)
                     .font(.system(size: 12))
                     .foregroundColor(row.destructive ? Design.danger : Color.primary)
             }

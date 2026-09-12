@@ -39,6 +39,8 @@ typedef NS_ENUM(NSInteger, MacViKeyQuickRowKind) {
   MacViKeyQuickRowKindStatus,
   /// Thông tin đã khoá cứng (kiểu gõ, bảng mã): chỉ đọc.
   MacViKeyQuickRowKindFixedInfo,
+  /// Dòng chỉ đọc dạng "nhãn — giá trị" (ví dụ: phiên bản hiện tại).
+  MacViKeyQuickRowKindInfoValue,
   /// Tuỳ chọn bật/tắt; `tag` là MacViKeyOptionTag.
   MacViKeyQuickRowKindToggle,
   /// Chọn một trong nhiều; `tag` là chỉ số trong mnuSwitchKeyValues.
@@ -65,6 +67,10 @@ typedef NS_ENUM(NSInteger, MacViKeyQuickRowKind) {
 @property(nonatomic) BOOL destructive;
 /// Tên SF Symbol cho biểu tượng trang trong thanh bên ("symbol" trong JSON).
 @property(nonatomic, copy, nullable) NSString *symbol;
+/// Giá trị hiện bên phải của dòng chỉ đọc (kind = InfoValue).
+@property(nonatomic, copy, nullable) NSString *value;
+/// Chữ trên nút của dòng hành động ("button" trong JSON).
+@property(nonatomic, copy, nullable) NSString *buttonTitle;
 @property(nonatomic, copy) NSArray<MacViKeyQuickRow *> *children;
 
 + (instancetype)rowWithKind:(MacViKeyQuickRowKind)kind

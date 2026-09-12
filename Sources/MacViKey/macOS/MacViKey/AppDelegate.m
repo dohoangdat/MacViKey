@@ -946,6 +946,9 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   NSString *hint = node[@"hint"];
   if (![hint isKindOfClass:NSString.class])
     hint = nil;
+  NSString *button = node[@"button"];
+  if (![button isKindOfClass:NSString.class])
+    button = nil;
 
   MacViKeyQuickRow *(^make)(MacViKeyQuickRowKind) =
       ^MacViKeyQuickRow *(MacViKeyQuickRowKind kind) {
@@ -953,6 +956,7 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
                                                     rowId:nodeId
                                                     title:title];
     row.hint = hint;
+    row.buttonTitle = button;
     return row;
   };
 
@@ -983,6 +987,22 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     row.on = ((vSwitchKeyStatus | MACVIKEY_SWITCH_BEEP) ==
               [switchValue intValue]);
     return row;
+  }
+
+  if ([nodeId isEqualToString:@"versionInfo"]) {
+    MacViKeyQuickRow *row = make(MacViKeyQuickRowKindInfoValue);
+    row.value = [NSString stringWithFormat:@"%@ (build %@)",
+                                           MacViKeyInfo.versionString,
+                                           MacViKeyInfo.buildString];
+    return row;
+  }
+
+  if ([nodeId isEqualToString:@"changelog"]) {
+    // Thieu MVKChangelogURL trong Info.plist thi khong ve dong nay, hon la ve
+    // mot nut bam vao khong ra gi.
+    if (MacViKeyInfo.changelogURL == nil)
+      return nil;
+    return make(MacViKeyQuickRowKindAction);
   }
 
   if ([nodeId isEqualToString:@"checkUpdateNow"] ||
@@ -1116,7 +1136,9 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 }
 
 - (void)settingsRunActionWithId:(NSString *)rowId {
-  if ([rowId isEqualToString:@"checkUpdateNow"]) {
+  if ([rowId isEqualToString:@"changelog"]) {
+    [MacViKeyInfo openURL:MacViKeyInfo.changelogURL];
+  } else if ([rowId isEqualToString:@"checkUpdateNow"]) {
     [self onCheckNewVersionNow];
   } else if ([rowId isEqualToString:@"resetDefaults"]) {
     // loadDefaultConfig goi fillData nen cua so tu dong dong bo lai.
