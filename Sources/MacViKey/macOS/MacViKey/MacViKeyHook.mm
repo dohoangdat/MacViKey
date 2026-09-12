@@ -672,6 +672,59 @@ extern "C" {
     }
 
     /**
+     * Phim nay co vai tro gi trong go tieng Viet khong?
+     *
+     * Event tap chi dang ky duoc theo LOAI su kien (keyDown/keyUp/flagsChanged),
+     * khong dang ky duoc theo ma phim - nen day la cho loc duy nhat.
+     *
+     * Vi sao phai loc: ma phim khong nam trong bang nao cua engine se roi vao
+     * nhanh cuoi cua handleKeyDown va bi insertKey() nhet vao bo dem NHU MOT
+     * CHU CAI. Bam F5 giua tu dang go la lam ban bo dem, va so backspace sau do
+     * tinh sai. Tra ve false o day thi phim di thang ra, engine khong he thay.
+     *
+     * Danh sach nay la "co tac dung", khong phai "la chu cai": ESC, Tab, Enter
+     * va phim mui ten deu khong sinh chu nao, nhung chung KET THUC tu dang go
+     * (_breakCode trong Engine.cpp) - bo di la backspace xoa nham chu.
+     *
+     * Khong co trong danh sach: F1-F20, Caps Lock roi, Help/Insert va toan bo
+     * ban so numpad (65-92). Numpad bi loai han vi kieu go da khoa co dinh
+     * Telex nen so khong mang dau.
+     *
+     * Rieng kCGEventFlagsChanged KHONG loc qua day: do la duong cua phim chuyen
+     * nhanh (Control/Shift/Command/Option/Fn) va trang thai Caps Lock.
+     */
+    static bool isTypingRelatedKey(CGKeyCode code) {
+        switch (code) {
+            //Chu A-Z: chu cai, dong thoi la phim dau Telex (s f r x j a o e w d z).
+            case KEY_A: case KEY_B: case KEY_C: case KEY_D: case KEY_E:
+            case KEY_F: case KEY_G: case KEY_H: case KEY_I: case KEY_J:
+            case KEY_K: case KEY_L: case KEY_M: case KEY_N: case KEY_O:
+            case KEY_P: case KEY_Q: case KEY_R: case KEY_S: case KEY_T:
+            case KEY_U: case KEY_V: case KEY_W: case KEY_X: case KEY_Y:
+            case KEY_Z:
+            //So hang tren: dau kieu VNI, va so thuong.
+            case KEY_0: case KEY_1: case KEY_2: case KEY_3: case KEY_4:
+            case KEY_5: case KEY_6: case KEY_7: case KEY_8: case KEY_9:
+            //Space ket tu va chay kiem tra chinh ta; Delete thi engine phai dem.
+            case KEY_SPACE:
+            case KEY_DELETE:
+            //Ket tu: khong sinh chu nhung lam con tro roi khoi tu dang go.
+            case KEY_ESC: case KEY_TAB: case KEY_ENTER: case KEY_RETURN:
+            case KEY_LEFT: case KEY_RIGHT: case KEY_UP: case KEY_DOWN:
+            case KEY_HOME: case KEY_END: case KEY_PAGE_UP: case KEY_PAGE_DOWN:
+            case KEY_FORWARD_DELETE:
+            //Dau cau: _charKeyCode + _breakCode.
+            case KEY_BACKQUOTE: case KEY_MINUS: case KEY_EQUALS:
+            case KEY_LEFT_BRACKET: case KEY_RIGHT_BRACKET: case KEY_BACK_SLASH:
+            case KEY_SEMICOLON: case KEY_QUOTE: case KEY_COMMA: case KEY_DOT:
+            case KEY_SLASH:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
      * MAIN HOOK entry, very important function.
      * MAIN Callback.
      */
@@ -780,6 +833,13 @@ extern "C" {
             (type != kCGEventLeftMouseDragged) && (type != kCGEventRightMouseDragged))
             return event;
         
+        //Phim khong co vai tro gi trong go tieng Viet thi di thang ra, engine
+        //khong he thay. Chi loc keyDown/keyUp - chuot va flagsChanged di loi khac.
+        if ((type == kCGEventKeyDown || type == kCGEventKeyUp) &&
+            !isTypingRelatedKey(_keycode)) {
+            return event;
+        }
+
         _proxy = proxy;
 
         //If is in english mode

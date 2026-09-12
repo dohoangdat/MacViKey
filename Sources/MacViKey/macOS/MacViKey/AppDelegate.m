@@ -429,9 +429,20 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   if ([nodeId isEqualToString:@"openSettings"] ||
       [nodeId isEqualToString:@"controlPanel"] ||
       [nodeId isEqualToString:@"about"]) {
-    return [menu addItemWithTitle:title
-                          action:@selector(onSettingsSelected)
-                   keyEquivalent:@""];
+    NSMenuItem *item = [menu addItemWithTitle:title
+                                      action:@selector(onSettingsSelected)
+                               keyEquivalent:@""];
+    // Icon app dat truoc chu "Cai dat" de nguoi dung thay ngay day la cua so
+    // cua MacViKey, khong phai Cai dat he thong cua macOS.
+    //
+    // Phai copy roi dat lai size: applicationIconImage la anh 512px dung chung
+    // voi Dock, gan thang vao menu se bi keo cao ca dong.
+    NSImage *icon = [NSApp.applicationIconImage copy];
+    if (icon != nil) {
+      icon.size = NSMakeSize(16, 16);
+      item.image = icon;
+    }
+    return item;
   }
 
   if ([nodeId isEqualToString:@"quit"]) {
@@ -1370,7 +1381,14 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   NSMutableDictionary *attrs = [@{
     NSFontAttributeName :
         [NSFont monospacedDigitSystemFontOfSize:[NSFont systemFontSize]
-                                         weight:NSFontWeightBold]
+                                         weight:NSFontWeightBold],
+    // Cam thuong hieu - cung mau voi phim gat trong Cai dat
+    // (Design.brandOrange trong MacViKeyDesign.swift). Doi mot cho thi phai
+    // doi cho con lai, neu khong hai noi lech mau nhau.
+    NSForegroundColorAttributeName : [NSColor colorWithSRGBRed:0.851
+                                                        green:0.522
+                                                         blue:0.200
+                                                        alpha:1.0]
   } mutableCopy];
   if (broken) {
     attrs[NSStrikethroughStyleAttributeName] = @(NSUnderlineStyleSingle);

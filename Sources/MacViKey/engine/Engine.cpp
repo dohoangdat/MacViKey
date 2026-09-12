@@ -17,11 +17,11 @@ static vector<Uint8> _charKeyCode = {
 
 static vector<Uint8> _breakCode = {
     KEY_ESC, KEY_TAB, KEY_ENTER, KEY_RETURN, KEY_LEFT, KEY_RIGHT, KEY_DOWN, KEY_UP, KEY_COMMA, KEY_DOT,
-    KEY_SLASH, KEY_SEMICOLON, KEY_QUOTE, KEY_BACK_SLASH, KEY_MINUS, KEY_EQUALS, KEY_BACKQUOTE, KEY_TAB
-#if _WIN32
-	, VK_INSERT, VK_HOME, VK_END, VK_DELETE, VK_PRIOR, VK_NEXT, VK_SNAPSHOT, VK_PRINT, VK_SELECT, VK_HELP,
-	VK_EXECUTE, VK_NUMLOCK, VK_SCROLL
-#endif
+    KEY_SLASH, KEY_SEMICOLON, KEY_QUOTE, KEY_BACK_SLASH, KEY_MINUS, KEY_EQUALS, KEY_BACKQUOTE,
+    //Home/End/PageUp/PageDown/fn+Delete cung lam con tro roi khoi tu dang go y
+    //nhu phim mui ten, nen cung phai ket tu. Ban Windows cua engine goc da xep
+    //chung vao day; ban mac thi thieu, hau qua la backspace sau do dem sai.
+    KEY_HOME, KEY_END, KEY_PAGE_UP, KEY_PAGE_DOWN, KEY_FORWARD_DELETE
 };
 
 static vector<Uint8> _punctuationBreakCode = {

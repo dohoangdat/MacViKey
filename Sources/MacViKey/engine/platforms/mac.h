@@ -19,6 +19,13 @@
 #define KEY_DOWN                                125
 #define KEY_UP                                  126
 
+//Cac phim cung di chuyen con tro nhu phim mui ten nen cung phai ket tu.
+#define KEY_HOME                                115
+#define KEY_END                                 119
+#define KEY_PAGE_UP                             116
+#define KEY_PAGE_DOWN                           121
+#define KEY_FORWARD_DELETE                      117
+
 #define KEY_A                                   0
 #define KEY_B                                   11
 #define KEY_C                                   8
