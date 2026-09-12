@@ -1027,8 +1027,7 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     static NSSet *infoPages = nil;
     static dispatch_once_t onceInfo;
     dispatch_once(&onceInfo, ^{
-      infoPages = [NSSet setWithArray:@[ @"page.about", @"page.donate",
-                                         @"page.links" ]];
+      infoPages = [NSSet setWithArray:@[ @"page.about", @"page.donate" ]];
     });
     BOOL isAbout = [infoPages containsObject:pageId];
 

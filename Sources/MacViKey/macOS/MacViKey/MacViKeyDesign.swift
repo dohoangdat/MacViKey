@@ -42,6 +42,41 @@ enum Design {
     /// Màu đỏ cho hành động phá huỷ. Không dùng `.red` thuần vì nó chói trên
     /// nền sáng của macOS.
     static let danger = Color(red: 0.78, green: 0.22, blue: 0.18)
+
+    /// Cam thương hiệu, cho phím gạt đang bật.
+    ///
+    /// Lấy từ tông cam đậm nhất trong logo (#D09060) rồi tăng độ bão hoà: đúng
+    /// màu logo thì quá nhạt, gạt lên rồi mà nhìn như chưa bật.
+    static let brandOrange = Color(red: 0.851, green: 0.522, blue: 0.200)
+}
+
+// MARK: - Phím gạt
+
+/// Phím gạt của MacViKey: nhãn bên trái, phím bên phải, bật thì cam thương hiệu.
+///
+/// Vì sao tự vẽ thay vì dùng `SwitchToggleStyle(tint:)`: tham số `tint` chỉ có
+/// từ macOS 12, mà bản này chạy từ macOS 11.
+struct BrandSwitchToggleStyle: ToggleStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 12) {
+            configuration.label
+            Spacer(minLength: 8)
+            ZStack(alignment: configuration.isOn ? .trailing : .leading) {
+                Capsule()
+                    .fill(configuration.isOn
+                          ? Design.brandOrange
+                          : Color(.quaternaryLabelColor))
+                    .frame(width: 38, height: 22)
+                Circle()
+                    .fill(Color.white)
+                    .shadow(color: Color.black.opacity(0.18), radius: 1, y: 0.5)
+                    .frame(width: 18, height: 18)
+                    .padding(.horizontal, 2)
+            }
+            .contentShape(Capsule())
+            .onTapGesture { configuration.isOn.toggle() }
+        }
+    }
 }
 
 // MARK: - Khối nội dung

@@ -101,6 +101,32 @@ struct MacViKeySettingsView: View {
     // MARK: - Thanh bên
 
     private var sidebar: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            brandHeader
+            sidebarList
+        }
+        .frame(width: Design.sidebarWidth)
+    }
+
+    /// Logo + tên ở góc trên trái thanh bên: cửa sổ không có thanh tiêu đề đặc
+    /// nên nếu không có gì ở đây thì góc đó trống trơn.
+    private var brandHeader: some View {
+        HStack(spacing: 9) {
+            Image(nsImage: NSImage(named: "logo_macvikey")
+                  ?? NSApp.applicationIconImage)
+                .resizable()
+                .frame(width: 26, height: 26)
+            Text(MacViKeyInfo.appName)
+                .font(.system(size: 14, weight: .semibold))
+            Spacer(minLength: 0)
+        }
+        .padding(.leading, 14)
+        .padding(.trailing, 10)
+        .padding(.top, 4)
+        .padding(.bottom, 10)
+    }
+
+    private var sidebarList: some View {
         List(selection: $selection) {
             ForEach(model.pages, id: \.rowId) { page in
                 NavigationLink(
@@ -118,7 +144,6 @@ struct MacViKeySettingsView: View {
             }
         }
         .listStyle(SidebarListStyle())
-        .frame(width: Design.sidebarWidth)
     }
 
     // MARK: - Vùng nội dung
@@ -139,11 +164,11 @@ struct MacViKeySettingsView: View {
     @ViewBuilder
     private func detailFor(_ page: MacViKeyQuickRow) -> some View {
         if page.kind == .infoPage {
-            // Ba trang thông tin tự vẽ, nhận ra nhau bằng id trong JSON.
-            switch page.rowId {
-            case "page.donate": MacViKeyDonatePage()
-            case "page.links": MacViKeyLinksPage()
-            default: MacViKeyAboutPage()
+            // Hai trang thông tin tự vẽ, nhận ra nhau bằng id trong JSON.
+            if page.rowId == "page.donate" {
+                MacViKeyDonatePage()
+            } else {
+                MacViKeyAboutPage()
             }
         } else {
             ScrollView {
@@ -270,7 +295,7 @@ struct MacViKeySettingsView: View {
         )) {
             Text(row.title).font(.system(size: 12))
         }
-        .toggleStyle(SwitchToggleStyle())
+        .toggleStyle(BrandSwitchToggleStyle())
         .mvkHelp(row.hint)
     }
 
@@ -315,7 +340,11 @@ private struct ActionRow: View {
     @State private var confirming = false
 
     var body: some View {
-        HStack {
+        // Nhan trai, nut phai - thang hang voi cac phim gat o nhom ben tren.
+        HStack(spacing: 12) {
+            Text(row.title)
+                .font(.system(size: 12))
+            Spacer(minLength: 8)
             Button {
                 if row.destructive {
                     confirming = true
@@ -323,12 +352,11 @@ private struct ActionRow: View {
                     model.runAction(row)
                 }
             } label: {
-                Text(row.title)
+                Text(row.destructive ? "Khôi phục" : "Kiểm tra")
                     .font(.system(size: 12))
                     .foregroundColor(row.destructive ? Design.danger : Color.primary)
             }
             .mvkHelp(row.hint)
-            Spacer(minLength: 0)
         }
         .alert(isPresented: $confirming) {
             Alert(

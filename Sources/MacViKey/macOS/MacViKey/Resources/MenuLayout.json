@@ -28,7 +28,7 @@
   "menu": [
     {
       "id": "statusLine",
-      "title": "Đang gõ: TIẾNG VIỆT — bấm để chuyển English",
+      "title": "Đang gõ: TIẾNG VIỆT",
       "enabled": true,
       "hint": "Khi chưa có quyền Trợ năng, bấm để cấp quyền. Khi bộ gõ đã dừng, bấm để khởi động lại. Bình thường: bấm để đổi qua lại Tiếng Việt / English."
     },
@@ -37,7 +37,7 @@
     },
     {
       "id": "switchKeyInfo",
-      "title": "Phím chuyển: Control + Shift",
+      "title": "Phím chuyển nhanh: Control + Shift",
       "enabled": true,
       "hint": "Tổ hợp phím đang dùng để đổi nhanh Việt / Anh. Đổi được trong Cài đặt."
     },
@@ -81,7 +81,7 @@
         },
         {
           "id": "fixedCodeTable",
-          "title": "Bảng mã Unicode dựng sẵn",
+          "title": "Bảng mã Unicode",
           "enabled": true,
           "hint": "Bảng mã đang dùng, đã khoá cố định nên không đổi được."
         }
@@ -89,7 +89,7 @@
     },
     {
       "id": "page.switchKey",
-      "title": "Phím chuyển",
+      "title": "Phím chuyển nhanh",
       "symbol": "command",
       "enabled": true,
       "hint": "Chọn tổ hợp phím để đổi nhanh giữa Tiếng Việt và English.",
@@ -169,27 +169,21 @@
       ]
     },
     {
-      "id": "page.about",
-      "title": "Giới thiệu",
-      "symbol": "info.circle",
-      "enabled": true
-    },
-    {
       "id": "page.donate",
       "title": "Ủng hộ",
       "symbol": "heart",
       "enabled": true
     },
     {
-      "id": "page.links",
-      "title": "Liên kết",
-      "symbol": "link",
+      "id": "page.about",
+      "title": "Giới thiệu",
+      "symbol": "info.circle",
       "enabled": true
     }
   ],
   "strings": {
-    "inputMethod.on.textOnly": "Đang gõ TIẾNG VIỆT - bấm chuyển English",
-    "inputMethod.off.textOnly": "Đang gõ ENGLISH - bấm chuyển Tiếng Việt",
+    "inputMethod.on.textOnly": "Đang gõ TIẾNG VIỆT",
+    "inputMethod.off.textOnly": "Đang gõ ENGLISH",
     "statusBar.vi": "VI",
     "statusBar.en": "EN",
     "engineStatus.running": "Đang hoạt động",
@@ -201,8 +195,8 @@
     "statusLine.hint.stopped": "bộ gõ đã dừng",
     "menu.switchKeyInfo.format": "Phím chuyển: %@",
     "settings.title": "Cài đặt MacViKey",
-    "settings.section.mode": "Chế độ",
-    "settings.section.fixed": "Đã khoá cố định",
+    "settings.section.mode": "Chế độ gõ",
+    "settings.section.fixed": "Logic",
     "settings.section.engine": "Bộ gõ",
     "settings.section.startup": "Chạy nền & hiển thị",
     "settings.section.maintenance": "Bảo trì",

@@ -1,11 +1,11 @@
 //  SPDX-License-Identifier: GPL-3.0-or-later
 //
 //  MacViKeyAboutView.swift
-//  MacViKey — ba trang thông tin trong cửa sổ Cài đặt
+//  MacViKey — hai trang thông tin trong cửa sổ Cài đặt
 //
-//  Giới thiệu, Ủng hộ và Liên kết là ba mục riêng trong thanh bên. Tách ra vì
-//  chúng là ba việc khác nhau: đọc xem đây là phần mềm gì, góp tiền, và mở
-//  trang ngoài — gộp một chỗ thì phải cuộn mới thấy hết.
+//  Ủng hộ đứng riêng vì đó là trang duy nhất xin người dùng điều gì đó; Giới
+//  thiệu gom cả danh sách liên kết, vì mở trang chủ hay kho mã nguồn đều là
+//  "tìm hiểu thêm về phần mềm này".
 //
 //  Mọi chuỗi vẫn đọc từ Info.plist qua MacViKeyInfo, không hard-code lại.
 //
@@ -28,7 +28,7 @@
 
 import SwiftUI
 
-/// Khung chung cho ba trang thông tin: cùng lề, cùng bề rộng, cùng kiểu cuộn.
+/// Khung chung cho hai trang thông tin: cùng lề, cùng bề rộng, cùng kiểu cuộn.
 private struct InfoPage<Content: View>: View {
     @ViewBuilder var content: Content
 
@@ -68,6 +68,28 @@ struct MacViKeyAboutPage: View {
                 .font(.system(size: 12))
                 .foregroundColor(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
+
+            VStack(alignment: .leading, spacing: Design.tightSpacing) {
+                SectionHeader(title: MacViKeyMenuLayout.string(
+                    "settings.links.title", fallback: "Liên kết"))
+                Card(spacing: 9) {
+                    LinkRow(label: MacViKeyMenuLayout.string("settings.links.home",
+                                                             fallback: "Trang chủ"),
+                            url: MacViKeyInfo.homePageURL)
+                    LinkRow(label: MacViKeyMenuLayout.string("settings.links.releases",
+                                                             fallback: "Bản phát hành"),
+                            url: MacViKeyInfo.releasesURL)
+                    LinkRow(label: MacViKeyMenuLayout.string("settings.links.source",
+                                                             fallback: "Mã nguồn"),
+                            url: MacViKeyInfo.sourceCodeURL)
+                    LinkRow(label: MacViKeyMenuLayout.string("settings.links.issues",
+                                                             fallback: "Góp ý / báo lỗi"),
+                            url: MacViKeyInfo.issuesURL)
+                    LinkRow(label: MacViKeyMenuLayout.string("settings.links.email",
+                                                             fallback: "Email tác giả"),
+                            url: MacViKeyInfo.authorMailtoURL)
+                }
+            }
 
             VStack(alignment: .leading, spacing: 6) {
                 Divider()
@@ -122,36 +144,6 @@ struct MacViKeyDonatePage: View {
                     }
                     .mvkHelp(url.absoluteString)
                 }
-            }
-        }
-    }
-}
-
-// MARK: - Liên kết
-
-struct MacViKeyLinksPage: View {
-    var body: some View {
-        InfoPage {
-            PageTitle(title: MacViKeyMenuLayout.string("settings.links.title",
-                                                      fallback: "Liên kết"),
-                      subtitle: nil)
-
-            Card(spacing: 9) {
-                LinkRow(label: MacViKeyMenuLayout.string("settings.links.home",
-                                                         fallback: "Trang chủ"),
-                        url: MacViKeyInfo.homePageURL)
-                LinkRow(label: MacViKeyMenuLayout.string("settings.links.releases",
-                                                         fallback: "Bản phát hành"),
-                        url: MacViKeyInfo.releasesURL)
-                LinkRow(label: MacViKeyMenuLayout.string("settings.links.source",
-                                                         fallback: "Mã nguồn"),
-                        url: MacViKeyInfo.sourceCodeURL)
-                LinkRow(label: MacViKeyMenuLayout.string("settings.links.issues",
-                                                         fallback: "Góp ý / báo lỗi"),
-                        url: MacViKeyInfo.issuesURL)
-                LinkRow(label: MacViKeyMenuLayout.string("settings.links.email",
-                                                         fallback: "Email tác giả"),
-                        url: MacViKeyInfo.authorMailtoURL)
             }
         }
     }
