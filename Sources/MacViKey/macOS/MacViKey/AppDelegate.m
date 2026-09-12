@@ -102,8 +102,10 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   NSStatusItem *statusItem;
   NSMenu *theMenu;
 
-  // Dong dau menu: gop trang thai bo go + bat/tat tieng Viet.
+  // Dong canh bao tren menu: CHI hien khi co su co (chua cap quyen Tro nang
+  // hoac bo go da dung). Binh thuong ca no lan duong ke di kem deu bi an.
   NSMenuItem *mnuStatusLine;
+  NSMenuItem *mnuStatusWarningSeparator;
   // Dong thong tin chi ro dang dung to hop phim nao (khong bam duoc).
   NSMenuItem *mnuSwitchKeyInfo;
 
@@ -395,7 +397,8 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
                          toMenu:(NSMenu *)menu {
   // Mot dong duy nhat cho ca trang thai bo go lan bat/tat tieng Viet.
   // "inputMethod"/"engineStatus" la ten cu, van chap nhan de JSON cu chay duoc.
-  if ([nodeId isEqualToString:@"statusLine"] ||
+  if ([nodeId isEqualToString:@"statusWarning"] ||
+      [nodeId isEqualToString:@"statusLine"] ||
       [nodeId isEqualToString:@"inputMethod"] ||
       [nodeId isEqualToString:@"engineStatus"]) {
     if (mnuStatusLine != nil)
@@ -579,6 +582,16 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     [self macViKeyAddNode:@"openSettings" title:@"Cài đặt..." toMenu:theMenu];
     [theMenu addItem:[NSMenuItem separatorItem]];
     [self macViKeyAddNode:@"quit" title:@"Thoát" toMenu:theMenu];
+  }
+
+  // Duong ke ngay sau dong canh bao phai an/hien cung no, neu khong menu se mo
+  // dau bang mot duong ke tro tro.
+  mnuStatusWarningSeparator = nil;
+  if (mnuStatusLine != nil) {
+    NSInteger i = [theMenu indexOfItem:mnuStatusLine];
+    if (i >= 0 && i + 1 < theMenu.numberOfItems &&
+        [theMenu itemAtIndex:i + 1].isSeparatorItem)
+      mnuStatusWarningSeparator = [theMenu itemAtIndex:i + 1];
   }
 
   theMenu.delegate = self;
@@ -1105,8 +1118,16 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
              integerForKey:@"InputMethod"] == 1;
 }
 
+- (BOOL)settingsAccessibilityIsGranted {
+  return MJAccessibilityIsEnabled();
+}
+
 - (BOOL)settingsEngineIsRunning {
   return MJAccessibilityIsEnabled() && MacViKeyIsEventTapAlive();
+}
+
+- (void)settingsGrantAccessibility {
+  MJAccessibilityOpenPanel();
 }
 
 - (void)settingsSetVietnamese:(BOOL)on {
@@ -1171,13 +1192,6 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   statusItem.button.image = nil;
   statusItem.button.alternateImage = nil;
   statusItem.button.imagePosition = NSNoImage;
-  statusItem.button.font =
-      [NSFont monospacedDigitSystemFontOfSize:[NSFont systemFontSize]
-                                       weight:NSFontWeightBold];
-  statusItem.button.title =
-      (intInputMethod == 1)
-          ? [MacViKeyMenuLayout string:@"statusBar.vi" fallback:@"VI"]
-          : [MacViKeyMenuLayout string:@"statusBar.en" fallback:@"EN"];
   vLanguage = (int)intInputMethod;
 
   // Kieu go va bang ma da khoa cung: ep lai gia tri, khong con muc menu nao
@@ -1276,44 +1290,71 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 /// Mot dong lo ca hai viec: bao trang thai bo go va bat/tat tieng Viet.
 /// Chua co quyen Tro nang thi viec duy nhat dang lam la XIN QUYEN - luc do
 /// khong bay ra lua chon Viet/Anh nua cho khoi roi.
+// Dong canh bao tren menu.
+//
+// Chi hien khi co su co, va bam vao la sua duoc ngay: chua cap quyen thi mo
+// bang Tro nang, bo go dung thi khoi dong lai. Binh thuong menu chi con
+// "Cai dat..." va "Thoat".
 - (void)macViKeyUpdateStatusLine {
+  [self macViKeyUpdateStatusBarTitle];
+  // Cua so Cai dat cung hien hai trang thai nay. Watchdog va bo dem quyen deu
+  // goi vao day, nen cua so tu cap nhat khi quyen duoc cap hoac tap chet - khong
+  // phai dong mo lai moi thay.
+  [self macViKeyRefreshSettingsWindow];
+
   if (mnuStatusLine == nil)
     return;
-  mnuStatusLine.toolTip = [self macViKeyStatusLineHint];
 
+  NSString *warning = nil;
   if (!MJAccessibilityIsEnabled()) {
-    [self macViKeySetTitle:[MacViKeyMenuLayout
-                                 string:@"statusLine.noPermission"
-                               fallback:@"⚠️ Chưa có quyền Trợ năng — bấm "
-                                        @"để cấp quyền"]
-                   forItem:mnuStatusLine];
-    [mnuStatusLine setState:NSControlStateValueOff];
-    return;
+    warning = [MacViKeyMenuLayout
+        string:@"statusLine.noPermission"
+      fallback:@"⚠️ Chưa có quyền Trợ năng — bấm để cấp quyền"];
+  } else if (!MacViKeyIsEventTapAlive()) {
+    warning = [MacViKeyMenuLayout
+        string:@"statusLine.stopped"
+      fallback:@"⚠️ Bộ gõ đã dừng — bấm để khởi động lại"];
   }
-  if (!MacViKeyIsEventTapAlive()) {
-    [self macViKeySetTitle:[MacViKeyMenuLayout
-                                 string:@"statusLine.stopped"
-                               fallback:@"⚠️ Bộ gõ đã dừng — bấm để khởi "
-                                        @"động lại"]
-                   forItem:mnuStatusLine];
-    [mnuStatusLine setState:NSControlStateValueOff];
+
+  BOOL hidden = (warning == nil);
+  mnuStatusLine.hidden = hidden;
+  mnuStatusWarningSeparator.hidden = hidden;
+  if (hidden)
     return;
-  }
+
+  mnuStatusLine.title = warning;
+  mnuStatusLine.toolTip = [self macViKeyStatusLineHint];
+  [mnuStatusLine setState:NSControlStateValueOff];
+}
+
+// Chu tren thanh menu: VI / EN, gach ngang khi bo go khong hoat dong.
+//
+// Gach ngang chu la canh bao duy nhat thay duoc ma khong phai mo menu - dung
+// cho bo go chet am tham la thu du an nay da ton cong sua.
+- (void)macViKeyUpdateStatusBarTitle {
+  if (statusItem.button == nil)
+    return;
 
   BOOL vietnamese = ([[NSUserDefaults standardUserDefaults]
                          integerForKey:@"InputMethod"] == 1);
-  NSString *on =
-      [MacViKeyMenuLayout string:@"inputMethod.on.textOnly"
-                        fallback:@"Đang TIẾNG VIỆT - bấm chuyển sang English"];
-  NSString *off =
-      [MacViKeyMenuLayout string:@"inputMethod.off.textOnly"
-                        fallback:@"Đang ENGLISH - bấm chuyển sang Tiếng Việt"];
-  [self macViKeySetTitle:vietnamese ? on : off forItem:mnuStatusLine];
-  [mnuStatusLine
-      setState:vietnamese ? NSControlStateValueOn : NSControlStateValueOff];
+  NSString *text =
+      vietnamese ? [MacViKeyMenuLayout string:@"statusBar.vi" fallback:@"VI"]
+                 : [MacViKeyMenuLayout string:@"statusBar.en" fallback:@"EN"];
+  BOOL broken = !MJAccessibilityIsEnabled() || !MacViKeyIsEventTapAlive();
+
+  NSMutableDictionary *attrs = [@{
+    NSFontAttributeName :
+        [NSFont monospacedDigitSystemFontOfSize:[NSFont systemFontSize]
+                                         weight:NSFontWeightBold]
+  } mutableCopy];
+  if (broken) {
+    attrs[NSStrikethroughStyleAttributeName] = @(NSUnderlineStyleSingle);
+    attrs[NSForegroundColorAttributeName] = [NSColor secondaryLabelColor];
+  }
+  statusItem.button.attributedTitle =
+      [[NSAttributedString alloc] initWithString:text attributes:attrs];
 }
 
-/// Bam vao dong trang thai: lam viec dang can nhat tai thoi diem do.
 - (void)onStatusLineClicked {
   if (!MJAccessibilityIsEnabled()) {
     MJAccessibilityOpenPanel();

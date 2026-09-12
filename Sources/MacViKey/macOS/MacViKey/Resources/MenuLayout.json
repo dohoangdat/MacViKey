@@ -28,10 +28,10 @@
   ],
   "menu": [
     {
-      "id": "statusLine",
-      "title": "Đang gõ: TIẾNG VIỆT",
-      "enabled": false,
-      "hint": "Khi chưa có quyền Trợ năng, bấm để cấp quyền. Khi bộ gõ đã dừng, bấm để khởi động lại. Bình thường: bấm để đổi qua lại Tiếng Việt / English."
+      "id": "statusWarning",
+      "title": "⚠️ Bộ gõ đang có sự cố",
+      "enabled": true,
+      "hint": "Chỉ hiện khi có sự cố. Bấm để cấp quyền Trợ năng hoặc khởi động lại bộ gõ."
     },
     {
       "separator": true
@@ -211,6 +211,15 @@
     "statusLine.hint.stopped": "bộ gõ đã dừng",
     "menu.switchKeyInfo.format": "Phím chuyển: %@",
     "settings.title": "Cài đặt MacViKey",
+    "settings.section.status": "Trạng thái",
+    "settings.accessibility.label": "Quyền Trợ năng",
+    "settings.accessibility.granted": "Đã cấp",
+    "settings.accessibility.missing": "Chưa cấp",
+    "settings.accessibility.button": "Cấp quyền",
+    "settings.engine.label": "Bộ gõ",
+    "settings.engine.running": "Đang hoạt động",
+    "settings.engine.stopped": "Đã dừng",
+    "settings.engine.button": "Khởi động lại",
     "settings.section.mode": "Chế độ gõ",
     "settings.section.fixed": "Logic",
     "settings.section.engine": "Bộ gõ",

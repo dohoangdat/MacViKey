@@ -89,7 +89,12 @@ typedef NS_ENUM(NSInteger, MacViKeyQuickRowKind) {
 - (NSString *)settingsStatusTitle;
 /// YES nếu đang gõ Tiếng Việt.
 - (BOOL)settingsVietnameseIsOn;
+/// Da co quyen Tro nang chua. Tach rieng khoi trang thai bo go: hai su co khac
+/// nhau, cach sua cung khac nhau (mo bang he thong vs khoi dong lai tap).
+- (BOOL)settingsAccessibilityIsGranted;
 - (BOOL)settingsEngineIsRunning;
+/// Mo bang Tro nang cua He thong de nguoi dung cap quyen.
+- (void)settingsGrantAccessibility;
 - (void)settingsSetVietnamese:(BOOL)on;
 - (void)settingsRestartEngine;
 - (void)settingsToggleOptionWithTag:(NSInteger)tag;

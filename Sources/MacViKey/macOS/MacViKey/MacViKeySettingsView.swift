@@ -38,6 +38,7 @@ final class SettingsModel: ObservableObject {
     @Published var statusTitle: String = ""
     @Published var vietnamese: Bool = false
     @Published var engineRunning: Bool = false
+    @Published var accessibilityGranted: Bool = false
 
     private weak var actions: (any MacViKeySettingsActions)?
 
@@ -52,6 +53,7 @@ final class SettingsModel: ObservableObject {
         statusTitle = actions.settingsStatusTitle()
         vietnamese = actions.settingsVietnameseIsOn()
         engineRunning = actions.settingsEngineIsRunning()
+        accessibilityGranted = actions.settingsAccessibilityIsGranted()
     }
 
     func setVietnamese(_ on: Bool) {
@@ -61,6 +63,11 @@ final class SettingsModel: ObservableObject {
 
     func restartEngine() {
         actions?.settingsRestartEngine()
+        refresh()
+    }
+
+    func grantAccessibility() {
+        actions?.settingsGrantAccessibility()
         refresh()
     }
 
@@ -251,42 +258,64 @@ struct MacViKeySettingsView: View {
     // MARK: - Nhóm chế độ gõ + bộ gõ
 
     private func engineGroup(_ status: [MacViKeyQuickRow]) -> some View {
-        VStack(alignment: .leading, spacing: Design.tightSpacing) {
-            SectionHeader(title: MacViKeyMenuLayout.string("settings.section.mode",
-                                                          fallback: "Chế độ"))
-            Card {
-                // Chọn chế độ bằng segmented: hai lựa chọn loại trừ nhau, thấy
-                // ngay đang ở đâu - hơn một nút "đổi" mà phải đọc chữ mới biết.
-                Picker(selection: Binding(
-                    get: { model.vietnamese },
-                    set: { model.setVietnamese($0) }
-                ), label: EmptyView()) {
-                    Text(MacViKeyMenuLayout.string("settings.mode.vi",
-                                                   fallback: "Tiếng Việt")).tag(true)
-                    Text(MacViKeyMenuLayout.string("settings.mode.en",
-                                                   fallback: "English")).tag(false)
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .labelsHidden()
-                .mvkHelp(status.first?.hint)
-
-                Divider()
-
-                HStack(spacing: 8) {
-                    StatusDot(on: model.engineRunning)
-                    Text(model.statusTitle)
-                        .font(.system(size: 12))
-                        .foregroundColor(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                    Spacer(minLength: 8)
-                    Button {
-                        model.restartEngine()
-                    } label: {
-                        Text(MacViKeyMenuLayout.string(
-                            model.engineRunning ? "settings.restartEngine"
-                                                : "settings.startEngine",
-                            fallback: "Khởi động lại"))
+        VStack(alignment: .leading, spacing: Design.sectionSpacing) {
+            VStack(alignment: .leading, spacing: Design.tightSpacing) {
+                SectionHeader(title: MacViKeyMenuLayout.string(
+                    "settings.section.mode", fallback: "Chế độ gõ"))
+                Card {
+                    // Chọn chế độ bằng segmented: hai lựa chọn loại trừ nhau,
+                    // thấy ngay đang ở đâu - hơn một nút "đổi" mà phải đọc chữ
+                    // mới biết.
+                    Picker(selection: Binding(
+                        get: { model.vietnamese },
+                        set: { model.setVietnamese($0) }
+                    ), label: EmptyView()) {
+                        Text(MacViKeyMenuLayout.string("settings.mode.vi",
+                                                       fallback: "Tiếng Việt")).tag(true)
+                        Text(MacViKeyMenuLayout.string("settings.mode.en",
+                                                       fallback: "English")).tag(false)
                     }
+                    .pickerStyle(SegmentedPickerStyle())
+                    .labelsHidden()
+                    .mvkHelp(status.first?.hint)
+                }
+            }
+
+            // Hai điều kiện để bộ gõ chạy được, tách thành hai dòng riêng: mỗi
+            // cái hỏng một kiểu và sửa một kiểu, gộp lại thì người dùng không
+            // biết phải làm gì.
+            VStack(alignment: .leading, spacing: Design.tightSpacing) {
+                SectionHeader(title: MacViKeyMenuLayout.string(
+                    "settings.section.status", fallback: "Trạng thái"))
+                Card {
+                    StateRow(
+                        label: MacViKeyMenuLayout.string(
+                            "settings.accessibility.label", fallback: "Quyền Trợ năng"),
+                        ok: model.accessibilityGranted,
+                        okText: MacViKeyMenuLayout.string(
+                            "settings.accessibility.granted", fallback: "Đã cấp"),
+                        badText: MacViKeyMenuLayout.string(
+                            "settings.accessibility.missing", fallback: "Chưa cấp"),
+                        buttonTitle: MacViKeyMenuLayout.string(
+                            "settings.accessibility.button", fallback: "Cấp quyền"),
+                        action: { model.grantAccessibility() })
+
+                    Divider()
+
+                    StateRow(
+                        label: MacViKeyMenuLayout.string(
+                            "settings.engine.label", fallback: "Bộ gõ"),
+                        ok: model.engineRunning,
+                        okText: MacViKeyMenuLayout.string(
+                            "settings.engine.running", fallback: "Đang hoạt động"),
+                        badText: MacViKeyMenuLayout.string(
+                            "settings.engine.stopped", fallback: "Đã dừng"),
+                        buttonTitle: MacViKeyMenuLayout.string(
+                            "settings.engine.button", fallback: "Khởi động lại"),
+                        // Bộ gõ khởi động lại được kể cả khi đang chạy: đó là
+                        // đường thoát khi nó chạy mà gõ vẫn sai.
+                        alwaysShowButton: true,
+                        action: { model.restartEngine() })
                 }
             }
         }
@@ -385,6 +414,36 @@ private struct ActionRow: View {
                 },
                 secondaryButton: .cancel(Text("Không"))
             )
+        }
+    }
+}
+
+/// Một dòng trạng thái: đèn, nhãn, tình trạng bằng chữ, và nút sửa khi hỏng.
+///
+/// Hiện tình trạng bằng CHỮ chứ không chỉ bằng màu đèn - "Đã cấp" / "Chưa cấp"
+/// đọc là hiểu, còn một chấm xanh thì phải đoán.
+private struct StateRow: View {
+    let label: String
+    let ok: Bool
+    let okText: String
+    let badText: String
+    let buttonTitle: String
+    var alwaysShowButton: Bool = false
+    let action: () -> Void
+
+    var body: some View {
+        HStack(spacing: 9) {
+            StatusDot(on: ok)
+            Text(label).font(.system(size: 12))
+            Spacer(minLength: 8)
+            Text(ok ? okText : badText)
+                .font(.system(size: 12))
+                .foregroundColor(ok ? .secondary : Design.danger)
+            if !ok || alwaysShowButton {
+                Button(action: action) {
+                    Text(buttonTitle).font(.system(size: 12))
+                }
+            }
         }
     }
 }
