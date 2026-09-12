@@ -206,6 +206,11 @@
           "hint": "Hiện biểu tượng MacViKey ở thanh Dock."
         },
         {
+          "id": "option.showIconOnMenuBar",
+          "title": "Hiện biểu tượng trên thanh menu",
+          "hint": "Tắt thì MacViKey biến mất khỏi thanh menu. Bấm vào MacViKey.app để mở bảng nhanh và bật lại."
+        },
+        {
           "id": "option.showUIOnStartup",
           "title": "Mở bảng điều khiển khi khởi động",
           "enabled": false,

@@ -85,6 +85,7 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   MacViKeyOptionFixChromium,
   MacViKeyOptionLayoutCompat,
   MacViKeyOptionShowUIOnStartup,
+  MacViKeyOptionShowIconOnMenuBar,
 };
 
 @interface AppDelegate ()
@@ -96,6 +97,13 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   NSWindowController *_aboutWC;
 
   NSStatusItem *statusItem;
+
+  // MacViKey: bang nhanh - ban cua so cua chinh menu tren thanh trang thai.
+  NSWindow *_quickWindow;
+  NSStackView *_quickStack;
+  NSButton *_quickStatusButton;
+  NSMutableArray<NSButton *> *_quickOptionButtons;
+  NSMutableArray<NSButton *> *_quickSwitchButtons;
   NSMenu *theMenu;
 
   // Dong dau menu: gop trang thai bo go + bat/tat tieng Viet.
@@ -171,6 +179,12 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 // lọt vào.
 - (void)applyMacViKeyFixedConfig {
   NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+  // Khoi dong cung may la mac dinh BAT: bo go khong tu chay thi nguoi dung go
+  // ra tieng Anh ma khong hieu tai sao. Dung registerDefaults nen lua chon tat
+  // cua nguoi dung (da ghi vao prefs) van duoc ton trong.
+  // Hien bieu tuong tren thanh menu la mac dinh BAT - do la cho duy nhat nguoi
+  // dung thay bo go dang o che do nao.
+  [prefs registerDefaults:@{@"RunOnStartup" : @1, @"vShowIconOnMenuBar" : @1}];
   vInputType = MACVIKEY_FIXED_INPUT_TYPE;
   [prefs setInteger:vInputType forKey:@"InputType"];
   vCodeTable = MACVIKEY_FIXED_CODE_TABLE;
@@ -244,6 +258,12 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     return;
   }
 
+  // Dong bo login item TRUOC nhanh xin quyen: askPermission return som, neu de
+  // o cuoi ham thi may chua cap quyen Tro nang se khong bao gio dang ky khoi
+  // dong cung may.
+  [self setRunOnStartup:[[NSUserDefaults standardUserDefaults]
+                            integerForKey:@"RunOnStartup"] != 0];
+
   // check if user granted Accessabilty permission
   if (!MJAccessibilityIsEnabled()) {
     vShowIconOnDock = (int)[[NSUserDefaults standardUserDefaults]
@@ -282,15 +302,14 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   }
   [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"NonFirstTime"];
 
-  // correct run on startup
-  NSInteger val =
-      [[NSUserDefaults standardUserDefaults] integerForKey:@"RunOnStartup"];
-  [appDelegate setRunOnStartup:val];
 }
 
+// Click vao .app khi app da chay: mo bang nhanh - ban cua so cua chinh menu
+// tren thanh trang thai. Bang dieu khien cu gio chi con mot tab thong tin va
+// khong chinh duoc gi, mo no ra khong giup gi cho nguoi dung.
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)sender
                     hasVisibleWindows:(BOOL)flag {
-  [self onControlPanelSelected];
+  [self onQuickPanelSelected];
   return YES;
 }
 
@@ -342,6 +361,7 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
       @"option.fixChromium" : @(MacViKeyOptionFixChromium),
       @"option.layoutCompat" : @(MacViKeyOptionLayoutCompat),
       @"option.showUIOnStartup" : @(MacViKeyOptionShowUIOnStartup),
+      @"option.showIconOnMenuBar" : @(MacViKeyOptionShowIconOnMenuBar),
     };
   });
   return map;
@@ -638,6 +658,7 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 
   theMenu.delegate = self;
   [statusItem setMenu:theMenu];
+  [self macViKeyApplyMenuBarVisibility];
 
   [self fillData];
 }
@@ -729,9 +750,45 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   [viewController fillData];
 }
 
+// Khoi dong cung may.
+//
+// Ban goc dung SMLoginItemSetEnabled voi helper "com.macvikey.helper", nhung
+// target MacViKeyHelper da bi go khoi project - bundle build ra khong he co
+// Contents/Library/LoginItems, nen loi goi do luon that bai AM THAM: prefs ghi
+// RunOnStartup = 1 ma app khong bao gio tu chay.
+//
+// SMAppService.mainAppService dang ky chinh app lam login item, khong can
+// helper. Chi co tu macOS 13; duoi nguong do van dung duong cu.
 - (void)setRunOnStartup:(BOOL)val {
+  if (@available(macOS 13.0, *)) {
+    SMAppService *service = [SMAppService mainAppService];
+    NSError *error = nil;
+    BOOL ok = val ? [service registerAndReturnError:&error]
+                  : [service unregisterAndReturnError:&error];
+    // Da bat san roi thi register tra ve loi - do khong phai that bai.
+    if (!ok && !(val && service.status == SMAppServiceStatusEnabled)) {
+      NSLog(@"[MacViKey] Khong dat duoc khoi dong cung may (%@): %@",
+            val ? @"bat" : @"tat", error);
+    }
+    return;
+  }
   CFStringRef appId = (__bridge CFStringRef) @"com.macvikey.helper";
   SMLoginItemSetEnabled(appId, val);
+}
+
+// An bieu tuong khoi thanh menu.
+//
+// Van giu statusItem chu khong huy: NSStatusItem.visible = NO chi giau di, bat
+// lai la hien ngay, khong phai dung lai toan bo menu.
+//
+// Duong quay lai khi da an: bam vao MacViKey.app se mo bang nhanh
+// (applicationShouldHandleReopen -> onQuickPanelSelected), trong do co dung
+// tuy chon nay de bat tro lai. Khong co duong nay thi an icon la mat luon loi
+// vao ung dung.
+- (void)macViKeyApplyMenuBarVisibility {
+  if (statusItem == nil)
+    return;
+  statusItem.visible = [self macViKeyOptionIsOn:MacViKeyOptionShowIconOnMenuBar];
 }
 
 - (void)setGrayIcon:(BOOL)val {
@@ -788,6 +845,8 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     return @"vPerformLayoutCompat";
   case MacViKeyOptionShowUIOnStartup:
     return @"ShowUIOnStartup";
+  case MacViKeyOptionShowIconOnMenuBar:
+    return @"vShowIconOnMenuBar";
   }
   return nil;
 }
@@ -847,6 +906,8 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     [self setRunOnStartup:newValue];
   } else if (tag == MacViKeyOptionShowIconOnDock) {
     [self showIconOnDock:newValue];
+  } else if (tag == MacViKeyOptionShowIconOnMenuBar) {
+    [self macViKeyApplyMenuBarVisibility];
   }
 
   [self fillData];
@@ -859,6 +920,7 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 
 // Dong bo trang thai dau tich cua phim chuyen va cac tuy chon.
 - (void)macViKeyRefreshMenuStates {
+  [self macViKeyRefreshQuickPanel];
   for (NSInteger i = 0; i < (NSInteger)mnuSwitchKeyItems.count; i++) {
     BOOL on = ((vSwitchKeyStatus | MACVIKEY_SWITCH_BEEP) ==
                [mnuSwitchKeyValues[i] intValue]);
@@ -871,16 +933,284 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   }
 }
 
+#pragma mark - MacViKey: bang nhanh (ban cua so cua menu thanh trang thai)
+
+// Vi sao dung lai chinh MenuLayout.json thay vi dung rieng mot danh sach: bang
+// nhanh va menu tren thanh trang thai phai luon khop nhau. Doc chung mot cay
+// node + chung mot bo loc macViKeyNodeEnabled: thi them/bot mot muc trong JSON
+// se tu dong hien o ca hai noi, khong the lech.
+//
+// Cac nut cung tro thang vao action cua menu (onOptionToggled:,
+// onSwitchKeySelected:) - hai ham do chi doc sender.tag, ma NSButton cung co
+// tag, nen khong can nhan ban logic.
+
+static const CGFloat kQuickWidth = 340.0;
+
+- (NSTextField *)macViKeyQuickLabel:(NSString *)text bold:(BOOL)bold {
+  NSTextField *label = [NSTextField labelWithString:text];
+  label.font = bold ? [NSFont boldSystemFontOfSize:11]
+                    : [NSFont systemFontOfSize:NSFont.systemFontSize];
+  if (bold)
+    label.textColor = [NSColor secondaryLabelColor];
+  return label;
+}
+
+- (NSBox *)macViKeyQuickSeparator {
+  NSBox *box = [[NSBox alloc] initWithFrame:NSMakeRect(0, 0, kQuickWidth, 1)];
+  box.boxType = NSBoxSeparator;
+  return box;
+}
+
+// Dung mot dong cho mot node. Tra nil = node nay khong hien tren bang nhanh.
+- (NSView *)macViKeyQuickRowForNode:(NSDictionary *)node {
+  if ([node[@"separator"] boolValue])
+    return [self macViKeyQuickSeparator];
+
+  id jsonEnabled = node[@"enabled"];
+  if (jsonEnabled != nil && ![jsonEnabled boolValue])
+    return nil;
+
+  NSString *nodeId = node[@"id"];
+  if (![nodeId isKindOfClass:NSString.class] || nodeId.length == 0)
+    return nil;
+  if (![self macViKeyNodeEnabled:nodeId])
+    return nil;
+
+  NSString *title = node[@"title"];
+  if (![title isKindOfClass:NSString.class])
+    title = @"";
+
+  // Node cha: tieu de nhom + cac dong con thut vao.
+  id children = node[@"items"];
+  if ([children isKindOfClass:NSArray.class] && [children count] > 0) {
+    NSMutableArray<NSView *> *rows = [NSMutableArray array];
+    for (id raw in children) {
+      if (![raw isKindOfClass:NSDictionary.class])
+        continue;
+      NSView *row = [self macViKeyQuickRowForNode:raw];
+      if (row)
+        [rows addObject:row];
+    }
+    if (rows.count == 0)
+      return nil; // ca nhom bi tat -> khong ve tieu de tro tro
+
+    NSStackView *group = [NSStackView stackViewWithViews:rows];
+    group.orientation = NSUserInterfaceLayoutOrientationVertical;
+    group.alignment = NSLayoutAttributeLeading;
+    group.spacing = 6;
+    group.edgeInsets = NSEdgeInsetsMake(0, 16, 0, 0);
+
+    NSStackView *section = [NSStackView
+        stackViewWithViews:@[ [self macViKeyQuickLabel:title.uppercaseString
+                                                  bold:YES],
+                              group ]];
+    section.orientation = NSUserInterfaceLayoutOrientationVertical;
+    section.alignment = NSLayoutAttributeLeading;
+    section.spacing = 6;
+    return section;
+  }
+
+  // Dong trang thai: nut lon, la thu nguoi dung bam nhieu nhat.
+  if ([nodeId isEqualToString:@"statusLine"] ||
+      [nodeId isEqualToString:@"inputMethod"] ||
+      [nodeId isEqualToString:@"engineStatus"]) {
+    if (_quickStatusButton != nil)
+      return nil;
+    NSButton *button = [NSButton buttonWithTitle:title
+                                          target:self
+                                          action:@selector(onStatusLineClicked)];
+    button.bezelStyle = NSBezelStyleRounded;
+    button.controlSize = NSControlSizeLarge;
+    [button.widthAnchor constraintEqualToConstant:kQuickWidth].active = YES;
+    _quickStatusButton = button;
+    return button;
+  }
+
+  // Kieu go / bang ma da khoa cung: chi la thong tin, khong bam duoc.
+  if ([nodeId isEqualToString:@"fixedInputType"] ||
+      [nodeId isEqualToString:@"fixedCodeTable"]) {
+    NSButton *check = [NSButton checkboxWithTitle:title target:nil action:nil];
+    check.state = NSControlStateValueOn;
+    check.enabled = NO;
+    return check;
+  }
+
+  NSNumber *optionTag = [self macViKeyOptionTagsById][nodeId];
+  if (optionTag != nil) {
+    NSButton *check = [NSButton checkboxWithTitle:title
+                                           target:self
+                                           action:@selector(onOptionToggled:)];
+    check.tag = optionTag.integerValue;
+    [_quickOptionButtons addObject:check];
+    return check;
+  }
+
+  NSNumber *switchValue = [self macViKeySwitchKeyValuesById][nodeId];
+  if (switchValue != nil) {
+    // Tag phai la chi so trong mnuSwitchKeyValues vi onSwitchKeySelected: tra
+    // cuu theo chi so do. Menu luon dung truoc bang nhanh nen mang da san sang.
+    NSInteger index = [mnuSwitchKeyValues indexOfObject:switchValue];
+    if (index == NSNotFound)
+      return nil;
+    NSButton *radio = [NSButton radioButtonWithTitle:title
+                                              target:self
+                                              action:@selector
+                                              (onSwitchKeySelected:)];
+    radio.tag = index;
+    [_quickSwitchButtons addObject:radio];
+    return radio;
+  }
+
+  if ([nodeId isEqualToString:@"checkUpdateNow"]) {
+    return [NSButton buttonWithTitle:title
+                              target:self
+                              action:@selector(onCheckNewVersionNow)];
+  }
+  if ([nodeId isEqualToString:@"about"]) {
+    return [NSButton buttonWithTitle:title
+                              target:self
+                              action:@selector(onAboutSelected)];
+  }
+  if ([nodeId isEqualToString:@"controlPanel"]) {
+    return [NSButton buttonWithTitle:title
+                              target:self
+                              action:@selector(onControlPanelSelected)];
+  }
+  if ([nodeId isEqualToString:@"quit"]) {
+    return [NSButton buttonWithTitle:title
+                              target:NSApp
+                              action:@selector(terminate:)];
+  }
+  return nil;
+}
+
+- (void)macViKeyBuildQuickPanel {
+  _quickOptionButtons = [NSMutableArray array];
+  _quickSwitchButtons = [NSMutableArray array];
+  _quickStatusButton = nil;
+
+  NSMutableArray<NSView *> *rows = [NSMutableArray array];
+  for (id raw in [MacViKeyMenuLayout nodes]) {
+    if (![raw isKindOfClass:NSDictionary.class])
+      continue;
+    NSView *row = [self macViKeyQuickRowForNode:raw];
+    if (row)
+      [rows addObject:row];
+  }
+  // Bo duong ke dinh nhau / dau / cuoi - y het macViKeyTrimSeparators.
+  NSMutableArray<NSView *> *trimmed = [NSMutableArray array];
+  BOOL previousIsSeparator = YES;
+  for (NSView *row in rows) {
+    BOOL isSeparator = [row isKindOfClass:NSBox.class];
+    if (isSeparator && previousIsSeparator)
+      continue;
+    [trimmed addObject:row];
+    previousIsSeparator = isSeparator;
+  }
+  while (trimmed.count > 0 && [trimmed.lastObject isKindOfClass:NSBox.class])
+    [trimmed removeLastObject];
+
+  _quickStack = [NSStackView stackViewWithViews:trimmed];
+  _quickStack.orientation = NSUserInterfaceLayoutOrientationVertical;
+  _quickStack.alignment = NSLayoutAttributeLeading;
+  _quickStack.spacing = 10;
+  _quickStack.edgeInsets = NSEdgeInsetsMake(20, 20, 20, 20);
+  _quickStack.translatesAutoresizingMaskIntoConstraints = NO;
+
+  NSView *content = [[NSView alloc] initWithFrame:NSZeroRect];
+  [content addSubview:_quickStack];
+  [NSLayoutConstraint activateConstraints:@[
+    [_quickStack.topAnchor constraintEqualToAnchor:content.topAnchor],
+    [_quickStack.leadingAnchor constraintEqualToAnchor:content.leadingAnchor],
+    [_quickStack.trailingAnchor constraintEqualToAnchor:content.trailingAnchor],
+    [_quickStack.bottomAnchor constraintEqualToAnchor:content.bottomAnchor],
+  ]];
+
+  _quickWindow = [NSWindow
+      windowWithContentViewController:({
+        NSViewController *vc = [[NSViewController alloc] init];
+        vc.view = content;
+        vc;
+      })];
+  _quickWindow.title = [MacViKeyMenuLayout string:@"quickPanel.title"
+                                         fallback:@"MacViKey"];
+  _quickWindow.styleMask =
+      NSWindowStyleMaskTitled | NSWindowStyleMaskClosable;
+  _quickWindow.releasedWhenClosed = NO;
+  [_quickWindow center];
+}
+
+// Dong bo trang thai cac nut voi prefs. Duoc goi tu fillData nen bang nhanh,
+// menu va bang dieu khien khong bao gio lech nhau.
+- (void)macViKeyRefreshQuickPanel {
+  if (_quickWindow == nil)
+    return;
+
+  if (_quickStatusButton != nil && mnuStatusLine != nil) {
+    _quickStatusButton.title = mnuStatusLine.title;
+    _quickStatusButton.toolTip = mnuStatusLine.toolTip;
+  }
+  for (NSButton *check in _quickOptionButtons) {
+    check.state = [self macViKeyOptionIsOn:check.tag] ? NSControlStateValueOn
+                                                      : NSControlStateValueOff;
+  }
+  for (NSButton *radio in _quickSwitchButtons) {
+    if (radio.tag < 0 || radio.tag >= (NSInteger)mnuSwitchKeyValues.count)
+      continue;
+    BOOL on = ((vSwitchKeyStatus | MACVIKEY_SWITCH_BEEP) ==
+               [mnuSwitchKeyValues[radio.tag] intValue]);
+    radio.state = on ? NSControlStateValueOn : NSControlStateValueOff;
+  }
+}
+
+- (void)onQuickPanelSelected {
+  if (_quickWindow == nil)
+    [self macViKeyBuildQuickPanel];
+  [self macViKeyRefreshQuickPanel];
+  if (_quickWindow.isVisible)
+    return;
+  [NSApp activateIgnoringOtherApps:YES];
+  [_quickWindow makeKeyAndOrderFront:nil];
+  [_quickWindow setLevel:NSFloatingWindowLevel];
+}
+
 #pragma mark -StatusBar menu data
+
+// Logo cho thanh menu: dung nguyen ban mau (khong phai template) vi hinh co
+// nhieu sac do, ep sang don sac se thanh mot vet den. Thu nho ve 18pt cho khop
+// chieu cao thanh menu va cache lai - fillData bi goi moi lan doi che do.
+- (NSImage *)macViKeyStatusBarLogo {
+  static NSImage *logo = nil;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    NSImage *src = [NSImage imageNamed:@"logo_macvikey"];
+    if (src == nil) {
+      NSString *path = [[NSBundle mainBundle] pathForResource:@"logo_macvikey"
+                                                       ofType:@"png"];
+      if (path)
+        src = [[NSImage alloc] initWithContentsOfFile:path];
+    }
+    if (src == nil) {
+      NSLog(@"[MacViKey] Khong nap duoc logo_macvikey.png cho thanh menu.");
+      return;
+    }
+    const CGFloat side = 18.0;
+    src.size = NSMakeSize(side, side);
+    logo = src;
+  });
+  return logo;
+}
 
 - (void)fillData {
   // fill data
   NSInteger intInputMethod =
       [[NSUserDefaults standardUserDefaults] integerForKey:@"InputMethod"];
-  // MacViKey: bo bieu tuong tren thanh menu, chi hien chu VI / EN cho de doc.
-  statusItem.button.image = nil;
+  // MacViKey: logo + chu VI / EN. Chi mot trong hai la khong du - logo giup tim
+  // ra app giua hang chuc muc tren thanh menu, chu cho biet dang o che do nao.
+  statusItem.button.image = [self macViKeyStatusBarLogo];
   statusItem.button.alternateImage = nil;
-  statusItem.button.imagePosition = NSNoImage;
+  statusItem.button.imagePosition = NSImageLeft;
+  statusItem.button.imageScaling = NSImageScaleProportionallyDown;
   statusItem.button.font =
       [NSFont monospacedDigitSystemFontOfSize:[NSFont systemFontSize]
                                        weight:NSFontWeightBold];
