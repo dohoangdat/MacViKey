@@ -19,6 +19,9 @@
 - Tắt bộ gõ riêng cho từng ứng dụng
 - Chế độ thay thế thông minh dùng Accessibility API (mặc định tắt)
 - Mục menu hiển thị trạng thái bộ gõ, bấm để khởi động lại
+- Bảng nhanh: bấm vào MacViKey.app mở một cửa sổ có đúng nội dung của menu
+- Ẩn biểu tượng khỏi thanh menu (vẫn vào lại được qua bảng nhanh)
+- Khởi động cùng máy hoạt động từ macOS 10.15 (LaunchAgent), không cần helper
 
 ### Thay đổi
 
@@ -27,7 +30,10 @@
 - Bỏ các tuỳ chọn chính tả và gõ tắt phụ âm
 - Bỏ mã nguồn Windows và Linux
 - Bundle identifier giữ nguyên `com.mac.vi.key`
-- Yêu cầu tối thiểu macOS 10.13
+- Yêu cầu tối thiểu macOS 10.15 (Catalina) — giao diện dùng SwiftUI
+- Cửa sổ Giới thiệu và bảng nhanh viết lại bằng SwiftUI; bỏ scene storyboard
+  và `AboutViewController`
+- Hiện biểu tượng trên thanh Dock đổi thành mặc định BẬT
 
 ### Hạ tầng
 

@@ -18,7 +18,6 @@
 		232EDA6421F1B33F0085D362 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 232EDA6321F1B33F0085D362 /* main.m */; };
 		233C4A6E231F923D00DD7052 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 233C4A6D231F923D00DD7052 /* AppKit.framework */; };
 		2371AAEF22FA85B200CA1B57 /* MacViKeyHook.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2371AAEE22FA85B200CA1B57 /* MacViKeyHook.mm */; };
-		2374A1302216720E005B0375 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2374A12F2216720E005B0375 /* AboutViewController.m */; };
 		238519F821F1BF3C00E79A41 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 238519F221F1B8E200E79A41 /* Foundation.framework */; };
 		238519FF21F1BF8A00E79A41 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 238519FD21F1BF5100E79A41 /* EventKit.framework */; };
 		23851A0021F1BFA300E79A41 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 238519FB21F1BF4900E79A41 /* Cocoa.framework */; };
@@ -33,6 +32,11 @@
 		23E2E4A02314FD3A006CCC3E /* Vietnamese.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23E2E49B2314FD3A006CCC3E /* Vietnamese.cpp */; };
 		23F512852336386200397988 /* MJAccessibilityUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 23F512832336386200397988 /* MJAccessibilityUtils.m */; };
 		A534F32629D8B78100296F25 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23874B0F220160A500000BC8 /* Carbon.framework */; };
+		MVKBSW01 /* MacViKeyDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = MVKFSW01 /* MacViKeyDesign.swift */; };
+		MVKBSW02 /* MacViKeyAboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MVKFSW02 /* MacViKeyAboutView.swift */; };
+		MVKBSW03 /* MacViKeyQuickPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MVKFSW03 /* MacViKeyQuickPanelView.swift */; };
+		MVKBSW04 /* MacViKeyWindows.swift in Sources */ = {isa = PBXBuildFile; fileRef = MVKFSW04 /* MacViKeyWindows.swift */; };
+		MVKBQR01 /* MacViKeyQuickRow.m in Sources */ = {isa = PBXBuildFile; fileRef = MVKFQR01 /* MacViKeyQuickRow.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -67,8 +71,6 @@
 		233D800222F7D1F000E02DC6 /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		2344220522F42F70009E47D4 /* MacViKey.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacViKey.entitlements; sourceTree = "<group>"; };
 		2371AAEE22FA85B200CA1B57 /* MacViKeyHook.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MacViKeyHook.mm; sourceTree = "<group>"; };
-		2374A12E2216720E005B0375 /* AboutViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
-		2374A12F2216720E005B0375 /* AboutViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
 		237724A5232BA3B800E92BDF /* mac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mac.h; sourceTree = "<group>"; };
 		238519F221F1B8E200E79A41 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		238519F921F1BF4400E79A41 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -101,6 +103,13 @@
 		23E2E49C2314FD3A006CCC3E /* SmartSwitchKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmartSwitchKey.h; sourceTree = "<group>"; };
 		23F512832336386200397988 /* MJAccessibilityUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJAccessibilityUtils.m; sourceTree = "<group>"; };
 		23F512842336386200397988 /* MJAccessibilityUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJAccessibilityUtils.h; sourceTree = "<group>"; };
+		MVKFSW01 /* MacViKeyDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacViKeyDesign.swift; sourceTree = "<group>"; };
+		MVKFSW02 /* MacViKeyAboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacViKeyAboutView.swift; sourceTree = "<group>"; };
+		MVKFSW03 /* MacViKeyQuickPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacViKeyQuickPanelView.swift; sourceTree = "<group>"; };
+		MVKFSW04 /* MacViKeyWindows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacViKeyWindows.swift; sourceTree = "<group>"; };
+		MVKFQR01 /* MacViKeyQuickRow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MacViKeyQuickRow.m; sourceTree = "<group>"; };
+		MVKFQR02 /* MacViKeyQuickRow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MacViKeyQuickRow.h; sourceTree = "<group>"; };
+		MVKFBR01 /* MacViKey-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacViKey-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -160,8 +169,6 @@
 				232EDA5821F1B33E0085D362 /* AppDelegate.m */,
 				232EDA5A21F1B33E0085D362 /* ViewController.h */,
 				232EDA5B21F1B33E0085D362 /* ViewController.m */,
-				2374A12E2216720E005B0375 /* AboutViewController.h */,
-				2374A12F2216720E005B0375 /* AboutViewController.m */,
 				232EDA5D21F1B33F0085D362 /* Assets.xcassets */,
 				232EDA5F21F1B33F0085D362 /* Main.storyboard */,
 				232EDA6221F1B33F0085D362 /* Info.plist */,
@@ -176,6 +183,13 @@
 				MVK00000000000000000AX02 /* MacViKeyAX.m */,
 				MVK00000000000000000IF03 /* MacViKeyInfo.h */,
 				MVK00000000000000000IF02 /* MacViKeyInfo.m */,
+				MVKFQR02 /* MacViKeyQuickRow.h */,
+				MVKFQR01 /* MacViKeyQuickRow.m */,
+				MVKFBR01 /* MacViKey-Bridging-Header.h */,
+				MVKFSW01 /* MacViKeyDesign.swift */,
+				MVKFSW02 /* MacViKeyAboutView.swift */,
+				MVKFSW03 /* MacViKeyQuickPanelView.swift */,
+				MVKFSW04 /* MacViKeyWindows.swift */,
 				23CA6D1522F0439100804D6E /* MyTextField.h */,
 				23CA6D1622F0439100804D6E /* MyTextField.m */,
 				2371AAEE22FA85B200CA1B57 /* MacViKeyHook.mm */,
@@ -316,11 +330,15 @@
 				MVK00000000000000000AX01 /* MacViKeyAX.m in Sources */,
 				MVK00000000000000000IF01 /* MacViKeyInfo.m in Sources */,
 				23E2E4A02314FD3A006CCC3E /* Vietnamese.cpp in Sources */,
-				2374A1302216720E005B0375 /* AboutViewController.m in Sources */,
 				23CA6D1722F0439100804D6E /* MyTextField.m in Sources */,
 				232EDA6421F1B33F0085D362 /* main.m in Sources */,
 				2371AAEF22FA85B200CA1B57 /* MacViKeyHook.mm in Sources */,
 				232EDA5921F1B33E0085D362 /* AppDelegate.m in Sources */,
+				MVKBQR01 /* MacViKeyQuickRow.m in Sources */,
+				MVKBSW01 /* MacViKeyDesign.swift in Sources */,
+				MVKBSW02 /* MacViKeyAboutView.swift in Sources */,
+				MVKBSW03 /* MacViKeyQuickPanelView.swift in Sources */,
+				MVKBSW04 /* MacViKeyWindows.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -398,7 +416,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -452,7 +470,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -462,8 +480,12 @@
 		232EDA6921F1B33F0085D362 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
+				SWIFT_VERSION = 5.0;
+				SWIFT_OBJC_BRIDGING_HEADER = "MacViKey/MacViKey-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 2;
@@ -474,7 +496,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 1.1;
 				OTHER_LDFLAGS = (
 					"-lc++\n-lc++",
@@ -488,8 +510,11 @@
 		232EDA6A21F1B33F0085D362 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				SWIFT_VERSION = 5.0;
+				SWIFT_OBJC_BRIDGING_HEADER = "MacViKey/MacViKey-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 2;
@@ -500,7 +525,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 1.1;
 				OTHER_LDFLAGS = (
 					"-lc++\n-lc++",

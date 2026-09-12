@@ -17,6 +17,10 @@
 #import <Carbon/Carbon.h>
 #import <Cocoa/Cocoa.h>
 #import <ServiceManagement/ServiceManagement.h>
+#import "MacViKeyQuickRow.h"
+// Header do Xcode sinh ra tu cac lop @objc ben Swift (MacViKeyAboutWindow,
+// MacViKeyQuickPanelWindow). Ten file theo PRODUCT_MODULE_NAME.
+#import "MacViKey-Swift.h"
 #include <libproc.h>
 #include <sys/proc_info.h>
 
@@ -88,22 +92,23 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   MacViKeyOptionShowIconOnMenuBar,
 };
 
-@interface AppDelegate ()
+@interface AppDelegate () <MacViKeyQuickPanelActions>
 
 @end
 
 @implementation AppDelegate {
   NSWindowController *_mainWC;
-  NSWindowController *_aboutWC;
+  // Cua so Gioi thieu la SwiftUI (MacViKeyAboutWindow), khong con la scene
+  // "AboutWindow" trong Main.storyboard.
+  MacViKeyAboutWindow *_aboutWindow;
 
   NSStatusItem *statusItem;
 
   // MacViKey: bang nhanh - ban cua so cua chinh menu tren thanh trang thai.
-  NSWindow *_quickWindow;
-  NSStackView *_quickStack;
-  NSButton *_quickStatusButton;
-  NSMutableArray<NSButton *> *_quickOptionButtons;
-  NSMutableArray<NSButton *> *_quickSwitchButtons;
+  // Cua so do la SwiftUI (MacViKeyQuickPanelWindow); ben nay chi giu mo ta dong.
+  MacViKeyQuickPanelWindow *_quickPanel;
+  // Dong trang thai chi duoc xuat hien mot lan du JSON co nhieu id tro vao no.
+  BOOL _quickStatusRowAdded;
   NSMenu *theMenu;
 
   // Dong dau menu: gop trang thai bo go + bat/tat tieng Viet.
@@ -1007,31 +1012,16 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 // node + chung mot bo loc macViKeyNodeEnabled: thi them/bot mot muc trong JSON
 // se tu dong hien o ca hai noi, khong the lech.
 //
-// Cac nut cung tro thang vao action cua menu (onOptionToggled:,
-// onSwitchKeySelected:) - hai ham do chi doc sender.tag, ma NSButton cung co
-// tag, nen khong can nhan ban logic.
+// Phia nay chi dung DANH SACH MO TA (MacViKeyQuickRow); viec ve la cua lop
+// SwiftUI trong MacViKeyQuickPanelView.swift. Ranh gioi do co chu y: moi luat
+// "muc nao duoc hien, dang gi, tag bao nhieu" nam o day, mot cho duy nhat.
 
-static const CGFloat kQuickWidth = 340.0;
-
-- (NSTextField *)macViKeyQuickLabel:(NSString *)text bold:(BOOL)bold {
-  NSTextField *label = [NSTextField labelWithString:text];
-  label.font = bold ? [NSFont boldSystemFontOfSize:11]
-                    : [NSFont systemFontOfSize:NSFont.systemFontSize];
-  if (bold)
-    label.textColor = [NSColor secondaryLabelColor];
-  return label;
-}
-
-- (NSBox *)macViKeyQuickSeparator {
-  NSBox *box = [[NSBox alloc] initWithFrame:NSMakeRect(0, 0, kQuickWidth, 1)];
-  box.boxType = NSBoxSeparator;
-  return box;
-}
-
-// Dung mot dong cho mot node. Tra nil = node nay khong hien tren bang nhanh.
-- (NSView *)macViKeyQuickRowForNode:(NSDictionary *)node {
+// Dung mot dong mo ta cho mot node. Tra nil = node nay khong hien tren bang nhanh.
+- (MacViKeyQuickRow *)macViKeyQuickRowForNode:(NSDictionary *)node {
   if ([node[@"separator"] boolValue])
-    return [self macViKeyQuickSeparator];
+    return [MacViKeyQuickRow rowWithKind:MacViKeyQuickRowKindSeparator
+                                   rowId:@""
+                                   title:@""];
 
   id jsonEnabled = node[@"enabled"];
   if (jsonEnabled != nil && ![jsonEnabled boolValue])
@@ -1046,72 +1036,76 @@ static const CGFloat kQuickWidth = 340.0;
   NSString *title = node[@"title"];
   if (![title isKindOfClass:NSString.class])
     title = @"";
+  NSString *hint = node[@"hint"];
+  if (![hint isKindOfClass:NSString.class])
+    hint = nil;
 
-  // Node cha: tieu de nhom + cac dong con thut vao.
+  // Node cha: tieu de nhom + cac dong con.
   id children = node[@"items"];
   if ([children isKindOfClass:NSArray.class] && [children count] > 0) {
-    NSMutableArray<NSView *> *rows = [NSMutableArray array];
+    NSMutableArray<MacViKeyQuickRow *> *rows = [NSMutableArray array];
     for (id raw in children) {
       if (![raw isKindOfClass:NSDictionary.class])
         continue;
-      NSView *row = [self macViKeyQuickRowForNode:raw];
+      MacViKeyQuickRow *row = [self macViKeyQuickRowForNode:raw];
       if (row)
         [rows addObject:row];
     }
+    // Ca nhom bi tat -> khong ve tieu de tro tro.
     if (rows.count == 0)
-      return nil; // ca nhom bi tat -> khong ve tieu de tro tro
+      return nil;
+    // Duong ke trong mot nhom khong con y nghia khi nhom da co khung rieng.
+    NSPredicate *notSeparator = [NSPredicate
+        predicateWithBlock:^BOOL(MacViKeyQuickRow *row, NSDictionary *b) {
+          return row.kind != MacViKeyQuickRowKindSeparator;
+        }];
+    rows = [[rows filteredArrayUsingPredicate:notSeparator] mutableCopy];
+    if (rows.count == 0)
+      return nil;
 
-    NSStackView *group = [NSStackView stackViewWithViews:rows];
-    group.orientation = NSUserInterfaceLayoutOrientationVertical;
-    group.alignment = NSLayoutAttributeLeading;
-    group.spacing = 6;
-    group.edgeInsets = NSEdgeInsetsMake(0, 16, 0, 0);
-
-    NSStackView *section = [NSStackView
-        stackViewWithViews:@[ [self macViKeyQuickLabel:title.uppercaseString
-                                                  bold:YES],
-                              group ]];
-    section.orientation = NSUserInterfaceLayoutOrientationVertical;
-    section.alignment = NSLayoutAttributeLeading;
-    section.spacing = 6;
-    return section;
+    MacViKeyQuickRow *group =
+        [MacViKeyQuickRow rowWithKind:MacViKeyQuickRowKindGroup
+                                rowId:nodeId
+                                title:title];
+    group.hint = hint;
+    group.children = rows;
+    return group;
   }
 
-  // Dong trang thai: nut lon, la thu nguoi dung bam nhieu nhat.
   if ([nodeId isEqualToString:@"statusLine"] ||
       [nodeId isEqualToString:@"inputMethod"] ||
       [nodeId isEqualToString:@"engineStatus"]) {
-    if (_quickStatusButton != nil)
+    if (_quickStatusRowAdded)
       return nil;
-    NSButton *button = [NSButton buttonWithTitle:title
-                                          target:self
-                                          action:@selector(onStatusLineClicked)];
-    button.bezelStyle = NSBezelStyleRounded;
-    // NSControlSizeLarge chi co tu macOS 11; duoi nguong do giu co mac dinh.
-    if (@available(macOS 11.0, *))
-      button.controlSize = NSControlSizeLarge;
-    [button.widthAnchor constraintEqualToConstant:kQuickWidth].active = YES;
-    _quickStatusButton = button;
-    return button;
+    _quickStatusRowAdded = YES;
+    MacViKeyQuickRow *row =
+        [MacViKeyQuickRow rowWithKind:MacViKeyQuickRowKindStatus
+                                rowId:nodeId
+                                title:title];
+    row.hint = hint;
+    return row;
   }
 
-  // Kieu go / bang ma da khoa cung: chi la thong tin, khong bam duoc.
   if ([nodeId isEqualToString:@"fixedInputType"] ||
       [nodeId isEqualToString:@"fixedCodeTable"]) {
-    NSButton *check = [NSButton checkboxWithTitle:title target:nil action:nil];
-    check.state = NSControlStateValueOn;
-    check.enabled = NO;
-    return check;
+    MacViKeyQuickRow *row =
+        [MacViKeyQuickRow rowWithKind:MacViKeyQuickRowKindFixedInfo
+                                rowId:nodeId
+                                title:title];
+    row.hint = hint;
+    return row;
   }
 
   NSNumber *optionTag = [self macViKeyOptionTagsById][nodeId];
   if (optionTag != nil) {
-    NSButton *check = [NSButton checkboxWithTitle:title
-                                           target:self
-                                           action:@selector(onOptionToggled:)];
-    check.tag = optionTag.integerValue;
-    [_quickOptionButtons addObject:check];
-    return check;
+    MacViKeyQuickRow *row =
+        [MacViKeyQuickRow rowWithKind:MacViKeyQuickRowKindToggle
+                                rowId:nodeId
+                                title:title];
+    row.hint = hint;
+    row.tag = optionTag.integerValue;
+    row.on = [self macViKeyOptionIsOn:row.tag];
+    return row;
   }
 
   NSNumber *switchValue = [self macViKeySwitchKeyValuesById][nodeId];
@@ -1121,126 +1115,113 @@ static const CGFloat kQuickWidth = 340.0;
     NSInteger index = [mnuSwitchKeyValues indexOfObject:switchValue];
     if (index == NSNotFound)
       return nil;
-    NSButton *radio = [NSButton radioButtonWithTitle:title
-                                              target:self
-                                              action:@selector
-                                              (onSwitchKeySelected:)];
-    radio.tag = index;
-    [_quickSwitchButtons addObject:radio];
-    return radio;
+    MacViKeyQuickRow *row =
+        [MacViKeyQuickRow rowWithKind:MacViKeyQuickRowKindRadio
+                                rowId:nodeId
+                                title:title];
+    row.hint = hint;
+    row.tag = index;
+    row.on = ((vSwitchKeyStatus | MACVIKEY_SWITCH_BEEP) ==
+              [switchValue intValue]);
+    return row;
   }
 
-  if ([nodeId isEqualToString:@"checkUpdateNow"]) {
-    return [NSButton buttonWithTitle:title
-                              target:self
-                              action:@selector(onCheckNewVersionNow)];
-  }
-  if ([nodeId isEqualToString:@"about"]) {
-    return [NSButton buttonWithTitle:title
-                              target:self
-                              action:@selector(onAboutSelected)];
-  }
-  if ([nodeId isEqualToString:@"controlPanel"]) {
-    return [NSButton buttonWithTitle:title
-                              target:self
-                              action:@selector(onControlPanelSelected)];
-  }
-  if ([nodeId isEqualToString:@"quit"]) {
-    return [NSButton buttonWithTitle:title
-                              target:NSApp
-                              action:@selector(terminate:)];
+  // Cac muc con lai la hanh dong; quickPanelDidTapActionWithId: phan giai theo
+  // rowId. Muc nao khong nam trong danh sach do thi khong hien.
+  static NSSet *actionIds = nil;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    actionIds = [NSSet setWithArray:@[
+      @"checkUpdateNow", @"about", @"controlPanel", @"quit"
+    ]];
+  });
+  if ([actionIds containsObject:nodeId]) {
+    MacViKeyQuickRow *row =
+        [MacViKeyQuickRow rowWithKind:MacViKeyQuickRowKindAction
+                                rowId:nodeId
+                                title:title];
+    row.hint = hint;
+    row.destructive = [nodeId isEqualToString:@"quit"];
+    return row;
   }
   return nil;
 }
 
-- (void)macViKeyBuildQuickPanel {
-  _quickOptionButtons = [NSMutableArray array];
-  _quickSwitchButtons = [NSMutableArray array];
-  _quickStatusButton = nil;
+#pragma mark - MacViKeyQuickPanelActions
 
-  NSMutableArray<NSView *> *rows = [NSMutableArray array];
+- (NSArray<MacViKeyQuickRow *> *)quickPanelRows {
+  _quickStatusRowAdded = NO;
+
+  NSMutableArray<MacViKeyQuickRow *> *rows = [NSMutableArray array];
   for (id raw in [MacViKeyMenuLayout nodes]) {
     if (![raw isKindOfClass:NSDictionary.class])
       continue;
-    NSView *row = [self macViKeyQuickRowForNode:raw];
+    MacViKeyQuickRow *row = [self macViKeyQuickRowForNode:raw];
     if (row)
       [rows addObject:row];
   }
+
   // Bo duong ke dinh nhau / dau / cuoi - y het macViKeyTrimSeparators.
-  NSMutableArray<NSView *> *trimmed = [NSMutableArray array];
+  NSMutableArray<MacViKeyQuickRow *> *trimmed = [NSMutableArray array];
   BOOL previousIsSeparator = YES;
-  for (NSView *row in rows) {
-    BOOL isSeparator = [row isKindOfClass:NSBox.class];
+  for (MacViKeyQuickRow *row in rows) {
+    BOOL isSeparator = (row.kind == MacViKeyQuickRowKindSeparator);
     if (isSeparator && previousIsSeparator)
       continue;
     [trimmed addObject:row];
     previousIsSeparator = isSeparator;
   }
-  while (trimmed.count > 0 && [trimmed.lastObject isKindOfClass:NSBox.class])
+  while (trimmed.count > 0 &&
+         trimmed.lastObject.kind == MacViKeyQuickRowKindSeparator)
     [trimmed removeLastObject];
 
-  _quickStack = [NSStackView stackViewWithViews:trimmed];
-  _quickStack.orientation = NSUserInterfaceLayoutOrientationVertical;
-  _quickStack.alignment = NSLayoutAttributeLeading;
-  _quickStack.spacing = 10;
-  _quickStack.edgeInsets = NSEdgeInsetsMake(20, 20, 20, 20);
-  _quickStack.translatesAutoresizingMaskIntoConstraints = NO;
-
-  NSView *content = [[NSView alloc] initWithFrame:NSZeroRect];
-  [content addSubview:_quickStack];
-  [NSLayoutConstraint activateConstraints:@[
-    [_quickStack.topAnchor constraintEqualToAnchor:content.topAnchor],
-    [_quickStack.leadingAnchor constraintEqualToAnchor:content.leadingAnchor],
-    [_quickStack.trailingAnchor constraintEqualToAnchor:content.trailingAnchor],
-    [_quickStack.bottomAnchor constraintEqualToAnchor:content.bottomAnchor],
-  ]];
-
-  _quickWindow = [NSWindow
-      windowWithContentViewController:({
-        NSViewController *vc = [[NSViewController alloc] init];
-        vc.view = content;
-        vc;
-      })];
-  _quickWindow.title = [MacViKeyMenuLayout string:@"quickPanel.title"
-                                         fallback:@"MacViKey"];
-  _quickWindow.styleMask =
-      NSWindowStyleMaskTitled | NSWindowStyleMaskClosable;
-  _quickWindow.releasedWhenClosed = NO;
-  [_quickWindow center];
+  return trimmed;
 }
 
-// Dong bo trang thai cac nut voi prefs. Duoc goi tu fillData nen bang nhanh,
-// menu va bang dieu khien khong bao gio lech nhau.
-- (void)macViKeyRefreshQuickPanel {
-  if (_quickWindow == nil)
-    return;
+- (NSString *)quickPanelStatusTitle {
+  return mnuStatusLine.title ?: @"";
+}
 
-  if (_quickStatusButton != nil && mnuStatusLine != nil) {
-    _quickStatusButton.title = mnuStatusLine.title;
-    _quickStatusButton.toolTip = mnuStatusLine.toolTip;
+- (void)quickPanelDidToggleOptionWithTag:(NSInteger)tag {
+  // onOptionToggled: chi doc sender.tag, nen dung mot NSMenuItem tam la du -
+  // khong phai nhan ban logic bat/tat.
+  NSMenuItem *proxy = [[NSMenuItem alloc] init];
+  proxy.tag = tag;
+  [self onOptionToggled:proxy];
+}
+
+- (void)quickPanelDidSelectSwitchKeyAtIndex:(NSInteger)index {
+  NSMenuItem *proxy = [[NSMenuItem alloc] init];
+  proxy.tag = index;
+  [self onSwitchKeySelected:proxy];
+}
+
+- (void)quickPanelDidTapStatusLine {
+  [self onStatusLineClicked];
+}
+
+- (void)quickPanelDidTapActionWithId:(NSString *)rowId {
+  if ([rowId isEqualToString:@"checkUpdateNow"]) {
+    [self onCheckNewVersionNow];
+  } else if ([rowId isEqualToString:@"about"]) {
+    [self onAboutSelected];
+  } else if ([rowId isEqualToString:@"controlPanel"]) {
+    [self onControlPanelSelected];
+  } else if ([rowId isEqualToString:@"quit"]) {
+    [NSApp terminate:nil];
   }
-  for (NSButton *check in _quickOptionButtons) {
-    check.state = [self macViKeyOptionIsOn:check.tag] ? NSControlStateValueOn
-                                                      : NSControlStateValueOff;
-  }
-  for (NSButton *radio in _quickSwitchButtons) {
-    if (radio.tag < 0 || radio.tag >= (NSInteger)mnuSwitchKeyValues.count)
-      continue;
-    BOOL on = ((vSwitchKeyStatus | MACVIKEY_SWITCH_BEEP) ==
-               [mnuSwitchKeyValues[radio.tag] intValue]);
-    radio.state = on ? NSControlStateValueOn : NSControlStateValueOff;
-  }
+}
+
+// Dong bo bang nhanh voi prefs. Duoc goi tu fillData nen bang nhanh, menu va
+// bang dieu khien khong bao gio lech nhau.
+- (void)macViKeyRefreshQuickPanel {
+  [_quickPanel refresh];
 }
 
 - (void)onQuickPanelSelected {
-  if (_quickWindow == nil)
-    [self macViKeyBuildQuickPanel];
-  [self macViKeyRefreshQuickPanel];
-  if (_quickWindow.isVisible)
-    return;
-  [NSApp activateIgnoringOtherApps:YES];
-  [_quickWindow makeKeyAndOrderFront:nil];
-  [_quickWindow setLevel:NSFloatingWindowLevel];
+  if (_quickPanel == nil)
+    _quickPanel = [[MacViKeyQuickPanelWindow alloc] initWithActions:self];
+  [_quickPanel show];
 }
 
 #pragma mark -StatusBar menu data
@@ -1560,24 +1541,9 @@ static const CGFloat kQuickWidth = 340.0;
 }
 
 - (void)onAboutSelected {
-  if (_aboutWC == nil) {
-    _aboutWC = [[NSStoryboard storyboardWithName:@"Main" bundle:nil]
-        instantiateControllerWithIdentifier:@"AboutWindow"];
-  }
-  //[MacViKeyManager showDockIcon:YES];
-  if ([_aboutWC.window isVisible])
-    return;
-
-  // Cua so Gioi thieu khong cho resize -> ep kich thuoc dung bang view goc
-  // trong storyboard, tranh cat mat noi dung (link, khung ung ho, ban quyen).
-  NSView *aboutView = _aboutWC.contentViewController.view;
-  if (aboutView) {
-    [_aboutWC.window setContentSize:aboutView.frame.size];
-    [_aboutWC.window center];
-  }
-
-  [_aboutWC.window makeKeyAndOrderFront:nil];
-  [_aboutWC.window setLevel:NSFloatingWindowLevel];
+  if (_aboutWindow == nil)
+    _aboutWindow = [[MacViKeyAboutWindow alloc] init];
+  [_aboutWindow show];
 }
 
 #pragma mark -Short key event
