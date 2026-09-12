@@ -6,6 +6,7 @@
 //  Modifications copyright © 2026 Do Hoang Dat
 //
 
+#import "MJAccessibilityUtils.h"
 #import "MacViKeyInfo.h"
 #import "MacViKeyManager.h"
 
@@ -26,24 +27,49 @@ extern CGEventRef MacViKeyCallback(CGEventTapProxy proxy,
 }
 static BOOL _isInited = NO;
 
+//Tap ban phim: ACTIVE (kCGEventTapOptionDefault) vi phai sua/nuot phim.
 static CFMachPortRef      eventTap;
-static CGEventMask        eventMask;
 static CFRunLoopSourceRef runLoopSource;
+
+//Tap chuot: CHI NGHE (kCGEventTapOptionListenOnly).
+//
+//RAT QUAN TRONG. Truoc day chuot nam chung mask voi ban phim trong mot tap
+//active duy nhat. Tap active chan luong su kien cua CA phien lam viec cho toi
+//khi callback tra ve - nen bat cu truc trac nao cua bo go cung lam DUNG LUON
+//CHUOT, va nguoi dung mat not duong cuoi cung de tu cuu minh.
+//
+//Voi chuot ta chi can BIET la nguoi dung vua bam de dat lai phien go
+//(RequestNewSession) - khong sua, khong nuot. Tap chi-nghe lam dung viec do ma
+//khong bao gio giu su kien lai.
+static CFMachPortRef      mouseTap;
+static CFRunLoopSourceRef mouseRunLoopSource;
 
 #pragma mark -MacViKey: khoi phuc event tap
 
 //macOS tu tat event tap khi callback chay qua lau (kCGEventTapDisabledByTimeout)
 //hoac khi nguoi dung bam phim qua nhanh luc he thong ban (ByUserInput).
 //Neu khong ai bat lai, bo go chet han cho toi khi restart app.
+//
+//NHUNG: khong duoc bat lai khi da MAT quyen Tro nang. Mot tap active van cam
+//dau vao luong su kien ma khong con quyen xu ly la treo ca may.
 BOOL MacViKeyReenableEventTap(void) {
     if (eventTap == NULL || !_isInited)
         return NO;
+    if (!MJAccessibilityIsEnabled())
+        return NO;
     CGEventTapEnable(eventTap, true);
+    if (mouseTap != NULL)
+        CGEventTapEnable(mouseTap, true);
     return CGEventTapIsEnabled(eventTap);
 }
 
+//CGEventTapIsEnabled chi cho biet CO BAT hay khong, KHONG cho biet con quyen
+//hay khong. Mat quyen Tro nang thi tap van bao "dang bat" trong khi khong su
+//kien nao toi duoc tay ta - nen phai hoi ca TCC, neu khong moi noi goi ham nay
+//(giao dien, watchdog) deu bi noi doi.
 BOOL MacViKeyIsEventTapAlive(void) {
-    return (eventTap != NULL && _isInited && CGEventTapIsEnabled(eventTap));
+    return (eventTap != NULL && _isInited && MJAccessibilityIsEnabled() &&
+            CGEventTapIsEnabled(eventTap));
 }
 
 +(BOOL)isInited {
@@ -57,19 +83,22 @@ BOOL MacViKeyIsEventTapAlive(void) {
     //init modernKey
     MacViKeyInit();
     
-    // Create an event tap. We are interested in key presses.
-    eventMask = ((1 << kCGEventKeyDown) |
-                 (1 << kCGEventKeyUp) |
-                 (1 << kCGEventFlagsChanged) |
-                 (1 << kCGEventLeftMouseDown) |
-                 (1 << kCGEventRightMouseDown) |
-                 (1 << kCGEventLeftMouseDragged) |
-                 (1 << kCGEventRightMouseDragged));
-    
+    //Khong co quyen thi dung tao tap. Tao duoc mot tap active ma khong xu ly
+    //duoc su kien la cach chac chan nhat de treo may.
+    if (!MJAccessibilityIsEnabled()) {
+        fprintf(stderr, "khong co quyen Tro nang - khong tao event tap\n");
+        return NO;
+    }
+
+    //Tap ban phim: active, vi phai sua va nuot phim.
+    CGEventMask keyMask = ((1 << kCGEventKeyDown) |
+                           (1 << kCGEventKeyUp) |
+                           (1 << kCGEventFlagsChanged));
+
     eventTap = CGEventTapCreate(kCGSessionEventTap,
                                 kCGHeadInsertEventTap,
-                                0,
-                                eventMask,
+                                kCGEventTapOptionDefault,
+                                keyMask,
                                 MacViKeyCallback,
                                 NULL);
     
@@ -89,6 +118,29 @@ BOOL MacViKeyIsEventTapAlive(void) {
     
     // Enable the event tap.
     CGEventTapEnable(eventTap, true);
+
+    //Tap chuot: chi nghe. Tao rieng de chuot khong bao gio bi bo go giu lai.
+    //Tao that bai cung khong sao - chi mat viec dat lai phien go khi bam chuot,
+    //con hon lam hong ca duong ban phim.
+    CGEventMask mouseMask = ((1 << kCGEventLeftMouseDown) |
+                             (1 << kCGEventRightMouseDown) |
+                             (1 << kCGEventLeftMouseDragged) |
+                             (1 << kCGEventRightMouseDragged));
+    mouseTap = CGEventTapCreate(kCGSessionEventTap,
+                                kCGHeadInsertEventTap,
+                                kCGEventTapOptionListenOnly,
+                                mouseMask,
+                                MacViKeyCallback,
+                                NULL);
+    if (mouseTap) {
+        mouseRunLoopSource =
+            CFMachPortCreateRunLoopSource(kCFAllocatorDefault, mouseTap, 0);
+        CFRunLoopAddSource(CFRunLoopGetCurrent(), mouseRunLoopSource,
+                           kCFRunLoopCommonModes);
+        CGEventTapEnable(mouseTap, true);
+    } else {
+        fprintf(stderr, "khong tao duoc tap chuot (chi-nghe)\n");
+    }
     
     return YES;
 }
@@ -102,6 +154,17 @@ BOOL MacViKeyIsEventTapAlive(void) {
         CFMachPortInvalidate(eventTap);
         CFRelease(eventTap);
         eventTap = NULL;
+
+        if (mouseTap != NULL) {
+            CFRunLoopRemoveSource(CFRunLoopGetCurrent(), mouseRunLoopSource,
+                                  kCFRunLoopCommonModes);
+            CFRelease(mouseRunLoopSource);
+            mouseRunLoopSource = nil;
+
+            CFMachPortInvalidate(mouseTap);
+            CFRelease(mouseTap);
+            mouseTap = NULL;
+        }
         
         _isInited = false;
     }

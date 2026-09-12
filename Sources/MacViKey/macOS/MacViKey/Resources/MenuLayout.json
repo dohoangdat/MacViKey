@@ -90,7 +90,7 @@
     },
     {
       "id": "page.switchKey",
-      "title": "Phím chuyển nhanh",
+      "title": "Phím chuyển",
       "symbol": "command",
       "enabled": true,
       "hint": "Chọn tổ hợp phím để đổi nhanh giữa Tiếng Việt và English.",

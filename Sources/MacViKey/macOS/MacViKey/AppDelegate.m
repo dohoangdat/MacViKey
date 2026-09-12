@@ -136,6 +136,14 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   [self macViKeyUpdateStatusLine];
 
   // Cho quyen duoc cap, khong bat nguoi dung mo lai app.
+  [self macViKeyStartPermissionPoll];
+}
+
+// Bo dem cho toi khi quyen Tro nang duoc cap. Dung chung cho ca luc khoi dong
+// chua co quyen lan luc bi go quyen giua chung.
+- (void)macViKeyStartPermissionPoll {
+  if (_permissionPoll != nil)
+    return;
   _permissionPoll =
       [NSTimer scheduledTimerWithTimeInterval:2.0
                                        target:self
@@ -1249,6 +1257,23 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 - (void)checkTapHealth {
   if (![MacViKeyManager isInited])
     return;
+
+  // Mat quyen Tro nang giua chung (nguoi dung gat nham trong Cai dat He thong).
+  //
+  // Day la truong hop nguy hiem nhat: tap ban phim la tap ACTIVE cam o dau
+  // luong su kien cua ca phien lam viec. Mat quyen ma van de no cam o do la
+  // dong bang dau vao cua CA MAY. Phai go tap ra ngay, roi cho quyen duoc cap
+  // lai bang bo dem - dung co bat lai.
+  if (!MJAccessibilityIsEnabled()) {
+    NSLog(@"[MacViKey] Watchdog: da mat quyen Tro nang - go event tap ra ngay.");
+    [MacViKeyManager stopEventTap];
+    [_tapWatchdog invalidate];
+    _tapWatchdog = nil;
+    [self macViKeyUpdateStatusLine];
+    [self macViKeyStartPermissionPoll];
+    return;
+  }
+
   BOOL alive = MacViKeyIsEventTapAlive();
   if (!alive) {
     NSLog(@"[MacViKey] Watchdog: event tap da chet, dang khoi phuc...");

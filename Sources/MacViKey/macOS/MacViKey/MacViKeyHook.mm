@@ -12,6 +12,7 @@
 #import "Engine.h"
 #import "AppDelegate.h"
 #import "MacViKeyConfig.h"
+#import "MacViKeyManager.h"
 #import "MacViKeyAX.h"
 
 #define FRONT_APP [[NSWorkspace sharedWorkspace] frontmostApplication].bundleIdentifier
@@ -679,10 +680,43 @@ extern "C" {
         if (type == kCGEventTapDisabledByTimeout || type == kCGEventTapDisabledByUserInput) {
             os_log_error(macViKeyLog, "Event tap bi macOS tat (type=%{public}d). Dang bat lai...", (int)type);
             _macViKeyTapDisabledCount++;
+
+            //Chong vong hoi sinh vo han.
+            //
+            //macOS tat tap la co ly do. Neu ta cu bat lai ngay lap tuc, moi lan
+            //bat lai la mot lan luong su kien cua CA phien bi chan tiep - go
+            //vai vong la ca may nhu treo. Qua nguong thi buong han tap ra va de
+            //watchdog xu ly tu ben ngoai, noi co the goi stopEventTap an toan.
+            static int consecutive = 0;
+            static CFAbsoluteTime firstAt = 0;
+            CFAbsoluteTime now = CFAbsoluteTimeGetCurrent();
+            if (now - firstAt > 10.0) {
+                firstAt = now;
+                consecutive = 0;
+            }
+            consecutive++;
+
+            if (consecutive > 5) {
+                os_log_error(macViKeyLog,
+                             "Tap bi tat %{public}d lan trong 10 giay - buong tap, "
+                             "de watchdog dung lai tu dau.", consecutive);
+                //Khong duoc goi stopEventTap ngay tai day: ta dang chay BEN
+                //TRONG callback cua chinh cai port sap bi huy.
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [MacViKeyManager stopEventTap];
+                });
+                return event;
+            }
+
             if (MacViKeyReenableEventTap()) {
                 os_log(macViKeyLog, "Event tap da hoat dong tro lai.");
             } else {
-                os_log_error(macViKeyLog, "KHONG bat lai duoc event tap!");
+                //Bat lai that bai - thuong la da mat quyen Tro nang. Phai go tap
+                //ra khoi luong su kien, khong duoc de no cam o do.
+                os_log_error(macViKeyLog, "KHONG bat lai duoc event tap - dang go ra.");
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [MacViKeyManager stopEventTap];
+                });
             }
             //Trong luc tap chet, nguoi dung da go them vai phim ma engine khong thay
             //-> buffer engine lech pha voi man hinh -> phai reset, neu khong se xoa nham.
