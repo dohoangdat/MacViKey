@@ -752,13 +752,15 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
 
 // Khoi dong cung may.
 //
-// Ban goc dung SMLoginItemSetEnabled voi helper "com.macvikey.helper", nhung
-// target MacViKeyHelper da bi go khoi project - bundle build ra khong he co
-// Contents/Library/LoginItems, nen loi goi do luon that bai AM THAM: prefs ghi
-// RunOnStartup = 1 ma app khong bao gio tu chay.
+// Ban goc dung SMLoginItemSetEnabled voi mot helper rieng nam trong
+// Contents/Library/LoginItems. Target helper da bi go khoi project, nen loi goi
+// do luon that bai AM THAM: prefs ghi RunOnStartup = 1 ma app khong bao gio tu
+// chay.
 //
 // SMAppService.mainAppService dang ky chinh app lam login item, khong can
-// helper. Chi co tu macOS 13; duoi nguong do van dung duong cu.
+// helper - nhung chi co tu macOS 13. Duoi nguong do khong con duong nao dung
+// duoc: helper da khong ton tai, SMLoginItemSetEnabled se that bai am tham.
+// Nen o day ghi log ro rang thay vi im lang - im lang la dung cai bug vua sua.
 - (void)setRunOnStartup:(BOOL)val {
   if (@available(macOS 13.0, *)) {
     SMAppService *service = [SMAppService mainAppService];
@@ -772,8 +774,8 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     }
     return;
   }
-  CFStringRef appId = (__bridge CFStringRef) @"com.macvikey.helper";
-  SMLoginItemSetEnabled(appId, val);
+  NSLog(@"[MacViKey] Khoi dong cung may can macOS 13 tro len; ban macOS nay "
+        @"khong ho tro.");
 }
 
 // An bieu tuong khoi thanh menu.

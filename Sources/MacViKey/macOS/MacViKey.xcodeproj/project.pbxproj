@@ -69,13 +69,6 @@
 		2371AAEE22FA85B200CA1B57 /* MacViKeyHook.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MacViKeyHook.mm; sourceTree = "<group>"; };
 		2374A12E2216720E005B0375 /* AboutViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
 		2374A12F2216720E005B0375 /* AboutViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
-		237559B42204156000FB8CB9 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		237559B52204156000FB8CB9 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		237559B72204156000FB8CB9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		237559BA2204156000FB8CB9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		237559BC2204156000FB8CB9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		237559BD2204156000FB8CB9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		237559BF2204156000FB8CB9 /* MacViKeyHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacViKeyHelper.entitlements; sourceTree = "<group>"; };
 		237724A5232BA3B800E92BDF /* mac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mac.h; sourceTree = "<group>"; };
 		238519F221F1B8E200E79A41 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		238519F921F1BF4400E79A41 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -145,7 +138,6 @@
 				2344220522F42F70009E47D4 /* MacViKey.entitlements */,
 				232EDA5621F1B33E0085D362 /* MacViKey */,
 				232EDA5521F1B33E0085D362 /* Products */,
-				237559B32204156000FB8CB9 /* MacViKeyHelper */,
 				238519F121F1B8E200E79A41 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -196,20 +188,6 @@
 			children = (
 			);
 			path = Resources;
-			sourceTree = "<group>";
-		};
-		237559B32204156000FB8CB9 /* MacViKeyHelper */ = {
-			isa = PBXGroup;
-			children = (
-				237559B42204156000FB8CB9 /* AppDelegate.h */,
-				237559B52204156000FB8CB9 /* AppDelegate.m */,
-				237559B72204156000FB8CB9 /* Assets.xcassets */,
-				237559B92204156000FB8CB9 /* MainMenu.xib */,
-				237559BC2204156000FB8CB9 /* Info.plist */,
-				237559BD2204156000FB8CB9 /* main.m */,
-				237559BF2204156000FB8CB9 /* MacViKeyHelper.entitlements */,
-			);
-			path = MacViKeyHelper;
 			sourceTree = "<group>";
 		};
 		237724A2232BA3B800E92BDF /* platforms */ = {
@@ -357,14 +335,6 @@
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
-		237559B92204156000FB8CB9 /* MainMenu.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				237559BA2204156000FB8CB9 /* Base */,
-			);
-			name = MainMenu.xib;
-			sourceTree = "<group>";
-		};
 		2397059823143267002DDEA7 /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -509,7 +479,7 @@
 				OTHER_LDFLAGS = (
 					"-lc++\n-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.macvikey.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mac.vi.key;
 				PRODUCT_NAME = MacViKey;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
@@ -535,7 +505,7 @@
 				OTHER_LDFLAGS = (
 					"-lc++\n-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.macvikey.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mac.vi.key;
 				PRODUCT_NAME = MacViKey;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
