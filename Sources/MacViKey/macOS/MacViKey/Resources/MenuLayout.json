@@ -30,7 +30,7 @@
     {
       "id": "statusLine",
       "title": "Đang gõ: TIẾNG VIỆT",
-      "enabled": true,
+      "enabled": false,
       "hint": "Khi chưa có quyền Trợ năng, bấm để cấp quyền. Khi bộ gõ đã dừng, bấm để khởi động lại. Bình thường: bấm để đổi qua lại Tiếng Việt / English."
     },
     {
@@ -39,7 +39,7 @@
     {
       "id": "switchKeyInfo",
       "title": "Phím chuyển nhanh: Control + Shift",
-      "enabled": true,
+      "enabled": false,
       "hint": "Tổ hợp phím đang dùng để đổi nhanh Việt / Anh. Đổi được trong Cài đặt."
     },
     {

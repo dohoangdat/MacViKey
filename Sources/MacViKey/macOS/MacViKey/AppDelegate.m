@@ -420,7 +420,7 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
       [nodeId isEqualToString:@"about"]) {
     return [menu addItemWithTitle:title
                           action:@selector(onSettingsSelected)
-                   keyEquivalent:@","];
+                   keyEquivalent:@""];
   }
 
   if ([nodeId isEqualToString:@"quit"]) {
