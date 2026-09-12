@@ -1,0 +1,37 @@
+# Test hoi quy engine + build thu ung dung, chay moi commit.
+#
+# Vi sao tach hai job: engine la C++ thuan khong dung API macOS, nen test chay
+# duoc rat nhanh va khong can Xcode. Build ung dung cham hon nhieu, va no kiem
+# tra mot thu khac: lop macOS con bien dich duoc.
+name: test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  engine:
+    name: Test hoi quy engine
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: make test
+        working-directory: Sources/MacViKey/tests
+        run: make test
+
+  build:
+    name: Build ung dung
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Ky ad-hoc: runner khong co certificate nao, build mac dinh se that bai
+      # ngay o buoc ky.
+      - name: xcodebuild
+        working-directory: Sources/MacViKey/macOS
+        run: |
+          xcodebuild -project MacViKey.xcodeproj -scheme MacViKey \
+            -configuration Release \
+            CONFIGURATION_BUILD_DIR="$(mktemp -d)" \
+            CODE_SIGN_IDENTITY="-" CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM="" \
+            build

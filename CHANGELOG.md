@@ -32,4 +32,4 @@
 ### Hạ tầng
 
 - 48 test hồi quy cho engine, chạy độc lập không cần Xcode
-- GitHub Actions chạy test mỗi commit
+- GitHub Actions chạy test hồi quy engine và build thử ứng dụng mỗi commit
