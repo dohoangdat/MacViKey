@@ -57,9 +57,9 @@
 	<key>MVKDonateURL</key>
 	<string>https://dohoangdat.com/macvikey</string>
 	<key>MVKDonateText</key>
-	<string>MacViKey miễn phí và sẽ luôn miễn phí. Nhưng để duy trì, sửa lỗi và hỗ trợ người dùng thì vẫn tốn thời gian và chi phí! Nếu phần mềm có ích cho bạn, hãy Donate cho đội ngũ Macvikey! Sao kê người ủng hộ được công khai tại hòm công đức, bạn mở ra kiểm tra được bất cứ lúc nào.</string>
+	<string>MacViKey MIỄN PHÍ và sẽ luôn MIỄN PHÍ. Nhưng để sửa lỗi và duy trì thì vẫn tốn thời gian và chi phí! Bạn Donate cũng được ghi nhận là có đóng góp giúp cho sự phát triển của Macvikey, SAO KÊ được công khai tại hòm công đức bên dưới!</string>
 	<key>MVKAboutText</key>
-	<string>MacViKey là bộ gõ tiếng Việt dành riêng cho macOS. Hầu hết bộ gõ khác đều có hàng chục tuỳ chọn mà đa số người dùng không bao giờ đụng tới, mỗi tuỳ chọn là một nhánh code có thể sinh lỗi. MacViKey đi hướng ngược lại: loại bỏ các tính năng thừa, tập trung vào hiệu năng, và làm cho nó thật ổn định.</string>
+	<string>MacViKey là bộ gõ tiếng Việt dành riêng cho MacOS. Hầu hết bộ gõ khác có hàng chục tuỳ chọn mà đa số không bao giờ dùng tới, càng nhiều tùy chọn - app càng dễ bị lỗi, mất phím, nuốt phím... MacViKey đi hướng ngược lại: loại bỏ các tính năng thừa, tập trung vào hiệu năng, và làm cho nó thật ổn định.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2026 Do Hoang Dat. All rights reserved.</string>
 	<key>NSMainStoryboardFile</key>

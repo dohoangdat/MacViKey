@@ -110,22 +110,25 @@ struct MacViKeyAboutPage: View {
 struct MacViKeyDonatePage: View {
     var body: some View {
         InfoPage {
-            PageTitle(title: MacViKeyMenuLayout.string("settings.donate.title",
-                                                      fallback: "Ủng hộ MacViKey"),
-                      subtitle: nil)
+            // Cung mot dau trang voi Gioi thieu: logo, ten trang, mot dong phu,
+            // roi moi den doan chu - hai trang nam canh nhau nen phai cung nhip.
+            HStack(alignment: .center, spacing: 14) {
+                Image(nsImage: NSApp.applicationIconImage)
+                    .resizable()
+                    .frame(width: 64, height: 64)
+                PageTitle(title: MacViKeyMenuLayout.string("settings.donate.title",
+                                                          fallback: "Ủng hộ MacViKey"),
+                          subtitle: MacViKeyMenuLayout.string("settings.donate.subtitle",
+                                                              fallback: "Donate có Sao kê"))
+                Spacer(minLength: 0)
+            }
+
+            Text(MacViKeyInfo.donateText)
+                .font(.system(size: 12))
+                .foregroundColor(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
 
             Card {
-                // Trái tim đặt cạnh lời kêu gọi để trang không chỉ là một khối
-                // chữ; đây là trang duy nhất xin người dùng điều gì đó.
-                HStack(alignment: .top, spacing: 12) {
-                    Image(systemName: "heart.fill")
-                        .font(.system(size: 22))
-                        .foregroundColor(Design.danger)
-                    Text(MacViKeyInfo.donateText)
-                        .font(.system(size: 12))
-                        .foregroundColor(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
                 if let url = MacViKeyInfo.donateURL {
                     // Nut canh phai cho thang hang voi nut va phim gat o cac
                     // trang khac - moi hanh dong trong cua so deu nam mot cot.

@@ -4,3 +4,4 @@ DerivedData/
 *.xcuserdatad
 Sources/MacViKey/tests/explore
 Sources/MacViKey/tests/test_engine
+TODO.md
