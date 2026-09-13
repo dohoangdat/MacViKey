@@ -1,0 +1,20 @@
+name = "macvikey-stats"
+main = "src/worker.js"
+compatibility_date = "2026-01-01"
+
+[vars]
+OWNER = "dohoangdat"
+REPO  = "MacViKey"
+CASK_TOKEN = "macvikey"
+
+# Chi cho phep website cua ban nhung widget. Doi thanh "*" neu muon mo cho
+# moi trang, hoac them nhieu ten mien cach nhau bang dau cach.
+ALLOWED_ANCESTORS = "https://dohoangdat.com https://www.dohoangdat.com"
+
+# Tuy chon nhung nen co: giu ban so lieu tot cuoi cung de khi GitHub API hong
+# widget van hien so cu thay vi trang trong.
+#   wrangler kv namespace create STATS_KV
+# roi dan id vao day va bo dau # o ba dong duoi.
+# [[kv_namespaces]]
+# binding = "STATS_KV"
+# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"

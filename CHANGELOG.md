@@ -1,5 +1,36 @@
 # Lịch sử thay đổi
 
+## 1.2 — 13/09/2026
+
+### Tính năng mới
+
+- Cửa sổ Cài đặt viết lại bằng SwiftUI, có thanh bên: Tổng quan, Phím chuyển,
+  Hệ thống, Giới thiệu, Ủng hộ, Liên kết
+- Menu thả xuống chỉ còn VI/EN, Cài đặt và Thoát — mọi cấu hình chuyển hết vào
+  cửa sổ Cài đặt
+- Dòng cảnh báo trên menu khi bộ gõ gặp sự cố, bấm để cấp quyền hoặc khởi động lại
+- Hiển thị phiên bản hiện tại và lịch sử cập nhật trong nhóm Bảo trì
+- Khởi động cùng máy bằng LaunchAgent, chạy được từ macOS 11
+
+### Sửa lỗi
+
+- Mất quyền Trợ năng giữa chừng không còn làm treo cả máy
+- Cửa sổ Cài đặt luôn nổi lên trên
+- Chỉ xử lý những phím có vai trò trong gõ tiếng Việt, các phím còn lại đi thẳng
+  qua bộ gõ
+
+### Thay đổi
+
+- VI/EN đổi màu theo giao diện sáng/tối, icon menu 18px
+- Bỏ tự động kiểm tra bản mới lúc khởi động — chỉ kiểm tra khi người dùng bấm
+
+### Hạ tầng
+
+- Script đóng gói `.dmg` ký bằng chứng chỉ tự ký, giữ quyền Trợ năng qua mọi
+  lần cập nhật
+- Cask Homebrew
+- GitHub Actions chạy test hồi quy và build thử
+
 ## 1.0.0 — chưa phát hành
 
 ### Sửa lỗi
