@@ -90,16 +90,15 @@ struct MacViKeyAboutPage: View {
                     LinkRow(label: MacViKeyMenuLayout.string("settings.links.email",
                                                              fallback: "Email tác giả"),
                             url: MacViKeyInfo.authorMailtoURL)
-                    InfoTextRow(label: MacViKeyMenuLayout.string(
-                                    "settings.links.copyright",
-                                    fallback: "Bản quyền"),
-                                value: MacViKeyInfo.copyrightShort)
-                    // Ten giay phep thay cho ten mien: "gnu.org" khong noi len
-                    // ban dang mo giay phep nao.
                     LinkRow(label: MacViKeyMenuLayout.string("settings.links.license",
                                                              fallback: "Giấy phép"),
                             url: MacViKeyInfo.licenseURL,
                             display: MacViKeyInfo.licenseName)
+                    InfoTextRow(label: MacViKeyMenuLayout.string(
+                                    "settings.links.copyright",
+                                    fallback: "Bản quyền"),
+                                value: MacViKeyInfo.copyrightShort)
+
                 }
             }
         }
