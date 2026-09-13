@@ -37,6 +37,7 @@ NSString *const MacViKeyInfoKeyChangelogURL = @"MVKChangelogURL";
 NSString *const MacViKeyInfoKeyUpstreamName = @"MVKUpstreamName";
 NSString *const MacViKeyInfoKeyUpstreamURL = @"MVKUpstreamURL";
 NSString *const MacViKeyInfoKeyAboutText = @"MVKAboutText";
+NSString *const MacViKeyInfoKeyFeedbackText = @"MVKFeedbackText";
 NSString *const MacViKeyInfoKeyDonateURL = @"MVKDonateURL";
 NSString *const MacViKeyInfoKeyDonateText = @"MVKDonateText";
 
@@ -68,9 +69,14 @@ NSString *const MacViKeyInfoKeyDonateText = @"MVKDonateText";
 }
 
 + (NSString *)versionInfoText {
-  return [NSString stringWithFormat:@"Phiên bản %@ (build %@) - Ngày cập nhật %@",
-                                    self.versionString, self.buildString,
-                                    [NSString stringWithUTF8String:__DATE__]];
+  return [NSString stringWithFormat:@"Phiên bản %@ (build %@)",
+                                    self.versionString, self.buildString];
+}
+
+// Ngay bien dich, lay tu __DATE__ luc build. Khong phai ngay phat hanh - hai
+// thu nay lech nhau neu ban build lai ma khong tang phien ban.
++ (NSString *)buildDateText {
+  return [NSString stringWithUTF8String:__DATE__];
 }
 
 #pragma mark - Tac gia & ban quyen
@@ -97,6 +103,10 @@ NSString *const MacViKeyInfoKeyDonateText = @"MVKDonateText";
 
 + (NSString *)aboutText {
   return [self stringForKey:MacViKeyInfoKeyAboutText];
+}
+
++ (NSString *)feedbackText {
+  return [self stringForKey:MacViKeyInfoKeyFeedbackText];
 }
 
 + (NSString *)donateText {

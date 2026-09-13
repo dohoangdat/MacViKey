@@ -23,6 +23,7 @@
     "- 'symbol' la ten SF Symbol cho bieu tuong trang trong thanh ben.",
     "- 'short' la ten ngan cua phim chuyen, dung cho dong thong tin tren menu.",
     "- 'button' la chu tren nut cua mot dong hanh dong.",
+    "- 'symbols' la ky hieu phim ve canh ten phim chuyen, vi du \"⌘ + ⇧\".",
     "- 'strings' chua cac cau co phan thay doi luc chay (%@ = chuoi, %d = so).",
     "  Phai giu nguyen so luong va thu tu cac ky hieu %@ / %d."
   ],
@@ -97,6 +98,7 @@
       "items": [
         {
           "id": "switchKey.ctrlShift",
+          "symbols": "⌃ + ⇧",
           "title": "Control + Shift",
           "short": "Control + Shift",
           "enabled": true,
@@ -104,6 +106,7 @@
         },
         {
           "id": "switchKey.cmdShift",
+          "symbols": "⌘ + ⇧",
           "title": "Command + Shift",
           "short": "Command + Shift",
           "enabled": true,
@@ -111,6 +114,7 @@
         },
         {
           "id": "switchKey.optShift",
+          "symbols": "⌥ + ⇧",
           "title": "Option + Shift",
           "short": "Option + Shift",
           "enabled": true,
@@ -118,6 +122,7 @@
         },
         {
           "id": "switchKey.fnShift",
+          "symbols": "fn + ⇧",
           "title": "Fn + Shift",
           "short": "Fn + Shift",
           "enabled": true,
@@ -160,6 +165,12 @@
           "title": "Phiên bản hiện tại",
           "enabled": true,
           "hint": "Phiên bản MacViKey đang chạy trên máy này."
+        },
+        {
+          "id": "buildDate",
+          "title": "Ngày cập nhật",
+          "enabled": true,
+          "hint": "Ngày bản MacViKey này được biên dịch."
         },
         {
           "id": "changelog",
@@ -228,6 +239,7 @@
     "settings.donate.title": "Ủng hộ MacViKey",
     "settings.donate.button": "Mở hòm công đức",
     "settings.links.title": "Liên kết",
+    "settings.feedback.title": "Góp ý",
     "settings.links.home": "Trang chủ",
     "settings.links.releases": "Bản phát hành",
     "settings.links.source": "Mã nguồn",

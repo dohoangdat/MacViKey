@@ -59,11 +59,15 @@ final class MacViKeySettingsWindow: NSObject {
             window = w
         }
         guard let window = window else { return }
-        if window.isVisible { return }
         // Ứng dụng LSUIElement phải activate trước, nếu không cửa sổ hiện ra mà
         // không nhận được bàn phím.
+        //
+        // Làm cả ba việc kể cả khi cửa sổ đang hiện: "đang hiện" không có nghĩa
+        // là nhìn thấy được. Cửa sổ vẫn có thể nằm dưới ứng dụng khác, và trước
+        // đây gặp trường hợp đó thì bấm Cài đặt xong không thấy gì xảy ra.
         NSApp.activate(ignoringOtherApps: true)
         window.makeKeyAndOrderFront(nil)
+        window.orderFrontRegardless()
     }
 
     /// Gọi từ fillData: cửa sổ, menu và prefs không bao giờ lệch nhau.

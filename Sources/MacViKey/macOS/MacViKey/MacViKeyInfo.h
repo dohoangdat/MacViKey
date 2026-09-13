@@ -43,6 +43,7 @@ extern NSString *const MacViKeyInfoKeyChangelogURL;    // MVKChangelogURL
 extern NSString *const MacViKeyInfoKeyUpstreamName;    // MVKUpstreamName
 extern NSString *const MacViKeyInfoKeyUpstreamURL;     // MVKUpstreamURL
 extern NSString *const MacViKeyInfoKeyAboutText;       // MVKAboutText
+extern NSString *const MacViKeyInfoKeyFeedbackText;    // MVKFeedbackText
 extern NSString *const MacViKeyInfoKeyDonateURL;       // MVKDonateURL
 extern NSString *const MacViKeyInfoKeyDonateText;      // MVKDonateText
 
@@ -60,6 +61,8 @@ extern NSString *const MacViKeyInfoKeyDonateText;      // MVKDonateText
 @property(class, readonly) NSString *buildString;     // CFBundleVersion
 /// "Phiên bản 1.0 (build 1) - Ngày cập nhật ..."
 @property(class, readonly) NSString *versionInfoText;
+/// Ngay bien dich ban dang chay, rieng ra de trang Gioi thieu khong phai mang.
+@property(class, readonly) NSString *buildDateText;
 
 #pragma mark - Tác giả & bản quyền
 
@@ -69,6 +72,9 @@ extern NSString *const MacViKeyInfoKeyDonateText;      // MVKDonateText
 @property(class, readonly) NSString *copyrightFull;    // NSHumanReadableCopyright
 @property(class, readonly) NSString *licenseName;
 @property(class, readonly) NSString *aboutText;
+/// Loi moi gop y / de xuat tinh nang. Tach khoi aboutText de doan mo ta chi
+/// noi ve triet ly cua phan mem, khong lan sang chuyen lien he.
+@property(class, readonly) NSString *feedbackText;
 /// Loi keu goi ung ho hien trong khung Donate.
 @property(class, readonly) NSString *donateText;
 @property(class, readonly) NSString *upstreamName;

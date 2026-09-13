@@ -59,7 +59,6 @@ struct MacViKeyAboutPage: View {
                     Text(MacViKeyInfo.versionInfoText)
                         .font(.system(size: 11))
                         .foregroundColor(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 0)
             }
@@ -89,6 +88,17 @@ struct MacViKeyAboutPage: View {
                                                              fallback: "Email tác giả"),
                             url: MacViKeyInfo.authorMailtoURL)
                 }
+            }
+
+            // Loi moi gop y dung rieng duoi danh sach lien ket, de doan mo ta
+            // o tren chi noi ve triet ly cua phan mem.
+            VStack(alignment: .leading, spacing: Design.tightSpacing) {
+                SectionHeader(title: MacViKeyMenuLayout.string(
+                    "settings.feedback.title", fallback: "Góp ý"))
+                Text(MacViKeyInfo.feedbackText)
+                    .font(.system(size: 12))
+                    .foregroundColor(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             VStack(alignment: .leading, spacing: 6) {
@@ -136,13 +146,18 @@ struct MacViKeyDonatePage: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 if let url = MacViKeyInfo.donateURL {
-                    Button {
-                        MacViKeyInfo.open(url)
-                    } label: {
-                        Text(MacViKeyMenuLayout.string("settings.donate.button",
-                                                       fallback: "Mở hòm công đức"))
+                    // Nut canh phai cho thang hang voi nut va phim gat o cac
+                    // trang khac - moi hanh dong trong cua so deu nam mot cot.
+                    HStack {
+                        Spacer(minLength: 0)
+                        Button {
+                            MacViKeyInfo.open(url)
+                        } label: {
+                            Text(MacViKeyMenuLayout.string("settings.donate.button",
+                                                           fallback: "Mở hòm công đức"))
+                        }
+                        .mvkHelp(url.absoluteString)
                     }
-                    .mvkHelp(url.absoluteString)
                 }
             }
         }

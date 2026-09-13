@@ -981,6 +981,9 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   NSString *button = node[@"button"];
   if (![button isKindOfClass:NSString.class])
     button = nil;
+  NSString *symbols = node[@"symbols"];
+  if (![symbols isKindOfClass:NSString.class])
+    symbols = nil;
 
   MacViKeyQuickRow *(^make)(MacViKeyQuickRowKind) =
       ^MacViKeyQuickRow *(MacViKeyQuickRowKind kind) {
@@ -1015,6 +1018,9 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     if (index == NSNotFound)
       return nil;
     MacViKeyQuickRow *row = make(MacViKeyQuickRowKindRadio);
+    // Ky hieu phim ("⌘ + ⇧") ve canh ten day du, khong thay the ten: doc chu
+    // thi ai cung hieu, con ky hieu thi khop voi thu in tren ban phim.
+    row.value = symbols;
     row.tag = index;
     row.on = ((vSwitchKeyStatus | MACVIKEY_SWITCH_BEEP) ==
               [switchValue intValue]);
@@ -1026,6 +1032,12 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     row.value = [NSString stringWithFormat:@"%@ (build %@)",
                                            MacViKeyInfo.versionString,
                                            MacViKeyInfo.buildString];
+    return row;
+  }
+
+  if ([nodeId isEqualToString:@"buildDate"]) {
+    MacViKeyQuickRow *row = make(MacViKeyQuickRowKindInfoValue);
+    row.value = MacViKeyInfo.buildDateText;
     return row;
   }
 

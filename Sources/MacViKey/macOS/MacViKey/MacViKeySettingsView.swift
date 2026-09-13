@@ -344,7 +344,14 @@ struct MacViKeySettingsView: View {
                 Image(systemName: row.on ? "largecircle.fill.circle" : "circle")
                     .foregroundColor(row.on ? Color.accentColor : Color.secondary)
                 Text(row.title).font(.system(size: 12))
-                Spacer(minLength: 0)
+                Spacer(minLength: 8)
+                // Ky hieu phim canh phai, thang hang voi nut va phim gat o cac
+                // trang khac. Chu de doc, ky hieu de doi chieu voi ban phim.
+                if let symbols = row.value, !symbols.isEmpty {
+                    Text(symbols)
+                        .font(.system(size: 12))
+                        .foregroundColor(.secondary)
+                }
             }
             .padding(.vertical, 7)
             .contentShape(Rectangle())
