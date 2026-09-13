@@ -439,7 +439,7 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     // voi Dock, gan thang vao menu se bi keo cao ca dong.
     NSImage *icon = [NSApp.applicationIconImage copy];
     if (icon != nil) {
-      icon.size = NSMakeSize(16, 16);
+      icon.size = NSMakeSize(18, 18);
       item.image = icon;
     }
     return item;
@@ -1363,6 +1363,37 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
   [mnuStatusLine setState:NSControlStateValueOff];
 }
 
+// Cam thuong hieu cho chu VI/EN, mot cap mau theo giao dien sang/toi.
+//
+// Cung huong cam voi logo va voi phim gat trong Cai dat (Design.brandOrange
+// trong MacViKeyDesign.swift) - doi mot cho thi phai doi cho con lai.
+//
+// Vi sao phai co hai mau: thanh menu o giao dien toi co nen gan nhu den, ma
+// cam dam #D98533 tren nen den thi toi va duc, doc kho hon han chu trang ben
+// canh. Ban toi la cung tong cam do nhung sang va bot bao hoa hon.
+//
+// Dung dynamicProvider chu khong tu doc appearance roi ve lai: mau tu giai
+// quyet luc ve, nen doi Dark Mode giua phien lam viec la chu doi mau theo
+// ngay, khong phai cho lan cap nhat tieu de tiep theo.
++ (NSColor *)brandOrangeForMenuBar {
+  static NSColor *color = nil;
+  static dispatch_once_t once;
+  dispatch_once(&once, ^{
+    color = [NSColor colorWithName:@"MacViKeyBrandOrange"
+                   dynamicProvider:^NSColor *(NSAppearance *appearance) {
+      NSAppearanceName name = [appearance
+          bestMatchFromAppearancesWithNames:@[
+            NSAppearanceNameAqua, NSAppearanceNameDarkAqua
+          ]];
+      if ([name isEqualToString:NSAppearanceNameDarkAqua]) {
+        return [NSColor colorWithSRGBRed:0.973 green:0.686 blue:0.361 alpha:1.0];
+      }
+      return [NSColor colorWithSRGBRed:0.851 green:0.522 blue:0.200 alpha:1.0];
+    }];
+  });
+  return color;
+}
+
 // Chu tren thanh menu: VI / EN, gach ngang khi bo go khong hoat dong.
 //
 // Gach ngang chu la canh bao duy nhat thay duoc ma khong phai mo menu - dung
@@ -1382,13 +1413,7 @@ typedef NS_ENUM(NSInteger, MacViKeyOptionTag) {
     NSFontAttributeName :
         [NSFont monospacedDigitSystemFontOfSize:[NSFont systemFontSize]
                                          weight:NSFontWeightBold],
-    // Cam thuong hieu - cung mau voi phim gat trong Cai dat
-    // (Design.brandOrange trong MacViKeyDesign.swift). Doi mot cho thi phai
-    // doi cho con lai, neu khong hai noi lech mau nhau.
-    NSForegroundColorAttributeName : [NSColor colorWithSRGBRed:0.851
-                                                        green:0.522
-                                                         blue:0.200
-                                                        alpha:1.0]
+    NSForegroundColorAttributeName : [AppDelegate brandOrangeForMenuBar]
   } mutableCopy];
   if (broken) {
     attrs[NSStrikethroughStyleAttributeName] = @(NSUnderlineStyleSingle);
