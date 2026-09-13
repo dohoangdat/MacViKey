@@ -3,8 +3,8 @@
 #
 # Moi lan phat hanh: cap nhat version + sha256 theo output cua tools/release.sh.
 cask "macvikey" do
-  version "1.1"
-  sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+  version "1.2"
+  sha256 "87cbd116997ec47e4b1c66df69867a0ef6b18653095dcb16dfd37b12a88f37e1"
 
   url "https://github.com/dohoangdat/MacViKey/releases/download/v#{version}/MacViKey-#{version}.dmg"
   name "MacViKey"
