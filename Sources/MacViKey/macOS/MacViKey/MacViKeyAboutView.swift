@@ -68,6 +68,9 @@ struct MacViKeyAboutPage: View {
                 .foregroundColor(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
 
+            // Mot khung duy nhat cho moi thu "tim hieu them / lien he": lien ket,
+            // ban quyen, giay phep. Truoc day ban quyen va giay phep nam roi o
+            // duoi chan trang, tach khoi cac dong cung loai voi chung.
             VStack(alignment: .leading, spacing: Design.tightSpacing) {
                 SectionHeader(title: MacViKeyMenuLayout.string(
                     "settings.links.title", fallback: "Liên kết"))
@@ -75,49 +78,28 @@ struct MacViKeyAboutPage: View {
                     LinkRow(label: MacViKeyMenuLayout.string("settings.links.home",
                                                              fallback: "Trang chủ"),
                             url: MacViKeyInfo.homePageURL)
-                    LinkRow(label: MacViKeyMenuLayout.string("settings.links.releases",
-                                                             fallback: "Bản phát hành"),
-                            url: MacViKeyInfo.releasesURL)
                     LinkRow(label: MacViKeyMenuLayout.string("settings.links.source",
                                                              fallback: "Mã nguồn"),
                             url: MacViKeyInfo.sourceCodeURL)
+                    LinkRow(label: MacViKeyMenuLayout.string("settings.links.feedback",
+                                                             fallback: "Góp ý"),
+                            url: MacViKeyInfo.feedbackURL)
                     LinkRow(label: MacViKeyMenuLayout.string("settings.links.issues",
-                                                             fallback: "Góp ý / báo lỗi"),
+                                                             fallback: "Báo lỗi"),
                             url: MacViKeyInfo.issuesURL)
                     LinkRow(label: MacViKeyMenuLayout.string("settings.links.email",
                                                              fallback: "Email tác giả"),
                             url: MacViKeyInfo.authorMailtoURL)
-                }
-            }
-
-            // Loi moi gop y dung rieng duoi danh sach lien ket, de doan mo ta
-            // o tren chi noi ve triet ly cua phan mem.
-            VStack(alignment: .leading, spacing: Design.tightSpacing) {
-                SectionHeader(title: MacViKeyMenuLayout.string(
-                    "settings.feedback.title", fallback: "Góp ý"))
-                Text(MacViKeyInfo.feedbackText)
-                    .font(.system(size: 12))
-                    .foregroundColor(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            VStack(alignment: .leading, spacing: 6) {
-                Divider()
-                Text(MacViKeyInfo.copyrightShort)
-                    .font(.system(size: 11))
-                    .foregroundColor(.secondary)
-                HStack(spacing: 4) {
-                    Text("Giấy phép")
-                        .font(.system(size: 11))
-                        .foregroundColor(.secondary)
-                    Button {
-                        MacViKeyInfo.open(MacViKeyInfo.licenseURL)
-                    } label: {
-                        Text(MacViKeyInfo.licenseName)
-                            .font(.system(size: 11))
-                            .underline()
-                    }
-                    .buttonStyle(LinkButtonStyle())
+                    InfoTextRow(label: MacViKeyMenuLayout.string(
+                                    "settings.links.copyright",
+                                    fallback: "Bản quyền"),
+                                value: MacViKeyInfo.copyrightShort)
+                    // Ten giay phep thay cho ten mien: "gnu.org" khong noi len
+                    // ban dang mo giay phep nao.
+                    LinkRow(label: MacViKeyMenuLayout.string("settings.links.license",
+                                                             fallback: "Giấy phép"),
+                            url: MacViKeyInfo.licenseURL,
+                            display: MacViKeyInfo.licenseName)
                 }
             }
         }

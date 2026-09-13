@@ -139,6 +139,9 @@ struct PageTitle: View {
 struct LinkRow: View {
     let label: String
     let url: URL?
+    /// Chữ hiện bên phải, nếu không muốn lấy tên miền. Dùng cho những dòng mà
+    /// tên miền chẳng nói lên gì - "gnu.org" thì mơ hồ, "GNU GPL v3" thì rõ.
+    var display: String? = nil
 
     /// Chữ hiện ra cho một địa chỉ. Với mailto: thì `host` là nil, mà in cả
     /// "mailto:..." ra thì thô - bỏ tiền tố đi chỉ còn địa chỉ email.
@@ -159,7 +162,7 @@ struct LinkRow: View {
                 Button {
                     MacViKeyInfo.open(url)
                 } label: {
-                    Text(LinkRow.display(url))
+                    Text(display ?? LinkRow.display(url))
                         .underline()
                 }
                 .buttonStyle(LinkButtonStyle())
@@ -167,6 +170,26 @@ struct LinkRow: View {
             }
             .font(.system(size: 12))
         }
+    }
+}
+
+/// Một dòng chỉ đọc trong khung liên kết: nhãn trái, giá trị phải. Cùng nhịp
+/// với LinkRow để bản quyền không lạc lõng giữa các dòng bấm được.
+struct InfoTextRow: View {
+    let label: String
+    let value: String
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            Text(label)
+                .foregroundColor(.secondary)
+            Spacer(minLength: 8)
+            Text(value)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.trailing)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .font(.system(size: 12))
     }
 }
 

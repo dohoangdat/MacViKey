@@ -31,13 +31,13 @@ NSString *const MacViKeyInfoKeyLicenseURL = @"MVKLicenseURL";
 NSString *const MacViKeyInfoKeyHomePageURL = @"MVKHomePageURL";
 NSString *const MacViKeyInfoKeySourceCodeURL = @"MVKSourceCodeURL";
 NSString *const MacViKeyInfoKeyIssuesURL = @"MVKIssuesURL";
+NSString *const MacViKeyInfoKeyFeedbackURL = @"MVKFeedbackURL";
 NSString *const MacViKeyInfoKeyReleasesURL = @"MVKReleasesURL";
 NSString *const MacViKeyInfoKeyVersionCheckURL = @"MVKVersionCheckURL";
 NSString *const MacViKeyInfoKeyChangelogURL = @"MVKChangelogURL";
 NSString *const MacViKeyInfoKeyUpstreamName = @"MVKUpstreamName";
 NSString *const MacViKeyInfoKeyUpstreamURL = @"MVKUpstreamURL";
 NSString *const MacViKeyInfoKeyAboutText = @"MVKAboutText";
-NSString *const MacViKeyInfoKeyFeedbackText = @"MVKFeedbackText";
 NSString *const MacViKeyInfoKeyDonateURL = @"MVKDonateURL";
 NSString *const MacViKeyInfoKeyDonateText = @"MVKDonateText";
 
@@ -105,10 +105,6 @@ NSString *const MacViKeyInfoKeyDonateText = @"MVKDonateText";
   return [self stringForKey:MacViKeyInfoKeyAboutText];
 }
 
-+ (NSString *)feedbackText {
-  return [self stringForKey:MacViKeyInfoKeyFeedbackText];
-}
-
 + (NSString *)donateText {
   return [self stringForKey:MacViKeyInfoKeyDonateText];
 }
@@ -129,6 +125,10 @@ NSString *const MacViKeyInfoKeyDonateText = @"MVKDonateText";
 
 + (NSURL *)issuesURL {
   return [self URLForKey:MacViKeyInfoKeyIssuesURL];
+}
+
++ (NSURL *)feedbackURL {
+  return [self URLForKey:MacViKeyInfoKeyFeedbackURL];
 }
 
 + (NSURL *)releasesURL {
