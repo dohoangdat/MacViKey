@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 1.3 — chưa phát hành
+
+<!-- Ghi thay doi vao day trong suot chu ky phat trien.
+     Khi phat hanh: doi tieu de thanh "## 1.3 — dd/mm/yyyy" va bump
+     version.json len 1.3 / versionCode 4. -->
+
 ## 1.2 — 13/09/2026
 
 ### Tính năng mới
