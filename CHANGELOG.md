@@ -37,7 +37,7 @@
 - Cask Homebrew
 - GitHub Actions chạy test hồi quy và build thử
 
-## 1.0.0 — chưa phát hành
+## 1.0.0
 
 ### Sửa lỗi
 
